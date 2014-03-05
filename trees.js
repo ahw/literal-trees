@@ -1,8 +1,43 @@
 var PAPER_WIDTH = document.getElementById("paper").offsetWidth;
 var PAPER_HEIGHT = window.innerHeight - 16; // document.getElementById("paper").offsetHeight;
-var normal = Normal();
-
+var Normal = Normal();
+var Color = $c; // Comes from colors.js
 var paper = Raphael("paper", PAPER_WIDTH, PAPER_HEIGHT);
+var t0 = Date.now();
+
+var LOG = new Logger({
+    modules: "all",
+    prefix: ""
+});
+
+// Performs a linear transformation of values in the domain to corresponding
+// values in the range. Requires two values from each in order to compute a
+// mapping function. These inputs should be two-element arrays. For example,
+// If domain is [0, 10] and range is [20, 30] then this function will map
+// input value 0 to output 20, input value 10 to output 30, and all other
+// arbitrary input values accordingly.
+var LinearTransform = function(domain, range, x) {
+    LOG.debug("[Linear Transform] Mapping " + domain + " -> " + range);
+    // rise / run
+    var slope = (range[1] - range[0]) / (domain[1] - domain[0]);
+    // b = y - mx
+    var intercept = range[0] - slope * domain[0];
+    if (typeof x === "number") {
+        // If a domain value was provided, return the transformed result
+        LOG.debug("[LinearTransform] returning result y = " + slope + "(x) + " + intercept + " => " + slope * x + intercept);
+        return slope * x + intercept;
+    } else {
+        // If no domain value was provided, return a function
+        LOG.log("[LinearTransform] returning function y = " + slope + "(x) + " + intercept);
+        return function(x) {
+            return slope * x + intercept;
+        }
+    }
+};
+
+var rad = function(deg) {
+    return Math.PI * deg / 180;
+};
 
 var path = function () {
     var previousArgWasNumber = false;
@@ -13,60 +48,81 @@ var path = function () {
         }
 
         pathString += arg;
-        previousArgWasNumber = (typeof arg === 'number') ? true : false;
+        previousArgWasNumber = (typeof arg === 'number');
     });
-    // console.log('PATH STRING', pathString);
+    // LOG.log('PATH STRING', pathString);
     return pathString;
 };
 
 var transform = path; // Alias to path. Both are just conveniences.
 
+var pad = function(n) {
+    s = "";
+    while (n > 0) {
+        s += "  ";
+        n--;
+    }
+    return s;
+};
+
 var branch = function (args) {
     var x = args.x;
     var y = args.y;
-    var levels = args.levels;
-    // var angleRange = args.angleRange;
-    var angleRange = normal.sample() * 5 + 65;
-    var limbAngle = args.limbAngle;
-    //    console.log('Starting branch at ' + [x, y].join(','));
+    var depth = args.depth || 0;
+    var maxDepth = args.maxDepth;
+    var angleRange = Normal.sample() * 5 + 65;
+    var referenceAngle = args.limbAngle;
 
-    if (levels === 0) {
-        return;
+    LOG.log(pad(depth) + "Branching at (" + x + "," + y + "). Depth=" + depth + ", maxDepth=" + maxDepth);
+
+    if (depth === maxDepth) {
+        return "";
     }
 
-    var numBranches = Math.floor(normal.sample() * 0.5 + 4);
-    //    console.log("NUM BRANCHES", numBranches);
+    // Transform the depth value to something on the range [3, 5].
+    var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [3, 7], depth));
+    LOG.log(pad(depth) + "Number of branches:", numBranches);
+    var localPathString = "";
     for (var i = 0; i < numBranches; i++) {
-        var relativeAngle = -(angleRange / 2) + i * angleRange / (numBranches - 1); // Math.floor(Math.random() * angleRange);
-        relativeAngle = normal.sample() * 5 + relativeAngle;
-        var length = Math.max(0, normal.sample() * 10 + 15 * levels); // 40; // Math.random() * 40; // TODO: Normal distribution should be used here.
-        console.log('Length at depth ' + levels + ' = ' + length);
-        var b = paper.path(path('M', x, y, 'h', length));
-        b.transform(transform("r", limbAngle, x, y, "r", relativeAngle, x, y));
-        var endpoint = {
-            x: x + length * Math.cos(-1 * (limbAngle + relativeAngle) * Math.PI / 180),
-            y: y - length * Math.sin(-1 * (limbAngle + relativeAngle) * Math.PI / 180)
-        };
-        //        console.log('Endpoint', endpoint);
-        // console.log('Ending branch from ' + [x, y].join(',') + ' at ' + [endpoint.x, endpoint.y].join(','));
-        branch({
-            x: endpoint.x,
-            y: endpoint.y,
-            levels: levels - 1,
+        var relativeAngle = Normal.sample() * 5 - (angleRange / 2) + i * angleRange / (numBranches - 1);
+        var absoluteAngle = referenceAngle + relativeAngle;
+        var length = Math.max(0, Normal.sample() * 10 + LinearTransform([0, maxDepth], [75, 0], depth));
+        var xOffset = length * Math.cos(rad(absoluteAngle));
+        var yOffset = length * Math.sin(rad(absoluteAngle));
+        localPathString += path('M', x, y, 'l', xOffset, yOffset);
+        //        RGB(147, 113, 68)
+        //        var red   = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
+        //        var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
+        //        var blue  = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
+        //        var color = Color.rgb2hex(red, green, blue);
+        //        LOG.debug(pad(depth) + "Color at depth " + depth + " is " + color);
+        //        b.attr("stroke", color);
+        //        var endpoint = {
+        //            x: x + length * Math.cos(-1 * (referenceAngle + relativeAngle) * Math.PI / 180),
+        //            y: y - length * Math.sin(-1 * (referenceAngle + relativeAngle) * Math.PI / 180)
+        //        };
+        //        LOG.log('Endpoint', endpoint);
+        localPathString += branch({
+            x: x + xOffset,
+            y: y + yOffset,
+            depth: depth + 1,
+            maxDepth: maxDepth,
             angleRange: angleRange, // TODO: Vary this?
-            limbAngle: limbAngle + relativeAngle
-        })
+            limbAngle: referenceAngle + relativeAngle
+        });
     }
+    return localPathString;
 };
 
-var t0 = Date.now();
 var trunk = function (args) {
     var x0 = args.x0;
     var y0 = args.y0;
     var x1 = args.x1;
     var y1 = args.y1;
     var height = args.height;
-    paper.path(path('M', x0, y0, 'L', x1, y1));
+    paper
+        .path(path('M', x0, y0, 'L', x1, y1))
+        .attr("stroke", "#cccccc");
 };
 
 var trunkStartX = PAPER_WIDTH / 2;
@@ -84,18 +140,26 @@ trunk({
 var result = branch({
     x: trunkEndX,
     y: trunkEndY,
-    levels: 5,
+    maxDepth: 6,
     angleRange: 70,
-    limbAngle: -90
+    limbAngle: -90,
+    pathString: ""
 });
 
 if (result === -1) {
     $("#paper").html("tree died.");
 }
-document.body.style.backgroundColor = "#DEF5FF";
+
+console.log(result);
+paper.path(result);
+
+var elapsed = Date.now() - t0;
+document.getElementById("time").innerHTML = elapsed;
+// document.body.style.backgroundColor = "#DEF5FF";
+// document.body.style.backgroundColor = "#ccc";
 var t1 = Date.now();
-console.log('Rendering time (ms)', t1 - t0);
+LOG.log('Rendering time (ms)', t1 - t0);
 // var s = paper.rect(100, 100, 20, 20).attr({fill: 'blue', 'stroke-width': 0});
 // var r = paper.rect(100, 100, 20, 20);
 // var t = r.transform("t100,100r30,100,100s2,2,100,100r45s1.5");
-// console.log('transform t', t);
+// LOG.log('transform t', t);
