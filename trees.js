@@ -76,13 +76,18 @@ var branch = function (args) {
     }
 
     // Transform the depth value to something on the range [3, 5].
-    var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [3, 7], depth));
+    var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [3, 8], depth));
     LOG.log(pad(depth) + "Number of branches:", numBranches);
     var localPathString = "";
     for (var i = 0; i < numBranches; i++) {
         var relativeAngle = Normal.sample() * 5 - (angleRange / 2) + i * angleRange / (numBranches - 1);
         var absoluteAngle = referenceAngle + relativeAngle;
-        var length = Math.max(0, Normal.sample() * 10 + LinearTransform([0, maxDepth], [75, 0], depth));
+        var length = Normal.sample() * 10 + LinearTransform([0, maxDepth], [10, 0], depth) * LinearTransform([0, 90], [0, 10], Math.abs(absoluteAngle));
+        if (length <= 0) {
+            // TODO: Use seed values to see if there is any actual difference in returning early here.
+            console.log("Returning early because branch length was " + length + " at depth " + depth);
+            return;
+        }
         var xOffset = length * Math.cos(rad(absoluteAngle));
         var yOffset = length * Math.sin(rad(absoluteAngle));
         // RGB(147, 113, 68)
