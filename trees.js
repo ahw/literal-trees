@@ -17,18 +17,15 @@ var LOG = new Logger({
 // input value 0 to output 20, input value 10 to output 30, and all other
 // arbitrary input values accordingly.
 var LinearTransform = function(domain, range, x) {
-    LOG.debug("[Linear Transform] Mapping " + domain + " -> " + range);
     // rise / run
     var slope = (range[1] - range[0]) / (domain[1] - domain[0]);
     // b = y - mx
     var intercept = range[0] - slope * domain[0];
     if (typeof x === "number") {
         // If a domain value was provided, return the transformed result
-        LOG.debug("[LinearTransform] returning result y = " + slope + "(x) + " + intercept + " => " + slope * x + intercept);
         return slope * x + intercept;
     } else {
         // If no domain value was provided, return a function
-        LOG.log("[LinearTransform] returning function y = " + slope + "(x) + " + intercept);
         return function(x) {
             return slope * x + intercept;
         }
@@ -50,7 +47,6 @@ var path = function () {
         pathString += arg;
         previousArgWasNumber = (typeof arg === 'number');
     });
-    // LOG.log('PATH STRING', pathString);
     return pathString;
 };
 
@@ -71,7 +67,7 @@ var branch = function (args) {
     var depth = args.depth || 0;
     var maxDepth = args.maxDepth;
     var angleRange = Normal.sample() * 5 + 65;
-    var referenceAngle = args.limbAngle;
+    var referenceAngle = args.referenceAngle;
 
     LOG.log(pad(depth) + "Branching at (" + x + "," + y + "). Depth=" + depth + ", maxDepth=" + maxDepth);
 
@@ -89,26 +85,22 @@ var branch = function (args) {
         var length = Math.max(0, Normal.sample() * 10 + LinearTransform([0, maxDepth], [75, 0], depth));
         var xOffset = length * Math.cos(rad(absoluteAngle));
         var yOffset = length * Math.sin(rad(absoluteAngle));
-        localPathString += path('M', x, y, 'l', xOffset, yOffset);
-        //        RGB(147, 113, 68)
-        //        var red   = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
-        //        var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
-        //        var blue  = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
-        //        var color = Color.rgb2hex(red, green, blue);
-        //        LOG.debug(pad(depth) + "Color at depth " + depth + " is " + color);
-        //        b.attr("stroke", color);
-        //        var endpoint = {
-        //            x: x + length * Math.cos(-1 * (referenceAngle + relativeAngle) * Math.PI / 180),
-        //            y: y - length * Math.sin(-1 * (referenceAngle + relativeAngle) * Math.PI / 180)
-        //        };
-        //        LOG.log('Endpoint', endpoint);
-        localPathString += branch({
+        // RGB(147, 113, 68)
+        var red   = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
+        var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
+        var blue  = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
+        var color = Color.rgb2hex(red, green, blue);
+        LOG.debug(pad(depth) + "Color at depth " + depth + " is " + color);
+        paper
+            .path(path('M', x, y, 'l', xOffset, yOffset))
+            .attr("stroke", color);
+        branch({
             x: x + xOffset,
             y: y + yOffset,
             depth: depth + 1,
             maxDepth: maxDepth,
             angleRange: angleRange, // TODO: Vary this?
-            limbAngle: referenceAngle + relativeAngle
+            referenceAngle: referenceAngle + relativeAngle
         });
     }
     return localPathString;
@@ -142,8 +134,7 @@ var result = branch({
     y: trunkEndY,
     maxDepth: 6,
     angleRange: 70,
-    limbAngle: -90,
-    pathString: ""
+    referenceAngle: -90
 });
 
 if (result === -1) {
