@@ -11,14 +11,8 @@ requirejs.config({
     },
 
     shim: {
-        'underscore': {
-            exports: '_'
-        },
         'raphael': {
             exports: 'Raphael'
-        },
-        'colors': {
-            exports: 'Colors'
         }
     }
 });

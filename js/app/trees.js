@@ -1,6 +1,6 @@
-requirejs(['box-muller', 'logger', 'colors', 'raphael'], function(Normal, Logger, Color, Raphael) {
+requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael) {
 
-    console.log("trees.js and all it's dependencies have loaded");
+    console.log("> trees.js and all it's dependencies have loaded");
     var LOG = new Logger({
         module: "trees"
     });
@@ -61,6 +61,28 @@ requirejs(['box-muller', 'logger', 'colors', 'raphael'], function(Normal, Logger
         return s;
     };
 
+    /**
+     * Takes a decimal value in the range [0, 255] and outputs a two-digit hex string representation.
+     *
+     * @param n
+     * @returns {string}
+     */
+    decimal2hex = function (n) {
+        var hex = ((n < 10) ? "0" : "") + n.toString(16);
+        return (hex.length === 1) ? "0" + hex : hex;
+    };
+
+    /**
+     * Takes three RGB values each in the range [0, 255] and outputs the CSS hex string representation.
+     *
+     * @param r
+     * @param g
+     * @param b
+     */
+    var rgb2hex = function(r, g, b) {
+        return "#" + decimal2hex(r) + decimal2hex(g) + decimal2hex(b);
+    };
+
     var branch = function (args) {
         var x = args.x;
         var y = args.y;
@@ -94,7 +116,7 @@ requirejs(['box-muller', 'logger', 'colors', 'raphael'], function(Normal, Logger
             var red   = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
             var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
             var blue  = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
-            var color = Color.rgb2hex(red, green, blue);
+            var color = rgb2hex(red, green, blue);
             LOG.debug(pad(depth) + "Color at depth " + depth + " is " + color);
             paper
                 .path(path('M', x, y, 'l', xOffset, yOffset))
