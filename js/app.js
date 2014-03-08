@@ -24,13 +24,7 @@ requirejs.config({
 });
 
 // Start the main app logic
-requirejs(['raphael',
-    'jquery',
-    'underscore',
-    'colors',
-    'logger',
-    'app/trees'
-    ], function(Raphael, $, _, Colors, Logger) {
+requirejs(['logger', 'app/trees'], function(Logger) {
         var LOG = new Logger({
             module: "app"
         });
