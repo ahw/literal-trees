@@ -24,7 +24,9 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, L
     RAND_LOG.debug("Using seed", seed);
 
     // Set the hash.
-    window.location.hash = seed;
+    if (window.location.search.indexOf("mode=dev") < 0) {
+        window.location.hash = seed;
+    }
 
     // Now call Math.seedrandom again, this time with the seed we put in the
     // hash. All further calls to Math.random() are now deterministic.
