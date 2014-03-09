@@ -1,0 +1,10 @@
+{
+    "baseUrl": "js/lib",
+    "paths": {
+        "requireLib": "require",
+        "app": "../app"
+    },
+    "name": "app",
+    "preserveLicenseComments": false,
+    "out": "everything-is-a-file.js"
+}

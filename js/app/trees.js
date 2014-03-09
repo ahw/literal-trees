@@ -1,9 +1,34 @@
-requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael) {
+requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, Logger, Raphael, SeedRandom) {
 
     console.log("> trees.js and all it's dependencies have loaded");
+
     var LOG = new Logger({
         module: "trees"
     });
+
+    var RAND_LOG = new Logger({
+        module: "rand"
+    });
+
+
+    var seed = window.location.hash.replace(/#/, "");
+    if (window.location.hash === "") {
+        // If we haven't been given a seed in the hash then call
+        // Math.seedrandom to get a random seed, then base64 encode it, then
+        // remove non-URL-friendly characters, then strip off the first 16
+        // characters. Basically, we just want a manageable-size seed value that
+        // is easily placed in the hash of the URL.
+        seed = window.btoa(Math.seedrandom()).replace(/\W/g, "").substr(0, 16);
+        RAND_LOG.info("Generating a new random seed", seed);
+    }
+    RAND_LOG.debug("Using seed", seed);
+
+    // Set the hash.
+    window.location.hash = seed;
+
+    // Now call Math.seedrandom again, this time with the seed we put in the
+    // hash. All further calls to Math.random() are now deterministic.
+    Math.seedrandom(seed);
 
     var PAPER_WIDTH = document.getElementById("paper").offsetWidth;
     var PAPER_HEIGHT = window.innerHeight - 16; // document.getElementById("paper").offsetHeight;
@@ -16,7 +41,7 @@ requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael)
     // If domain is [0, 10] and range is [20, 30] then this function will map
     // input value 0 to output 20, input value 10 to output 30, and all other
     // arbitrary input values accordingly.
-    var LinearTransform = function(domain, range, x) {
+    var LinearTransform = function (domain, range, x) {
         // rise / run
         var slope = (range[1] - range[0]) / (domain[1] - domain[0]);
         // b = y - mx
@@ -26,13 +51,13 @@ requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael)
             return slope * x + intercept;
         } else {
             // If no domain value was provided, return a function
-            return function(x) {
+            return function (x) {
                 return slope * x + intercept;
             }
         }
     };
 
-    var rad = function(deg) {
+    var rad = function (deg) {
         return Math.PI * deg / 180;
     };
 
@@ -52,7 +77,7 @@ requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael)
 
     var transform = path; // Alias to path. Both are just conveniences.
 
-    var pad = function(n) {
+    var pad = function (n) {
         s = "";
         while (n > 0) {
             s += "  ";
@@ -79,7 +104,7 @@ requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael)
      * @param g
      * @param b
      */
-    var rgb2hex = function(r, g, b) {
+    var rgb2hex = function (r, g, b) {
         return "#" + decimal2hex(r) + decimal2hex(g) + decimal2hex(b);
     };
 
@@ -113,14 +138,12 @@ requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael)
             var xOffset = length * Math.cos(rad(absoluteAngle));
             var yOffset = length * Math.sin(rad(absoluteAngle));
             // RGB(147, 113, 68)
-            var red   = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
+            var red = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
             var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
-            var blue  = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
+            var blue = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
             var color = rgb2hex(red, green, blue);
             LOG.debug(pad(depth) + "Color at depth " + depth + " is " + color);
-            paper
-                .path(path('M', x, y, 'l', xOffset, yOffset))
-                .attr("stroke", color);
+            paper.path(path('M', x, y, 'l', xOffset, yOffset)).attr("stroke", color);
             branch({
                 x: x + xOffset,
                 y: y + yOffset,
@@ -139,9 +162,7 @@ requirejs(['box-muller', 'logger', 'raphael'], function(Normal, Logger, Raphael)
         var x1 = args.x1;
         var y1 = args.y1;
         var height = args.height;
-        paper
-            .path(path('M', x0, y0, 'L', x1, y1))
-            .attr("stroke", "#cccccc");
+        paper.path(path('M', x0, y0, 'L', x1, y1)).attr("stroke", "#cccccc");
     };
 
     var trunkStartX = PAPER_WIDTH / 2;
