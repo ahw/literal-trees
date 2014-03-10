@@ -1,6 +1,4 @@
-requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, Logger, Raphael, SeedRandom) {
-
-    console.log("> trees.js and all it's dependencies have loaded");
+requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Normal, Logger, Raphael, SeedRandom, qs) {
 
     var LOG = new Logger({
         module: "trees"
@@ -36,6 +34,14 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, L
     var PAPER_HEIGHT = window.innerHeight - 16; // document.getElementById("paper").offsetHeight;
     var paper = Raphael("paper", PAPER_WIDTH, PAPER_HEIGHT);
     var t0 = Date.now();
+    var params = qs.parse(window.location.search);
+    var WINDX = params.windx || 0;
+    var WINDY = params.windy || 0;
+    var TRUNK_ANGLE = params.ta || -90;
+    var COLOR = params.color || "black";
+    var MAX_DEPTH = params.depth || 6;
+
+    LOG.debug("Parsed query string", qs.parse(window.location.search));
 
     // Performs a linear transformation of values in the domain to corresponding
     // values in the range. Requires two values from each in order to compute a
@@ -118,33 +124,28 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, L
         var angleRange = Normal.sample() * 5 + 65;
         var referenceAngle = args.referenceAngle;
 
-        LOG.debug(pad(depth) + "Branching at (" + x + "," + y + "). Depth=" + depth + ", maxDepth=" + maxDepth);
-
         if (depth === maxDepth) {
             return "";
         }
 
         // Transform the depth value to something on the range [3, 5].
-        var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [3, 8], depth));
-        LOG.debug(pad(depth) + "Number of branches:", numBranches);
+        var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [4, 8], depth));
         var localPathString = "";
         for (var i = 0; i < numBranches; i++) {
             var relativeAngle = Normal.sample() * 5 - (angleRange / 2) + i * angleRange / (numBranches - 1);
             var absoluteAngle = referenceAngle + relativeAngle;
             var length = Normal.sample() * 10 + LinearTransform([0, maxDepth], [75, 0], depth); // * LinearTransform([0, 90], [10, 0], Math.abs(relativeAngle));
             if (length <= 0) {
-                // TODO: Use seed values to see if there is any actual difference in returning early here.
-                LOG.debug("Returning early because branch length was " + length + " at depth " + depth);
                 return;
             }
             var xOffset = length * Math.cos(rad(absoluteAngle));
             var yOffset = length * Math.sin(rad(absoluteAngle));
             // RGB(147, 113, 68)
-            var red = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
-            var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
-            var blue = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
-            var color = rgb2hex(red, green, blue);
-            LOG.debug(pad(depth) + "Color at depth " + depth + " is " + color);
+            // var red = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
+            // var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
+            // var blue = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
+            var gray = 0; // Math.floor(LinearTransform([0, maxDepth], [150, 0], depth));
+            var color = rgb2hex(gray, gray, gray);
             paper.path(path('M', x, y, 'l', xOffset, yOffset)).attr("stroke", color);
             branch({
                 x: x + xOffset,
@@ -164,7 +165,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, L
         var x1 = args.x1;
         var y1 = args.y1;
         var height = args.height;
-        paper.path(path('M', x0, y0, 'L', x1, y1)).attr("stroke", "#cccccc");
+        paper.path(path('M', x0, y0, 'L', x1, y1)).attr("stroke", COLOR);
     };
 
     var trunkStartX = PAPER_WIDTH / 2;
@@ -182,7 +183,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, L
     var result = branch({
         x: trunkEndX,
         y: trunkEndY,
-        maxDepth: 6,
+        maxDepth: MAX_DEPTH,
         angleRange: 70,
         referenceAngle: -90
     });
@@ -196,6 +197,8 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom'], function (Normal, L
 
     var elapsed = Date.now() - t0;
     document.getElementById("time").innerHTML = elapsed;
+    document.getElementById("loading-message").remove();
+    LOG.debug("Removed loading elements");
     // document.body.style.backgroundColor = "#DEF5FF";
     // document.body.style.backgroundColor = "#ccc";
     var t1 = Date.now();
