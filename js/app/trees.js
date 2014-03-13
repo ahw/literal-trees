@@ -23,7 +23,9 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
 
     // Set the hash.
     if (window.location.search.indexOf("mode=dev") < 0) {
-        window.location.hash = seed;
+        // TODO: Put this back;
+        // window.location.hash = seed;
+        console.log("Persistant URL:", window.location + "#" + seed);
     }
 
     // Now call Math.seedrandom again, this time with the seed we put in the
@@ -31,7 +33,10 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     Math.seedrandom(seed);
 
     var PAPER_WIDTH = document.getElementById("paper").offsetWidth;
-    var PAPER_HEIGHT = window.innerHeight - 16; // document.getElementById("paper").offsetHeight;
+    var PAPER_HEIGHT = window.innerHeight;
+    var TREE_MIN_X = Infinity;
+    var TREE_MAX_X = 0;
+    var TREE_MIN_Y = Infinity; // Remember y-axis is reversed.
     var paper = Raphael("paper", PAPER_WIDTH, PAPER_HEIGHT);
     var t0 = Date.now();
     var params = qs.parse(window.location.search);
@@ -39,16 +44,26 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     var WINDY = params.windy || 0;
     var TRUNK_ANGLE = params.ta || -90;
     var COLOR = params.color || "black";
+    var BACKGROUND_COLOR = params.bgcolor || "none";
     var MAX_DEPTH = params.depth || 6;
 
     LOG.debug("Parsed query string", qs.parse(window.location.search));
+    LOG.debug("Using COLOR", COLOR);
 
-    // Performs a linear transformation of values in the domain to corresponding
-    // values in the range. Requires two values from each in order to compute a
-    // mapping function. These inputs should be two-element arrays. For example,
-    // If domain is [0, 10] and range is [20, 30] then this function will map
-    // input value 0 to output 20, input value 10 to output 30, and all other
-    // arbitrary input values accordingly.
+    /**
+     * Performs a linear transformation of values in the domain to corresponding
+     * values in the range. Requires two values from each in order to compute a
+     * mapping function. These inputs should be two-element arrays. For example,
+     * If domain is [0, 10] and range is [20, 30] then this function will map
+     * input value 0 to output 20, input value 10 to output 30, and all other
+     * arbitrary input values accordingly.
+     *
+     * @param domain
+     * @param range
+     * @param x
+     * @returns {*}
+     * @constructor
+     */
     var LinearTransform = function (domain, range, x) {
         // rise / run
         var slope = (range[1] - range[0]) / (domain[1] - domain[0]);
@@ -81,17 +96,6 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
             previousArgWasNumber = (typeof arg === 'number');
         });
         return pathString;
-    };
-
-    var transform = path; // Alias to path. Both are just conveniences.
-
-    var pad = function (n) {
-        s = "";
-        while (n > 0) {
-            s += "  ";
-            n--;
-        }
-        return s;
     };
 
     /**
@@ -145,8 +149,8 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
             // var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
             // var blue = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
             var gray = 0; // Math.floor(LinearTransform([0, maxDepth], [150, 0], depth));
-            var color = rgb2hex(gray, gray, gray);
-            paper.path(path('M', x, y, 'l', xOffset, yOffset)).attr("stroke", color);
+            // var color = rgb2hex(gray, gray, gray);
+            paper.path(path('M', x, y, 'l', xOffset, yOffset)).attr("stroke", COLOR);
             branch({
                 x: x + xOffset,
                 y: y + yOffset,
@@ -155,6 +159,19 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
                 angleRange: angleRange, // TODO: Vary this?
                 referenceAngle: referenceAngle + relativeAngle
             });
+
+            // Keep track of the outermost branch tips
+            if (x + xOffset < TREE_MIN_X) {
+                TREE_MIN_X = x + xOffset;
+            }
+
+            if (x + xOffset > TREE_MAX_X) {
+                TREE_MAX_X = x + xOffset;
+            }
+
+            if (y + yOffset < TREE_MIN_Y) {
+                TREE_MIN_Y = y + yOffset;
+            }
         }
         return localPathString;
     };
@@ -165,7 +182,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
         var x1 = args.x1;
         var y1 = args.y1;
         var height = args.height;
-        paper.path(path('M', x0, y0, 'L', x1, y1)).attr("stroke", COLOR);
+        paper.path(path('M', x0, y0, 'L', x1, y1)).attr("stroke", args.color);
     };
 
     var trunkStartX = PAPER_WIDTH / 2;
@@ -177,7 +194,8 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
         x0: trunkStartX,
         y0: trunkStartY,
         x1: trunkEndX,
-        y1: trunkEndY
+        y1: trunkEndY,
+        color: COLOR
     });
 
     var result = branch({
@@ -192,19 +210,16 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
         $("#paper").html("tree died.");
     }
 
-    LOG.info(result);
-    paper.path(result);
-
     var elapsed = Date.now() - t0;
-    document.getElementById("time").innerHTML = elapsed;
+    LOG.debug("Rendering time", elapsed);
+
+    // paper.rect(TREE_MIN_X, TREE_MIN_Y, TREE_MAX_X - TREE_MIN_X, PAPER_HEIGHT - TREE_MIN_Y).attr("stroke", "lightgray");
+    // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
+    var xMargin = 0.05 * (TREE_MAX_X - TREE_MIN_X);
+    var yMargin = 0.05 * (PAPER_HEIGHT - TREE_MIN_Y);
+    paper.setViewBox(TREE_MIN_X - xMargin, TREE_MIN_Y - yMargin, (TREE_MAX_X - TREE_MIN_X) + 2 * xMargin , (PAPER_HEIGHT - TREE_MIN_Y) + yMargin, true);
+    document.getElementById("paper").getElementsByTagName("svg")[0].setAttribute("preserveAspectRatio", 'xMidYMax');
+
     document.getElementById("loading-message").remove();
     LOG.debug("Removed loading elements");
-    // document.body.style.backgroundColor = "#DEF5FF";
-    // document.body.style.backgroundColor = "#ccc";
-    var t1 = Date.now();
-    LOG.info('Rendering time (ms)', t1 - t0);
-    // var s = paper.rect(100, 100, 20, 20).attr({fill: 'blue', 'stroke-width': 0});
-    // var r = paper.rect(100, 100, 20, 20);
-    // var t = r.transform("t100,100r30,100,100s2,2,100,100r45s1.5");
-    // LOG.log('transform t', t);
 });
