@@ -1,5 +1,6 @@
 requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Normal, Logger, Raphael, SeedRandom, qs) {
 
+    console.log("This is a literal tree.");
     var LOG = new Logger({
         module: "trees"
     });

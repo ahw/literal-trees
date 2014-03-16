@@ -1,0 +1,23 @@
+{
+  "name": "literal-trees.co",
+  "version": "0.0.0",
+  "description": "Actual trees.",
+  "main": "index.html",
+  "dependencies": {
+    "box-muller": "~0.0.1",
+    "commander": "~2.1.0",
+    "semver": "~2.2.1",
+    "fs.extra": "~1.2.1",
+    "async": "~0.2.10",
+    "requirejs": "~2.1.11",
+    "colors": "~0.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "Andrew Hallagan",
+  "license": "MIT",
+  "gitHead": "a6819d3bd08681c766bff8749d78d3a8b156dfbb"
+}

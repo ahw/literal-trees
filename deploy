@@ -1,0 +1,101 @@
+#!/usr/local/bin/node
+
+var fs = require('fs.extra');
+var colors = require('colors');
+var requirejs = require('requirejs');
+var program = require('commander');
+var semver = require('semver');
+var async = require('async');
+var VERSION_DIR = __dirname + '/v';
+var INDEX_HTML = __dirname + '/index.html'
+var JS_DIR = __dirname + '/js';
+var APP_BUILT_JS = "app-built.js";
+
+program
+    .command('publish [release]')
+    .option('-d, --dry-run', 'Will not actually create any new files')
+    .description('Publish a new "major", "minor", or "patch" version')
+    .action(function(release, options) {
+        release = release || 'patch';
+
+        versions = fs.readdirSync(VERSION_DIR);
+        var maxVersion = '0.0.0';
+        versions.forEach(function(version) {
+            try {
+                if (semver.gt(version, maxVersion)) {
+                    maxVersion = version;
+                }
+            } catch(e) {
+                console.log("Ignoring version", version);
+            }
+        });
+
+        var latest = semver.inc(maxVersion, release);
+        var LATEST_DIR = VERSION_DIR + '/' + latest;
+        console.log("New released version will be", latest);
+
+        if (!options.dryRun) {
+            async.series([
+                function(callback) {
+                    console.log("> mkdir", LATEST_DIR);
+                    fs.mkdir(LATEST_DIR, callback);
+                },
+                function(callback) {
+                    console.log("> cp", INDEX_HTML, LATEST_DIR + "/index.hml");
+                    fs.copy(INDEX_HTML, LATEST_DIR + '/index.html', callback);
+                },
+                function(callback) {
+                    console.log("> cp -r", JS_DIR, LATEST_DIR + "/js");
+                    fs.copyRecursive(JS_DIR, LATEST_DIR + '/js', callback);
+                },
+                function(callback) {
+                    var contents = fs.readFileSync(LATEST_DIR + '/index.html', {encoding: 'utf8'});
+                    contents = contents
+                        .replace(/(data-main=")[\w\/-]*.js/, "$1" + APP_BUILT_JS)
+                        // .replace(/(src=")(\/js\/lib\/require.js")/, "$1/v/" + latest + "$2");
+                        .replace(/(src="\/v\/)[\d\.]+(\/js\/lib\/require.js)/, "$1" + latest + "$2");
+                    console.log("> Released index.html uses", APP_BUILT_JS, "and requirejs from " + "v/" + latest + "js/lib");
+                    fs.writeFileSync(LATEST_DIR + '/index.html', contents);
+                    console.log("> Writing new index.html to file");
+
+                    var config = {
+                        "baseUrl": "v/" + latest + "/js/lib",
+                        "paths": {
+                            "requireLib": "require",
+                            "app": "../app"
+                        },
+                        "name": "app",
+                        "preserveLicenseComments": false,
+                        "out": LATEST_DIR + "/" + APP_BUILT_JS
+                    };
+                    requirejs.optimize(config, function(response) {
+                        console.log(response);
+                        callback(null, response);
+                    }, function(error) {
+                        console.error(error.red);
+                        callback(error);
+                    });
+                },
+                function(callback) {
+                    var contents = fs.readFileSync(LATEST_DIR + "/index.html");
+                    console.log("> cp", LATEST_DIR + "/index.html", INDEX_HTML);
+                    fs.writeFile(__dirname + "/index.html", contents, callback);
+                },
+                function(callback) {
+                    var contents = fs.readFileSync(LATEST_DIR + "/" + APP_BUILT_JS);
+                    console.log("> cp", LATEST_DIR + "/" + APP_BUILT_JS, APP_BUILT_JS);
+                    fs.writeFile(__dirname + "/" + APP_BUILT_JS, contents, callback);
+                }
+            ], function(error, result) {
+                if (error) {
+                    console.log("There was an error".red);
+                    return console.error(error.red);
+                }
+                console.log("Successfully created new version at", LATEST_DIR);
+            });
+        } else {
+            console.log('Doing nothing since --dry-run was specified.');
+        }
+    });
+
+program.parse(process.argv);
