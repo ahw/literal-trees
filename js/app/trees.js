@@ -136,9 +136,19 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
             var angleRange = Normal.sample() * ANGLE_RANGE_VARIANCE + ANGLE_RANGE_MEAN;
             var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [4, 8], point.depth));
 
+            var relativeAngles = [];
+            var minRelativeAngle = Infinity;
             for (var i = 0; i < numBranches; i++) {
                 // TODO: Explain this.
                 var relativeAngle = Normal.sample() * 5 - (angleRange / 2) + i * angleRange / (numBranches - 1);
+                if (Math.abs(relativeAngle) < Math.abs(minRelativeAngle)) {
+                    minRelativeAngle = relativeAngle;
+                }
+                relativeAngles.push(relativeAngle);
+            }
+
+            for (var i = 0; i < numBranches; i++) {
+                var relativeAngle = relativeAngles[i];
                 var absoluteAngle = point.referenceAngle + relativeAngle;
                 var length = Normal.sample() * 10 + LinearTransform([0, maxDepth], [75, 0], point.depth);
                 if (length <= 0) {
@@ -146,7 +156,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
                 }
                 var branchOrigin = {x: point.x, y: point.y};
 
-                if (!BRANCH_AT_TIP) {
+                if (!BRANCH_AT_TIP && relativeAngle != minRelativeAngle) {
                     var branchOriginOffset = LinearTransform([0, 1], [0, point.previousLength / 3], Math.random());
                     var xStartOffset = branchOriginOffset * Math.cos(rad(point.referenceAngle));
                     var yStartOffset = branchOriginOffset * Math.sin(rad(point.referenceAngle));
