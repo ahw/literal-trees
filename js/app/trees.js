@@ -4,10 +4,29 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
         module: "trees"
     });
 
-    var RAND_LOG = new Logger({
-        module: "rand"
-    });
+    var params = qs.parse(window.location.search);
 
+    var PAPER_WIDTH = document.getElementById("paper").offsetWidth;
+    var PAPER_HEIGHT = window.innerHeight;
+    var TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
+    var TREE_MAX_X = 0; // Right-most branch tip of tree. Gets updated as tree is built.
+    var TREE_MIN_Y = Infinity; // Remember y-axis is reversed.
+    var TREE_MAX_Y = 0; // TODO: Where is this used?
+    var paper = Raphael("paper", PAPER_WIDTH, PAPER_HEIGHT);
+    var t0 = Date.now();
+    var WINDX = params.windx || 0;
+    var WINDY = params.windy || 0;
+    var TRUNK_ANGLE = params.ta || 90;
+    var COLOR = params.color || "black";
+    var BACKGROUND_COLOR = params.bgcolor || "none";
+    var MAX_DEPTH = params.depth || 6;
+    var ANGLE_RANGE_MEAN = params.arm || 65;
+    var ANGLE_RANGE_VARIANCE = params.arv || 5; // TODO: This will have to check for isNumber.
+    var CIRCLE_ORIGINS = params.co;
+    var BRANCH_AT_TIP = params.bat;
+
+    LOG.debug("Parsed query string", qs.parse(window.location.search));
+    LOG.debug("Using COLOR", COLOR);
 
     var seed = window.location.hash.replace(/#/, "");
     if (window.location.hash === "") {
@@ -17,9 +36,9 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
         // characters. Basically, we just want a manageable-size seed value that
         // is easily placed in the hash of the URL.
         seed = window.btoa(Math.seedrandom()).replace(/\W/g, "").substr(0, 16);
-        RAND_LOG.info("Generating a new random seed", seed);
+        LOG.info("Generating a new random seed", seed);
     }
-    RAND_LOG.debug("Using seed", seed);
+    LOG.debug("Using seed", seed);
 
     // Set the hash.
     if (window.location.search.indexOf("mode=dev") < 0) {
@@ -31,24 +50,6 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     // Now call Math.seedrandom again, this time with the seed we put in the
     // hash. All further calls to Math.random() are now deterministic.
     Math.seedrandom(seed);
-
-    var PAPER_WIDTH = document.getElementById("paper").offsetWidth;
-    var PAPER_HEIGHT = window.innerHeight;
-    var TREE_MIN_X = Infinity;
-    var TREE_MAX_X = 0;
-    var TREE_MIN_Y = Infinity; // Remember y-axis is reversed.
-    var paper = Raphael("paper", PAPER_WIDTH, PAPER_HEIGHT);
-    var t0 = Date.now();
-    var params = qs.parse(window.location.search);
-    var WINDX = params.windx || 0;
-    var WINDY = params.windy || 0;
-    var TRUNK_ANGLE = params.ta || -90;
-    var COLOR = params.color || "black";
-    var BACKGROUND_COLOR = params.bgcolor || "none";
-    var MAX_DEPTH = params.depth || 6;
-
-    LOG.debug("Parsed query string", qs.parse(window.location.search));
-    LOG.debug("Using COLOR", COLOR);
 
     /**
      * Performs a linear transformation of values in the domain to corresponding
@@ -104,7 +105,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
      * @param n
      * @returns {string}
      */
-    decimal2hex = function (n) {
+    var decimal2hex = function (n) {
         var hex = ((n < 10) ? "0" : "") + n.toString(16);
         return (hex.length === 1) ? "0" + hex : hex;
     };
@@ -121,59 +122,73 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     };
 
     var branch = function (args) {
-        var x = args.x;
-        var y = args.y;
-        var depth = args.depth || 0;
         var maxDepth = args.maxDepth;
-        var angleRange = Normal.sample() * 5 + 65;
-        var referenceAngle = args.referenceAngle;
+        // TODO: Vary angle range as a function of depth?
 
-        if (depth === maxDepth) {
-            return "";
+        var queue = [{x: args.x, y: args.y, depth: 0, referenceAngle: args.referenceAngle, previousLength: 30}];
+        while (queue.length) {
+            var point = queue.shift();
+
+            if (point.depth === maxDepth) {
+                continue;
+            }
+
+            var angleRange = Normal.sample() * ANGLE_RANGE_VARIANCE + ANGLE_RANGE_MEAN;
+            var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [4, 8], point.depth));
+
+            for (var i = 0; i < numBranches; i++) {
+                // TODO: Explain this.
+                var relativeAngle = Normal.sample() * 5 - (angleRange / 2) + i * angleRange / (numBranches - 1);
+                var absoluteAngle = point.referenceAngle + relativeAngle;
+                var length = Normal.sample() * 10 + LinearTransform([0, maxDepth], [75, 0], point.depth);
+                if (length <= 0) {
+                    continue;
+                }
+                var branchOrigin = {x: point.x, y: point.y};
+
+                if (!BRANCH_AT_TIP) {
+                    var branchOriginOffset = LinearTransform([0, 1], [0, point.previousLength / 3], Math.random());
+                    var xStartOffset = branchOriginOffset * Math.cos(rad(point.referenceAngle));
+                    var yStartOffset = branchOriginOffset * Math.sin(rad(point.referenceAngle));
+                    branchOrigin.x = point.x - xStartOffset;
+                    branchOrigin.y = point.y + yStartOffset;
+                }
+
+                if (CIRCLE_ORIGINS) {
+                    paper.circle(branchOrigin.x, branchOrigin.y, 2).attr({stroke: "red", fill: "none"});
+                }
+
+                var xOffset = length * Math.cos(rad(absoluteAngle));
+                var yOffset = -length * Math.sin(rad(absoluteAngle));
+
+                // Keep track of the outermost branch tips
+                if (branchOrigin.x + xOffset < TREE_MIN_X) TREE_MIN_X = branchOrigin.x + xOffset;
+                if (branchOrigin.x + xOffset > TREE_MAX_X) TREE_MAX_X = branchOrigin.x + xOffset;
+                if (branchOrigin.y + yOffset < TREE_MIN_Y) TREE_MIN_Y = branchOrigin.y + yOffset;
+                if (branchOrigin.y + yOffset > TREE_MAX_Y) TREE_MAX_Y = branchOrigin.y + yOffset;
+                // RGB(147, 113, 68)
+
+                // Pink: 255, 0, 71
+                // var red = Math.floor(LinearTransform([0, maxDepth], [204, 74], point.depth));
+                // var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], point.depth));
+                // var blue = Math.floor(LinearTransform([0, maxDepth], [182, 2], point.depth));
+                // var color = rgb2hex(red, green, blue);
+                var color = COLOR;
+
+                // var gray = 0; // Math.floor(LinearTransform([0, maxDepth], [150, 0], depth));
+
+                // Draw the branch.
+                paper.path(path('M', branchOrigin.x, branchOrigin.y, 'l', xOffset, yOffset)).attr("stroke", color);
+
+                queue.push({
+                    x: branchOrigin.x + xOffset,
+                    y: branchOrigin.y + yOffset,
+                    depth: point.depth + 1,
+                    referenceAngle: point.referenceAngle + relativeAngle,
+                    previousLength: length
+                });
+            }
         }
-
-        // Transform the depth value to something on the range [3, 5].
-        var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [4, 8], depth));
-        var localPathString = "";
-        for (var i = 0; i < numBranches; i++) {
-            var relativeAngle = Normal.sample() * 5 - (angleRange / 2) + i * angleRange / (numBranches - 1);
-            var absoluteAngle = referenceAngle + relativeAngle;
-            var length = Normal.sample() * 10 + LinearTransform([0, maxDepth], [75, 0], depth); // * LinearTransform([0, 90], [10, 0], Math.abs(relativeAngle));
-            if (length <= 0) {
-                return;
-            }
-            var xOffset = length * Math.cos(rad(absoluteAngle));
-            var yOffset = length * Math.sin(rad(absoluteAngle));
-            // RGB(147, 113, 68)
-            // var red = Math.floor(LinearTransform([0, maxDepth], [204, 74], depth));
-            // var green = Math.floor(LinearTransform([0, maxDepth], [194, 46], depth));
-            // var blue = Math.floor(LinearTransform([0, maxDepth], [182, 2], depth));
-            var gray = 0; // Math.floor(LinearTransform([0, maxDepth], [150, 0], depth));
-            // var color = rgb2hex(gray, gray, gray);
-            paper.path(path('M', x, y, 'l', xOffset, yOffset)).attr("stroke", COLOR);
-            branch({
-                x: x + xOffset,
-                y: y + yOffset,
-                depth: depth + 1,
-                maxDepth: maxDepth,
-                angleRange: angleRange, // TODO: Vary this?
-                referenceAngle: referenceAngle + relativeAngle
-            });
-
-            // Keep track of the outermost branch tips
-            if (x + xOffset < TREE_MIN_X) {
-                TREE_MIN_X = x + xOffset;
-            }
-
-            if (x + xOffset > TREE_MAX_X) {
-                TREE_MAX_X = x + xOffset;
-            }
-
-            if (y + yOffset < TREE_MIN_Y) {
-                TREE_MIN_Y = y + yOffset;
-            }
-        }
-        return localPathString;
     };
 
     var trunk = function (args) {
@@ -195,20 +210,15 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
         y0: trunkStartY,
         x1: trunkEndX,
         y1: trunkEndY,
-        color: COLOR
+        color: COLOR // rgb2hex(204, 194, 182)
     });
 
-    var result = branch({
+    branch({
         x: trunkEndX,
         y: trunkEndY,
         maxDepth: MAX_DEPTH,
-        angleRange: 70,
-        referenceAngle: -90
+        referenceAngle: TRUNK_ANGLE
     });
-
-    if (result === -1) {
-        $("#paper").html("tree died.");
-    }
 
     var elapsed = Date.now() - t0;
     LOG.debug("Rendering time", elapsed);
