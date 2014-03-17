@@ -13,7 +13,7 @@ var ROOT_SOURCE_HTML_FILENAME = 'source.html';
 var ROOT_INDEX_HTML_DIR = __dirname;
 var JS_DIR = __dirname + '/js';
 var REQUIREJS_PATH = JS_DIR + "/lib/require.js";
-var APP_BUILT_JS = "app-built.js";
+var APP_BUILT_JS_FILENAME = "app-built.js";
 
 program
     .command('publish [release]')
@@ -56,7 +56,7 @@ program
                     var contents = fs.readFileSync(LATEST_DIR + '/index.html', {encoding: 'utf8'});
                     contents = contents
                         // Replace data-main="js/app.js" with data-main="app-built.js"
-                        .replace(/(data-main=")[\w\/-]*\.js/, "$1" + APP_BUILT_JS)
+                        .replace(/(data-main=")[\w\/-]*\.js/, "$1" + APP_BUILT_JS_FILENAME)
                         // Replace src="/js/lib/require.js" with src="/v/0.0.0/require.js"
                         .replace(/src="[\/\w\.]+"/, "src=\"/v/" + latestVersion + "/require.js\"");
                         // -- old -- .replace(/(src="\/v\/)[\d\.]+(\/js\/lib\/require.js)/, "$1" + latestVersion + "$2");
@@ -71,7 +71,7 @@ program
                         },
                         "name": "app",
                         "preserveLicenseComments": false,
-                        "out": APP_BUILT_JS
+                        "out": APP_BUILT_JS_FILENAME
                     };
                     requirejs.optimize(config, function(response) {
                         console.log(response.grey);
@@ -82,10 +82,10 @@ program
                     });
                 },
                 function(callback) {
-                    var contents = fs.readFileSync(APP_BUILT_JS, {encoding: 'utf8'});
+                    var contents = fs.readFileSync(APP_BUILT_JS_FILENAME, {encoding: 'utf8'});
                     contents = contents.replace(/LITERAL_TREES_VERSION/g, latestVersion);
-                    console.log(("Inserting magic version number into " + APP_BUILT_JS).grey);
-                    fs.writeFile(APP_BUILT_JS, contents, callback);
+                    console.log(("Inserting magic version number into " + APP_BUILT_JS_FILENAME).grey);
+                    fs.writeFile(APP_BUILT_JS_FILENAME, contents, callback);
                 },
                 function(callback) {
                     var contents = fs.readFileSync(LATEST_DIR + "/index.html");
@@ -93,9 +93,9 @@ program
                     fs.writeFile(__dirname + "/index.html", contents, callback);
                 },
                 function(callback) {
-                    var contents = fs.readFileSync(__dirname + "/" + APP_BUILT_JS);
-                    console.log(("Making duplicate copy of /" + APP_BUILT_JS + " at " + LATEST_DIR + "/app-built.js").grey);
-                    fs.writeFile(LATEST_DIR + "/" + APP_BUILT_JS, contents, callback);
+                    var contents = fs.readFileSync(__dirname + "/" + APP_BUILT_JS_FILENAME);
+                    console.log(("Making duplicate copy of /" + APP_BUILT_JS_FILENAME + " at " + LATEST_DIR + "/app-built.js").grey);
+                    fs.writeFile(LATEST_DIR + "/" + APP_BUILT_JS_FILENAME, contents, callback);
                 },
                 function(callback) {
                     rsyncWithServer(callback);
@@ -103,7 +103,7 @@ program
             ], function(error, result) {
                 if (error) {
                     console.log("There was an error".red);
-                    return console.error(error.msg.red || error);
+                    return console.error(error.msg && error.msg.red || error);
                 }
                 console.log(("Successfully created new version at", LATEST_DIR).green.underline);
             });
@@ -124,8 +124,11 @@ var rsyncWithServer = function(callback) {
     var rsync = new Rsync()
         .shell('ssh')
         .flags('avz')
-        .set('progress')
-        .source(__dirname + '/') // Trailing slash means "copy all teh stuff inside this dir"
+        .source(__dirname + '/js')
+        .source(__dirname + '/v')
+        .source(__dirname + '/' + ROOT_INDEX_HTML_FILENAME)
+        .source(__dirname + '/' + APP_BUILT_JS_FILENAME)
+        .source(__dirname + '/tree-small.png')
         .destination('andrew@andrewhallagan.com:~/literal-trees');
 
     rsync.execute(callback);

@@ -25,7 +25,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     if (window.location.search.indexOf("mode=dev") < 0) {
         // TODO: Put this back;
         // window.location.hash = seed;
-        console.log("Persistant URL:", window.location.origin + "/v/LITERAL_TREES_VERSION/#" + seed);
+        console.log("Persistant URL:", window.location.origin + "/v/LITERAL_TREES_VERSION/" + window.location.search + "#" + seed);
     }
 
     // Now call Math.seedrandom again, this time with the seed we put in the
