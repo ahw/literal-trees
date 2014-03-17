@@ -55,6 +55,7 @@ program
                 function(callback) {
                     var contents = fs.readFileSync(LATEST_DIR + '/index.html', {encoding: 'utf8'});
                     contents = contents
+                        .replace(/LITERAL_TREES_VERSION/g, latestVersion)
                         // Replace data-main="js/app.js" with data-main="app-built.js"
                         .replace(/(data-main=")[\w\/-]*\.js/, "$1" + APP_BUILT_JS_FILENAME)
                         // Replace src="/js/lib/require.js" with src="/v/0.0.0/require.js"
