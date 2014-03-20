@@ -1,5 +1,10 @@
 requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Normal, Logger, Raphael, SeedRandom, qs) {
 
+    function setup() {
+        document.getElementById("below-paper").style.height = window.innerHeight + "px";
+    }
+    setup();
+
     var LOG = new Logger({
         module: "trees"
     });
@@ -238,6 +243,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     var xMargin = 0.05 * (TREE_MAX_X - TREE_MIN_X);
     var yMargin = 0.05 * (PAPER_HEIGHT - TREE_MIN_Y);
     paper.setViewBox(TREE_MIN_X - xMargin, TREE_MIN_Y - yMargin, (TREE_MAX_X - TREE_MIN_X) + 2 * xMargin , (PAPER_HEIGHT - TREE_MIN_Y) + yMargin, true);
+    document.getElementById("paper").style.padding = 0;
     document.getElementById("paper").getElementsByTagName("svg")[0].setAttribute("preserveAspectRatio", 'xMidYMax');
 
     document.getElementById("loading-message").remove();

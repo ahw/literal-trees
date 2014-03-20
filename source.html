@@ -21,7 +21,7 @@
         #loading-message {
             text-align:right;
             width:65%;
-            margin:25% auto 0;
+            margin:0 auto;
         }
         #time {
             position:fixed;
@@ -33,6 +33,10 @@
         #version {
             text-align:center;
             font-size:80%;
+        }
+        #below-paper {
+            background-color:#DEF5FF;
+            padding:5% 17.5%;
         }
     </style>
 </head>
@@ -47,6 +51,25 @@
             <br/>
             <div id="version">version LITERAL_TREES_VERSION</div>
         </div>
+    </div>
+    <script type="text/javascript">
+        document.getElementById("paper").style.height = window.innerHeight + "px";
+        document.getElementById("paper").style.paddingTop = 0.45 * (window.innerHeight) + "px";
+    </script>
+    <div id="below-paper">
+        Parameters:
+        <ul style="font-family:Monospace">
+            <li>params.windx || 0</li>
+            <li>params.windy || 0</li>
+            <li>params.ta || 90</li>
+            <li>params.color || "black"</li>
+            <li>params.bgcolor || "none"</li>
+            <li>params.depth || 6</li>
+            <li>params.arm || 65</li>
+            <li>params.arv || 5; // TODO: This will have to check for isNumber</li>
+            <li>params.co</li>
+            <li>params.bat</li>
+        </ul>
     </div>
     <script data-main="js/app.js" src="/js/lib/require.js"></script>
 </body>
