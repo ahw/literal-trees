@@ -1,4 +1,0 @@
-#!/bin/zsh
-
-scp * manchester:~/literal-trees/
-scp -r js v manchester:~/literal-trees/

@@ -14,6 +14,7 @@ var ROOT_INDEX_HTML_DIR = __dirname;
 var JS_DIR = __dirname + '/js';
 var REQUIREJS_PATH = JS_DIR + "/lib/require.js";
 var APP_BUILT_JS_FILENAME = "app-built.js";
+var RSYNC_CONFIG = require(__dirname + '/deploy-config');
 
 program
     .command('publish [release]')
@@ -121,7 +122,8 @@ program
     });
 
 var rsyncWithServer = function(callback) {
-    console.log("rsync-ing files to server".grey);
+    var destination = RSYNC_CONFIG.USER + '@' + RSYNC_CONFIG.HOST + ':' + RSYNC_CONFIG.PATH;
+    console.log(("rsync-ing files to " + destination).grey);
     var rsync = new Rsync()
         .shell('ssh')
         .flags('avz')
@@ -129,8 +131,8 @@ var rsyncWithServer = function(callback) {
         .source(__dirname + '/v')
         .source(__dirname + '/' + ROOT_INDEX_HTML_FILENAME)
         .source(__dirname + '/' + APP_BUILT_JS_FILENAME)
-        .source(__dirname + '/tree-small.png')
-        .destination('andrew@andrewhallagan.com:~/literal-trees');
+        .source(__dirname + '/favicon.png')
+        .destination(destination);
 
     rsync.execute(callback);
 };
