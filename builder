@@ -127,7 +127,12 @@ var rsyncWithServer = function(callback) {
     var rsync = new Rsync()
         .shell('ssh')
         .flags('avz')
+        .output(
+            function(data) { console.log(data.toString().grey); },
+            function(data) { console.error(data.toString().red); }
+        )
         .source(__dirname + '/js')
+        .source(__dirname + '/css')
         .source(__dirname + '/v')
         .source(__dirname + '/' + ROOT_INDEX_HTML_FILENAME)
         .source(__dirname + '/' + APP_BUILT_JS_FILENAME)

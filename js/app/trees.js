@@ -25,7 +25,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     var COLOR = params.color || "black";
     var BACKGROUND_COLOR = params.bgcolor || "none";
     var MAX_DEPTH = params.depth || 6;
-    var ANGLE_RANGE_MEAN = params.arm || 65;
+    var ANGLE_RANGE_MEAN = params.ar || 65;
     var ANGLE_RANGE_VARIANCE = params.arv || 5; // TODO: This will have to check for isNumber.
     var CIRCLE_ORIGINS = params.co;
     var BRANCH_AT_TIP = params.bat;
