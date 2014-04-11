@@ -128,8 +128,8 @@ var rsyncWithServer = function(callback) {
         .shell('ssh')
         .flags('avz')
         .output(
-            function(data) { console.log(data.toString().grey); },
-            function(data) { console.error(data.toString().red); }
+            function(data) { console.log(data.toString().trim().grey); },
+            function(data) { console.error(data.toString().trim().red); }
         )
         .source(__dirname + '/js')
         .source(__dirname + '/css')
