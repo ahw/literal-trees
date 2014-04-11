@@ -11,6 +11,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
 
     var params = qs.parse(window.location.search);
 
+    var PERSISTANT_LINK;
     var PAPER_WIDTH = document.getElementById("paper").offsetWidth;
     var PAPER_HEIGHT = window.innerHeight;
     var TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
@@ -49,7 +50,8 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     if (window.location.search.indexOf("mode=dev") < 0) {
         // TODO: Put this back;
         // window.location.hash = seed;
-        console.log("Persistant URL:", window.location.origin + "/v/LITERAL_TREES_VERSION/" + window.location.search + "#" + seed);
+        PERSISTANT_LINK = window.location.origin + "/v/LITERAL_TREES_VERSION/" + window.location.search + "#" + seed;
+        console.log("Persistant URL:", PERSISTANT_LINK);
     }
 
     // Now call Math.seedrandom again, this time with the seed we put in the
@@ -229,6 +231,8 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     document.getElementById("paper").style.padding = 0;
     document.getElementById("paper").style.backgroundColor = BACKGROUND_COLOR;
     document.getElementById("paper").getElementsByTagName("svg")[0].setAttribute("preserveAspectRatio", 'xMidYMax');
+    document.getElementById("persistant-link").href = PERSISTANT_LINK;
+    document.getElementById("persistant-link").innerHTML = PERSISTANT_LINK;
 
     document.getElementById("loading-message").remove();
     LOG.debug("Removed loading elements");
