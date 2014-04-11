@@ -138,6 +138,11 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
                 continue;
             }
 
+            if (point.depth === 0) {
+                // Draw the trunk downwards
+                paper.path(path('M', point.x, point.y, 'L', point.x, PAPER_HEIGHT)).attr("stroke", COLOR);
+            }
+
             var angleRange = Normal.sample() * ANGLE_RANGE_VARIANCE + ANGLE_RANGE_MEAN;
             var numBranches = Math.floor(Normal.sample() * 0.5 + LinearTransform([0, maxDepth], [4, 8], point.depth));
 
@@ -206,31 +211,9 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
         }
     };
 
-    var trunk = function (args) {
-        var x0 = args.x0;
-        var y0 = args.y0;
-        var x1 = args.x1;
-        var y1 = args.y1;
-        var height = args.height;
-        paper.path(path('M', x0, y0, 'L', x1, y1)).attr("stroke", args.color);
-    };
-
-    var trunkStartX = PAPER_WIDTH / 2;
-    var trunkStartY = PAPER_HEIGHT;
-    var trunkEndX = PAPER_WIDTH / 2;
-    var trunkEndY = PAPER_HEIGHT - (PAPER_HEIGHT * 0.3);
-
-    trunk({
-        x0: trunkStartX,
-        y0: trunkStartY,
-        x1: trunkEndX,
-        y1: trunkEndY,
-        color: COLOR // rgb2hex(204, 194, 182)
-    });
-
     branch({
-        x: trunkEndX,
-        y: trunkEndY,
+        x: PAPER_WIDTH / 2,
+        y: PAPER_HEIGHT - (PAPER_HEIGHT * 0.3),
         maxDepth: MAX_DEPTH,
         referenceAngle: TRUNK_ANGLE
     });
@@ -244,6 +227,7 @@ requirejs(['box-muller', 'logger', 'raphael', 'seedrandom', 'qs'], function (Nor
     var yMargin = 0.05 * (PAPER_HEIGHT - TREE_MIN_Y);
     paper.setViewBox(TREE_MIN_X - xMargin, TREE_MIN_Y - yMargin, (TREE_MAX_X - TREE_MIN_X) + 2 * xMargin , (PAPER_HEIGHT - TREE_MIN_Y) + yMargin, true);
     document.getElementById("paper").style.padding = 0;
+    document.getElementById("paper").style.backgroundColor = BACKGROUND_COLOR;
     document.getElementById("paper").getElementsByTagName("svg")[0].setAttribute("preserveAspectRatio", 'xMidYMax');
 
     document.getElementById("loading-message").remove();
