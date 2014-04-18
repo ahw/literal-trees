@@ -18,9 +18,18 @@ requirejs.config({
 });
 
 // Start the main app logic
-requirejs(['logger', 'app/trees'], function(Logger) {
+requirejs(['logger', 'app/tree'], function(Logger, Tree) {
         var LOG = new Logger({
             module: "app"
         });
         LOG.debug("App has started.");
+        var t = new Tree();
+
+        t.on('done', function() {
+            console.log('Tree has finished');
+            requirejs(['app/btf'], function() {
+            });
+        });
+
+        t.start();
 });
