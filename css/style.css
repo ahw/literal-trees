@@ -47,24 +47,57 @@ body {
     padding:5%;
 }
 
-/* TODO: Delete if unused. */
-table.formal {
-    border-collapse:collapse;
-    font-family:"nyt-cheltenham";
+.phone-only {
+    display:none;
 }
-table.formal thead {
-    border-bottom:2px solid black;
-    border-top:2px solid black;
+
+.zeroclipboard-is-hover {
+    color: #333;
+    background-color: #ebebeb;
+    border-color: #adadad;
+    text-decoration: none;
+    background-position: 0px -15px;
+    cursor: pointer;
 }
-table.formal th {
-    padding:0.5em;
+ 
+.zeroclipboard-is-active {
+    background-color: #333;
+    color: #ebebeb;
+    background-image: none;
+    outline: 0px none;
+    cursor: pointer;
 }
-table.formal td {
-    padding:0.5em;
+
+#svg-copy-button {
+    outline:none;
 }
-table.formal tr.rule {
-    border-top:1px solid black;
+
+@media only screen and (min-width:960px) {
+    /* browsers larger than 960px; */
 }
-table.formal th {
-    text-align:left;
+
+@media only screen and (min-width:1440px) {
+    /* browsers larger than 1440px; */
+}
+
+@media only screen and (min-width:2000px) {
+    /* sumo sized (mac) screens */
+}
+
+@media only screen and (max-device-width:480px) {
+   /* mobile browsers smaller than 480px; (iPhone) */
+    display:normal;
+}
+
+@media only screen and (device-width:768px) {
+    /* default iPad screens */
+}
+
+/* different techniques for iPad screening */
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
+    /* portrait layouts only */
+}
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
+    /* landscape layouts only */
 }

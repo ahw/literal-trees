@@ -28,21 +28,22 @@
     </script>
 
     <div id="below-paper">
-        <p style="text-align:center">
+        <div style="text-align:center">
+            <button type="button" class="btn btn-default" id="svg-copy-button" data-clipboard-text="" title="Copy this URL">Copy</button>
             <a target="_blank" id="persistant-link" href="#"></a>
-        </p>
+        </div>
 
         <h1>Inputs</h1>
 
         <h2>Constants and Flags</h2>
-        <p>These are just plain constants, nothing special. Some are boolean
-        flags.</p>
+        <p>These are just plain constants. Some are boolean flags.</p>
         <div class="table-responsive">
             <table class="table" border="0">
                 <thead>
                     <tr>
                         <th>Parameter</th>
                         <th>Query String Keys</th>
+                        <th>Type</th>
                         <th>Default Value</th>
                     </tr>
                 </thead>
@@ -50,34 +51,47 @@
                     <tr>
                         <td>Branching Depth</td>
                         <td><code>depth</code></td>
+                        <td>Integer [1, &infin;)</td>
                         <td>6</td>
+                    </tr>
+                    <tr class="rule">
+                        <td>Trunk height</td>
+                        <td><code>th</code></td>
+                        <td>Float (0, &infin;)</td>
+                        <td>0.3</td>
                     </tr>
                     <tr>
                         <td rowspan="2">Wind</td>
                         <td><code>windx</code></td>
+                        <td>String</td>
                         <td>0</td>
                     </tr>
                     <tr>
                         <td><code>windy</code></td>
+                        <td>String</td>
                         <td>0</td>
                     </tr>
                     <tr class="rule">
                         <td rowspan="2">Color</td>
                         <td><code>color</code></td>
+                        <td>String</td>
                         <td>"black"</td>
                     </tr>
                     <tr>
                         <td><code>bgcolor</code></td>
+                        <td>String</td>
                         <td>"none"</td>
                     </tr>
                     <tr class="rule">
                         <td>Branch at tip</td>
                         <td><code>bat</code></td>
+                        <td>Boolean</td>
                         <td>false</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <p class="phone-only">Tip: scroll this table left and right.</p>
 
         <h2>Random Distributions</h2>
         <p>The inputs listed below are parameters to various random
@@ -108,11 +122,13 @@
                 </tbody>
             </table>
         </div>
+        <p class="phone-only">Tip: scroll this table left and right.</p>
     </div>
 
     <script>
         document.getElementById("below-paper").style.height = window.innerHeight + "px";
     </script>
+    <script src="/js/lib/lz-string-1.3.3.js"></script>
     <script data-main="js/app.js" src="/js/lib/require.js"></script>
 </body>
 </html>
