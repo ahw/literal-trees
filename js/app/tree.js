@@ -36,7 +36,7 @@ define([
         tree.WINDX = params.windx || 0;
         tree.WINDY = params.windy || 0;
         tree.TRUNK_ANGLE = params.ta || 90;
-        tree.TRUNK_HEIGHT = params.th || 0.3;
+        tree.TRUNK_HEIGHT = params.height || 0.3;
         tree.COLOR = params.color || "black";
         tree.BACKGROUND_COLOR = params.bgcolor || "none";
         tree.MAX_DEPTH = params.depth || 6;
