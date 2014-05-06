@@ -7,6 +7,7 @@ var requirejs = require('requirejs');
 var program = require('commander');
 var semver = require('semver');
 var async = require('async');
+var npm = require('npm');
 var VERSION_DIR = __dirname + '/v';
 var ROOT_INDEX_HTML_FILENAME = 'index.html';
 var ROOT_SOURCE_HTML_FILENAME = 'source.html';
@@ -22,6 +23,15 @@ program
     .description('Publish a new "major", "minor", or "patch" version')
     .action(function(release, options) {
         release = release || 'patch';
+
+        // Update the version using NPM first. This will take whatever is
+        // listed in package.json, increment it, and create a git commit.
+        // -- npm.load(function(error, npm) {
+        // --     var result = npm.version(release, function(result) {
+        // --         console.log('>>> RESULT OF NPM VERSION IS', result);
+        // --         console.log(arguments);
+        // --     });
+        // -- });
 
         versions = fs.readdirSync(VERSION_DIR);
         var maxVersion = '0.0.0';

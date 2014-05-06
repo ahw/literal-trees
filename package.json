@@ -1,6 +1,7 @@
 {
   "name": "literal-trees.co",
-  "version": "0.0.0",
+  "version": "0.1.24",
+  "private": true,
   "description": "Actual trees.",
   "main": "index.html",
   "dependencies": {
