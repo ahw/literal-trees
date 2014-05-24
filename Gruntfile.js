@@ -5,22 +5,18 @@ module.exports = function(grunt) {
         requirejs: {
             compile: {
                 options: {
-                    out: 'REQUIREJS-OUTPUT.js',
-                    // By default load any module ids from js/lib
-                    baseUrl: 'js/lib',
-                    name: 'main',
-                    include: 'requireLib',
-
-                    // Except, if the module id starts with "app", load it from the js/app
-                    // directory. The paths config is relative to the baseUrl, and never
-                    // includes a ".js" extension since the paths config could be for a
-                    // directory.
+                    // Set up path aliases. For example, if something is
+                    // specified as "app/foo.js" RequireJS will use the full
+                    // path from the baseUrl: "js/lib/../app/foo.js"
                     paths: {
                         app: '../app',
                         main: '../main',
                         requireLib: 'require',
                     },
-
+                    out: 'REQUIREJS-OUTPUT.js',
+                    baseUrl: 'js/lib', // By default load any module ids from js/lib
+                    name: 'main', // This is an alias to ../main.js
+                    include: 'requireLib', // Alias to js/lib/require.js
                     shim: {
                         'raphael': {
                             exports: 'Raphael'
@@ -28,6 +24,7 @@ module.exports = function(grunt) {
                     },
 
                     done: function(done, output) {
+                        // TODO: Remove this. Not necessary.
                         var duplicates = require('rjs-build-analysis').duplicates(output);
 
                         if (duplicates.length > 0) {
@@ -41,15 +38,6 @@ module.exports = function(grunt) {
                     }
                 }
             }
-        },
-        uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-            },
-            lol: {
-                src: 'js/**/*.js',
-                dest: 'GRUNT-build/<%= pkg.name %>.min.js'
-            }
         }
     });
 
@@ -58,5 +46,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify']);
+    grunt.registerTask('default', ['requirejs']);
 };
