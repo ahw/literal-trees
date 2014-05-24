@@ -48,8 +48,6 @@ module.exports = function(grunt) {
                             grunt.log.warn(duplicates);
                             done(new Error('r.js built duplicate modules, please check the excludes option.'));
                         }
-
-                        console.log('DONE WITH THE REQUIREJS PART');
                         done();
                     }
                 }
@@ -62,24 +60,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-release');
 
-    // Custom npm version task
-    // grunt.registerTask('version', 'Alias to npm version', function(semver) {
-    //     var done = this.async();
-    //     npm.load(null, function() {
-    //         console.log('this is version', semver);
-    //         npm.commands.version([semver], function() {
-    //             console.log('Finished version command');
-    //             done();
-    //         });
-    //     });
-    // });
-
-    // grunt.registerTask('npm-load', function() {
-    //     console.log('this is npm-load');
-    //     var done = this.async();
-    //     npm.load(null, done);
-    // });
-
     // Default task(s).
-    grunt.registerTask('default', ['requirejs']);
+    grunt.registerTask('build', ['requirejs']);
+    grunt.registerTask('deploy', ['release', 'requirejs']);
 };
