@@ -2,6 +2,22 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        release: {
+            options: {
+                bump: true,
+                file: 'package.json',
+                add: true,
+                commit: true,
+                tag: false,
+                push: false,
+                pushTags: false,
+                npm: false,
+                npmtag: false,
+                commitMessage: 'Release <%= version %>'
+            }
+        },
+
         requirejs: {
             compile: {
                 options: {
@@ -13,7 +29,7 @@ module.exports = function(grunt) {
                         main: '../main',
                         requireLib: 'require',
                     },
-                    out: 'REQUIREJS-OUTPUT.js',
+                    out: 'v/<%= pkg.version %>/app-<%= pkg.version %>.js',
                     baseUrl: 'js/lib', // By default load any module ids from js/lib
                     name: 'main', // This is an alias to ../main.js
                     include: 'requireLib', // Alias to js/lib/require.js
@@ -44,6 +60,25 @@ module.exports = function(grunt) {
     // Load various plugins.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-release');
+
+    // Custom npm version task
+    // grunt.registerTask('version', 'Alias to npm version', function(semver) {
+    //     var done = this.async();
+    //     npm.load(null, function() {
+    //         console.log('this is version', semver);
+    //         npm.commands.version([semver], function() {
+    //             console.log('Finished version command');
+    //             done();
+    //         });
+    //     });
+    // });
+
+    // grunt.registerTask('npm-load', function() {
+    //     console.log('this is npm-load');
+    //     var done = this.async();
+    //     npm.load(null, done);
+    // });
 
     // Default task(s).
     grunt.registerTask('default', ['requirejs']);
