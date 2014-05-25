@@ -1,6 +1,6 @@
 {
   "name": "literal-trees.co",
-  "version": "0.1.27",
+  "version": "0.1.28",
   "private": true,
   "description": "Actual trees.",
   "main": "index.html",
@@ -19,7 +19,8 @@
     "grunt-contrib-uglify": "^0.4.0",
     "grunt-contrib-requirejs": "^0.4.4",
     "rjs-build-analysis": "0.0.3",
-    "grunt-release": "^0.7.0"
+    "grunt-release": "^0.7.0",
+    "fs-plus": "^2.2.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
