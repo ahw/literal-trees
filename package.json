@@ -1,6 +1,6 @@
 {
   "name": "literal-trees.co",
-  "version": "0.1.53",
+  "version": "0.1.54",
   "private": true,
   "description": "Actual trees.",
   "main": "index.html",
@@ -22,7 +22,8 @@
     "grunt-release": "^0.7.0",
     "fs-plus": "^2.2.3",
     "colors": "^0.6.2",
-    "rsync": "^0.3.0"
+    "rsync": "^0.3.0",
+    "async": "^0.2.10"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
