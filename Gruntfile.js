@@ -8,24 +8,12 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        copy_static_assets: {
-            target: {
-                version: '<%= pkg.version %>'
-            }
-        },
-
-        substitute_version_numbers: {
-            target: {
-                version: '<%= pkg.version %>'
-            }
-        },
-
-        remove_dev_blocks: {
-            target: {
-                version: '<%= pkg.version %>'
-            }
-        },
-
+        // There has GOT to be a better way of doing what I'm doing here, which
+        // is trying to pass the version number to each of these multi tasks.
+        copy_static_assets:         { target: { version: '<%= pkg.version %>' } },
+        substitute_version_numbers: { target: { version: '<%= pkg.version %>' } },
+        remove_dev_blocks:          { target: { version: '<%= pkg.version %>' } },
+        finish:                     { target: { version: '<%= pkg.version %>' } },
 
         release: {
             options: {
@@ -142,12 +130,12 @@ module.exports = function(grunt) {
     grunt.registerTask('rsync', 'Rsync files with server', function() {
         var done = this.async();
         var destination = RSYNC_CONFIG.USER + '@' + RSYNC_CONFIG.HOST + ':' + RSYNC_CONFIG.PATH;
-        console.log(("rsync-ing files to " + destination).grey);
+        console.log("rsync-ing files to " + destination);
         var rsync = new Rsync()
             .shell('ssh')
             .flags('avz')
             .output(
-                function(data) { console.log(data.toString().trim().grey); },
+                function(data) { console.log(data.toString().trim()); },
                 function(data) { console.error(data.toString().trim().red); }
             )
             .source(__dirname + '/js')
@@ -161,6 +149,10 @@ module.exports = function(grunt) {
         rsync.execute(done);
     });
 
+    grunt.registerMultiTask('finish', 'Just print stuff to the console', function() {
+        console.log(('Version ' + this.data.version + ' released!').bold.magenta);
+    });
+
 
     // Load various plugins.
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -169,5 +161,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', ['requirejs']);
     grunt.registerTask('version', ['release']);
-    grunt.registerTask('deploy', ['version', 'build', 'copy_static_assets', 'remove_dev_blocks', 'substitute_version_numbers']);
+    grunt.registerTask('deploy', ['version', 'build', 'copy_static_assets', 'remove_dev_blocks', 'substitute_version_numbers', 'rsync', 'finish']);
 };

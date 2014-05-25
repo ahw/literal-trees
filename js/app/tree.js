@@ -38,7 +38,7 @@ define([
         tree.TRUNK_ANGLE = params.ta || 90;
         tree.TRUNK_HEIGHT = params.height || 0.3;
         tree.COLOR = params.color || "black";
-        tree.BACKGROUND_COLOR = params.bgcolor || "none";
+        tree.BACKGROUND_COLOR = params.bgcolor || "magenta";
         tree.MAX_DEPTH = params.depth || 6;
         tree.ANGLE_RANGE_MEAN = params.ar || 65;
         tree.ANGLE_RANGE_VARIANCE = params.arv || 5; // TODO: This will have to check for isNumber.
