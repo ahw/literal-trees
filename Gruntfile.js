@@ -1,7 +1,28 @@
+var fs = require('fs-plus');
+
 module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        copy_static_assets: {
+            target: {
+                version: '<%= pkg.version %>'
+            }
+        },
+
+        substitute_version_numbers: {
+            target: {
+                version: '<%= pkg.version %>'
+            }
+        },
+
+        remove_dev_blocks: {
+            target: {
+                version: '<%= pkg.version %>'
+            }
+        },
+
 
         release: {
             options: {
@@ -55,12 +76,65 @@ module.exports = function(grunt) {
         }
     });
 
+    grunt.registerMultiTask('copy_static_assets', function() {
+        var done = this.async();
+        var outputDir = __dirname + '/v/' + this.data.version;
+        // The v/VERSION/ dir should already be created by the requirejs task.
+        // But just in case, attempt to create it again.
+        fs.makeTreeSync(outputDir);
+
+        // Copy CSS files over.
+        fs.copySync(__dirname + '/css', outputDir + '/css');
+
+        // Copy HTML files over.
+        console.log('finished copy static assets task');
+        var html = fs.copy(__dirname + '/index.html', outputDir + '/index.html', done);
+    });
+
+    grunt.registerMultiTask('substitute_version_numbers', function() {
+        var version = this.data.version;
+        var outputDir = __dirname + '/v/' + version;
+        fs.traverseTreeSync(outputDir, function(absolutePath) {
+            var content = fs.readFileSync(absolutePath, {encoding: 'utf8'});
+            content = content.replace(/LITERAL_TREES_VERSION/g, version);
+            console.log('> Writing out replaced version of ' + absolutePath);
+            fs.writeFileSync(absolutePath, content);
+        }, function(dir) {}); // Use empty function for directories
+    });
+
+    grunt.registerMultiTask('remove_dev_blocks', function() {
+        var outputDir = __dirname + '/v/' + this.data.version;
+        fs.traverseTreeSync(outputDir, function(absolutePath) {
+            var content = fs.readFileSync(absolutePath, {encoding: 'utf8'});
+            var newContent = "";
+            var insideDevBlock = false;
+            content.split('\n').forEach(function(line) {
+                if (/BEGIN:dev/.test(line)) {
+                    insideDevBlock = true;
+                }
+
+                if (!insideDevBlock) {
+                    newContent += line + '\n';
+                } else {
+                    console.log('> Skipping dev line:', line);
+                }
+
+                if (/END:dev/.test(line)) {
+                    insideDevBlock = false;
+                }
+            });
+            console.log('> Writing out file with dev blocks removed', absolutePath);
+            fs.writeFileSync(absolutePath, newContent);
+        }, function() {}); // Use empty function for handling directories
+    });
+
+
     // Load various plugins.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-release');
 
-    // Default task(s).
     grunt.registerTask('build', ['requirejs']);
-    grunt.registerTask('deploy', ['release', 'requirejs']);
+    grunt.registerTask('version', ['release']);
+    grunt.registerTask('deploy', ['version', 'build', 'copy_static_assets', 'remove_dev_blocks', 'substitute_version_numbers']);
 };
