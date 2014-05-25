@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                         main: '../main',
                         requireLib: 'require',
                     },
-                    out: 'v/<%= pkg.version %>/app-built.js',
+                    out: 'app-built.js',
                     baseUrl: 'js/lib', // By default load any module ids from js/lib
                     name: 'main', // This is an alias to ../main.js
                     include: 'requireLib', // Alias to js/lib/require.js
@@ -82,32 +82,37 @@ module.exports = function(grunt) {
     grunt.registerMultiTask('copy_static_assets', function() {
         var done = this.async();
         var outputDir = __dirname + '/v/' + this.data.version;
-        // The v/VERSION/ dir should already be created by the requirejs task.
-        // But just in case, attempt to create it again.
         fs.makeTreeSync(outputDir);
 
         // Copy CSS files over.
         fs.copySync(__dirname + '/css', outputDir + '/css');
 
         // Copy HTML files over.
-        console.log('finished copy static assets task');
-        var html = fs.copy(__dirname + '/source.html', outputDir + '/index.html', done);
+        fs.copy(__dirname + '/source.html', outputDir + '/index.html', done);
+        fs.copy(__dirname + '/source.html', __dirname + '/index.html', done);
+
+        // Copy JS files over.
+        fs.copy(__dirname + '/app-built.js', outputDir + '/app-built.js', done);
     });
 
     grunt.registerMultiTask('substitute_version_numbers', function() {
         var version = this.data.version;
         var outputDir = __dirname + '/v/' + version;
-        fs.traverseTreeSync(outputDir, function(absolutePath) {
+        var replaceVersionStrings = function(absolutePath) {
             var content = fs.readFileSync(absolutePath, {encoding: 'utf8'});
             content = content.replace(/LITERAL_TREES_VERSION/g, version);
             console.log('> Writing out replaced version of ' + absolutePath);
             fs.writeFileSync(absolutePath, content);
-        }, function(dir) {}); // Use empty function for directories
+        };
+
+        replaceVersionStrings(__dirname + '/index.html');
+        replaceVersionStrings(__dirname + '/app-built.js');
+        fs.traverseTreeSync(outputDir, replaceVersionStrings, function() {}); // Use empty function for directories
     });
 
     grunt.registerMultiTask('remove_dev_blocks', function() {
         var outputDir = __dirname + '/v/' + this.data.version;
-        fs.traverseTreeSync(outputDir, function(absolutePath) {
+        var removeDevBlocks = function(absolutePath) {
             var content = fs.readFileSync(absolutePath, {encoding: 'utf8'});
             var newContent = "";
             var insideDevBlock = false;
@@ -128,10 +133,14 @@ module.exports = function(grunt) {
             });
             console.log('> Writing out file with dev blocks removed', absolutePath);
             fs.writeFileSync(absolutePath, newContent);
-        }, function() {}); // Use empty function for handling directories
+        };
+
+        removeDevBlocks(__dirname + '/index.html');
+        fs.traverseTreeSync(outputDir, removeDevBlocks, function() {}); // Use empty function for handling directories
     });
 
     grunt.registerTask('rsync', 'Rsync files with server', function() {
+        var done = this.async();
         var destination = RSYNC_CONFIG.USER + '@' + RSYNC_CONFIG.HOST + ':' + RSYNC_CONFIG.PATH;
         console.log(("rsync-ing files to " + destination).grey);
         var rsync = new Rsync()
@@ -149,7 +158,7 @@ module.exports = function(grunt) {
             .source(__dirname + '/favicon.png')
             .destination(destination);
 
-        rsync.execute(callback);
+        rsync.execute(done);
     });
 
 
