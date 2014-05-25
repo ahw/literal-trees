@@ -2,6 +2,7 @@ var fs = require('fs-plus');
 var Rsync = require('rsync');
 var RSYNC_CONFIG = require(__dirname + '/deploy-config');
 var colors = require('colors');
+var Async = require('async');
 
 module.exports = function(grunt) {
     // Project configuration.
@@ -75,12 +76,26 @@ module.exports = function(grunt) {
         // Copy CSS files over.
         fs.copySync(__dirname + '/css', outputDir + '/css');
 
-        // Copy HTML files over.
-        fs.copy(__dirname + '/source.html', outputDir + '/index.html', done);
-        fs.copy(__dirname + '/source.html', __dirname + '/index.html', done);
+        Async.parallel([
+            function(callback) {
+                // Copy HTML files over.
+                fs.copy(__dirname + '/source.html', outputDir + '/index.html', callback);
+            },
+            function(callback) {
+                // Copy HTML files over.
+                fs.copy(__dirname + '/source.html', __dirname + '/index.html', callback);
+            },
+            function(callback) {
+                // Copy JS files over.
+                fs.copy(__dirname + '/app-built.js', outputDir + '/app-built.js', callback);
+            }
+        ], function(error, results) {
+            if (error) {
+                throw error;
+            }
+            done();
+        });
 
-        // Copy JS files over.
-        fs.copy(__dirname + '/app-built.js', outputDir + '/app-built.js', done);
     });
 
     grunt.registerMultiTask('substitute_version_numbers', function() {
