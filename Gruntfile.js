@@ -1,4 +1,7 @@
 var fs = require('fs-plus');
+var Rsync = require('rsync');
+var RSYNC_CONFIG = require(__dirname + '/deploy-config');
+var colors = require('colors');
 
 module.exports = function(grunt) {
     // Project configuration.
@@ -50,7 +53,7 @@ module.exports = function(grunt) {
                         main: '../main',
                         requireLib: 'require',
                     },
-                    out: 'v/<%= pkg.version %>/app-<%= pkg.version %>.js',
+                    out: 'v/<%= pkg.version %>/app-built.js',
                     baseUrl: 'js/lib', // By default load any module ids from js/lib
                     name: 'main', // This is an alias to ../main.js
                     include: 'requireLib', // Alias to js/lib/require.js
@@ -88,7 +91,7 @@ module.exports = function(grunt) {
 
         // Copy HTML files over.
         console.log('finished copy static assets task');
-        var html = fs.copy(__dirname + '/index.html', outputDir + '/index.html', done);
+        var html = fs.copy(__dirname + '/source.html', outputDir + '/index.html', done);
     });
 
     grunt.registerMultiTask('substitute_version_numbers', function() {
@@ -126,6 +129,27 @@ module.exports = function(grunt) {
             console.log('> Writing out file with dev blocks removed', absolutePath);
             fs.writeFileSync(absolutePath, newContent);
         }, function() {}); // Use empty function for handling directories
+    });
+
+    grunt.registerTask('rsync', 'Rsync files with server', function() {
+        var destination = RSYNC_CONFIG.USER + '@' + RSYNC_CONFIG.HOST + ':' + RSYNC_CONFIG.PATH;
+        console.log(("rsync-ing files to " + destination).grey);
+        var rsync = new Rsync()
+            .shell('ssh')
+            .flags('avz')
+            .output(
+                function(data) { console.log(data.toString().trim().grey); },
+                function(data) { console.error(data.toString().trim().red); }
+            )
+            .source(__dirname + '/js')
+            .source(__dirname + '/css')
+            .source(__dirname + '/v')
+            .source(__dirname + '/index.html')
+            .source(__dirname + '/app-built.js')
+            .source(__dirname + '/favicon.png')
+            .destination(destination);
+
+        rsync.execute(callback);
     });
 
 
