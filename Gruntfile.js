@@ -21,7 +21,7 @@ module.exports = function(grunt) {
                 bump: true,
                 file: 'package.json',
                 add: true,
-                commit: true,
+                commit: false,
                 tag: false,
                 push: false,
                 pushTags: false,
@@ -53,6 +53,7 @@ module.exports = function(grunt) {
                     },
 
                     done: function(done, output) {
+                        console.log('Built app-built.js using RequireJS');
                         // TODO: Remove this. Not necessary.
                         var duplicates = require('rjs-build-analysis').duplicates(output);
 
@@ -75,24 +76,29 @@ module.exports = function(grunt) {
 
         // Copy CSS files over.
         fs.copySync(__dirname + '/css', outputDir + '/css');
+        console.log('Copy (sync dir) ' + __dirname + '/css > ' + outputDir + '/css');
 
         Async.parallel([
             function(callback) {
                 // Copy HTML files over.
                 fs.copy(__dirname + '/source.html', outputDir + '/index.html', callback);
+                console.log('Copy ' + __dirname + '/source.html > ' + outputDir + '/index.html');
             },
             function(callback) {
                 // Copy HTML files over.
                 fs.copy(__dirname + '/source.html', __dirname + '/index.html', callback);
+                console.log('Copy ' + __dirname + '/source.html > ' + __dirname + '/index.html');
             },
             function(callback) {
                 // Copy JS files over.
                 fs.copy(__dirname + '/app-built.js', outputDir + '/app-built.js', callback);
+                console.log('Copy ' + __dirname + '/app-built.js > ' + outputDir + '/app-built.js');
             }
         ], function(error, results) {
             if (error) {
                 throw error;
             }
+            console.log('All static assets copied over to ' + outputDir);
             done();
         });
 
@@ -176,5 +182,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', ['requirejs']);
     grunt.registerTask('version', ['release']);
+    grunt.registerTask('deploy-local', ['version', 'build', 'copy_static_assets', 'remove_dev_blocks', 'substitute_version_numbers', 'finish']);
     grunt.registerTask('deploy', ['version', 'build', 'copy_static_assets', 'remove_dev_blocks', 'substitute_version_numbers', 'rsync', 'finish']);
 };

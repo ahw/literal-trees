@@ -1,6 +1,6 @@
 {
   "name": "literal-trees.co",
-  "version": "0.1.56",
+  "version": "0.1.63",
   "private": true,
   "description": "Actual trees.",
   "main": "index.html",
@@ -15,15 +15,15 @@
     "rsync": "~0.3.0"
   },
   "devDependencies": {
-    "grunt": "^0.4.4",
-    "grunt-contrib-uglify": "^0.4.0",
-    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt": "0.4.4",
+    "grunt-contrib-uglify": "0.4.0",
+    "grunt-contrib-requirejs": "0.4.4",
     "rjs-build-analysis": "0.0.3",
-    "grunt-release": "^0.7.0",
-    "fs-plus": "^2.2.3",
-    "colors": "^0.6.2",
-    "rsync": "^0.3.0",
-    "async": "^0.2.10"
+    "grunt-release": "0.7.0",
+    "fs-plus": "2.2.3",
+    "colors": "0.6.2",
+    "rsync": "0.3.0",
+    "async": "0.2.10"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
