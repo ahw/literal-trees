@@ -1,18 +1,20 @@
 {
   "name": "literal-trees.co",
-  "version": "0.1.63",
+  "version": "0.1.64",
   "private": true,
   "description": "Actual trees.",
   "main": "index.html",
   "dependencies": {
-    "box-muller": "~0.0.1",
-    "commander": "~2.1.0",
-    "semver": "~2.2.1",
-    "fs.extra": "~1.2.1",
     "async": "~0.2.10",
-    "requirejs": "~2.1.11",
+    "box-muller": "0.0.1",
     "colors": "~0.6.2",
-    "rsync": "~0.3.0"
+    "commander": "~2.1.0",
+    "fs.extra": "~1.2.1",
+    "qs": "^2.3.3",
+    "requirejs": "~2.1.11",
+    "rsync": "~0.3.0",
+    "seed-random": "^2.2.0",
+    "semver": "~2.2.1"
   },
   "devDependencies": {
     "grunt": "0.4.4",
