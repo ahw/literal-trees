@@ -1,8 +1,10 @@
 // Start the main app logic
-requirejs(['app/tree'], function(Tree) {
-        var t = new Tree();
+var wait = 10;
+setTimeout(function() {
+    requirejs(['app/tree'], function(Tree) {
+            var t = new Tree();
 
-        t.start(function() {
-            requirejs(['app/btf']);
-        });
-});
+            t.start();
+    });
+}, wait);
+console.log('Will build a tree in ' + wait + 'ms');

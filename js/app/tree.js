@@ -174,8 +174,8 @@ define([
         params.seed = tree.seed;
         params.version = 'LITERAL_TREES_VERSION';
         console.log(params);
-        var metricsString = qs.format(params);
-        var i = new Image().src ='http://maple.literal-trees.co/metrics?' + metricsString;
+        // var metricsString = qs.format(params);
+        // var i = new Image().src ='http://maple.literal-trees.co/metrics?' + metricsString;
 
         // paper.rect(TREE_MIN_X, TREE_MIN_Y, TREE_MAX_X - TREE_MIN_X, PAPER_HEIGHT - TREE_MIN_Y).attr("stroke", "lightgray");
         // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
@@ -187,7 +187,7 @@ define([
         var svg = paper.getElementsByTagName("svg")[0];
         paper.style.padding = 0;
         paper.style.backgroundColor = tree.BACKGROUND_COLOR;
-        svg.setAttribute("preserveAspectRatio", 'xMidYMax');
+        // svg.setAttribute("preserveAspectRatio", 'xMidYMax');
         
         var persistantLink = document.getElementById("persistant-link");
         persistantLink.href = tree.PERSISTANT_LINK;
