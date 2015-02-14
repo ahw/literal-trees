@@ -21,27 +21,51 @@ html {
 body {
 }
 
+path {
+    stroke:black;
+}
+
+#paper {
+    position:relative;
+}
+
 #loading-message {
-    text-align:right;
-    width:65%;
+    text-align:center;
+    width:60%;
     margin:0 auto;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    -webkit-transform:translate(-50%, -50%);
+    -moz-transform:translate(-50%, -50%);
 }
 
 #time {
     position:fixed;
 }
 
-.source {
-    margin-top:1em;
+#quote-container {
+    display:inline-block;
     text-align:right;
 }
 
+#quote {
+    display:inline;
+}
+
+#source {
+    display:inline;
+    margin-top:1em;
+}
+
 #version {
+    margin-top:3em;
     text-align:center;
     font-size:80%;
 }
 
-#below-paper {
+#btf {
     background-color:#DEF5FF;
     background-color:#fcfcfc;
     padding:5%;
