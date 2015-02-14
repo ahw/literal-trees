@@ -1,39 +1,33 @@
 var Normal = require('box-muller');
-var Logger = require('./logger');
 var seed = require('seed-random');
-var qs = require('qs');
+var qs = require('querystring');
 var Utils = require('./utils');
 var Raphael = require('../lib/raphael-lite');
 
 console.log('This is Literal Trees version LITERAL_TREES_VERSION');
-var LOG = new Logger({
-    module: "trees"
-});
-
-var params = qs.parse(window.location.search);
 
 var Tree = function(opts) {
     var tree = this;
     tree.PERSISTANT_LINK;
-    // console.log('self', self);
+    tree.inputOptions = opts;
     tree.PAPER_WIDTH = opts.width;
-    tree.PAPER_HEIGHT = opts.height; // window.innerHeight;
+    tree.PAPER_HEIGHT = opts.height;
     tree.TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MAX_X = 0; // Right-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MIN_Y = Infinity; // Remember y-axis is reversed.
     tree.TREE_MAX_Y = 0; // TODO: Where is this used?
     tree.paper = Raphael("#paper", tree.PAPER_WIDTH, tree.PAPER_HEIGHT);
-    tree.WINDX = params.windx || 0;
-    tree.WINDY = params.windy || 0;
-    tree.TRUNK_ANGLE = params.ta || 90;
-    tree.TRUNK_HEIGHT = params.height || 0.3;
-    tree.COLOR = params.color || "black";
-    tree.BACKGROUND_COLOR = params.bgcolor || "none";
-    tree.MAX_DEPTH = params.depth || 6;
-    tree.ANGLE_RANGE_MEAN = params.ar || 65;
-    tree.ANGLE_RANGE_VARIANCE = params.arv || 5; // TODO: This will have to check for isNumber.
-    tree.CIRCLE_ORIGINS = params.co;
-    tree.BRANCH_AT_TIP = params.bat;
+    tree.WINDX = opts.windx || 0;
+    tree.WINDY = opts.windy || 0;
+    tree.TRUNK_ANGLE = opts.ta || 90;
+    tree.TRUNK_HEIGHT_RATIO = opts.trunkheightratio || 0.3;
+    tree.COLOR = opts.color || "black";
+    tree.BACKGROUND_COLOR = opts.bgcolor || "none";
+    tree.MAX_DEPTH = opts.depth || 6;
+    tree.ANGLE_RANGE_MEAN = opts.ar || 65;
+    tree.ANGLE_RANGE_VARIANCE = opts.arv || 5; // TODO: This will have to check for isNumber.
+    tree.CIRCLE_ORIGINS = opts.co;
+    tree.BRANCH_AT_TIP = opts.bat;
 
     if (!opts.seed) {
         // If we haven't been given a seed in the hash then call
@@ -46,7 +40,6 @@ var Tree = function(opts) {
     tree.seed = opts.seed;
     self.postMessage({event: 'seed', value: tree.seed});
     seed(tree.seed, {global: true});
-    LOG.debug("Seeded Math.random with", tree.seed);
 };
 
 Tree.prototype.branch = function(args) {
@@ -142,7 +135,7 @@ Tree.prototype.start = function(callback) {
 
     tree.branch({
         x: tree.PAPER_WIDTH / 2,
-        y: tree.PAPER_HEIGHT - (tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT),
+        y: tree.PAPER_HEIGHT - (tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT_RATIO),
         maxDepth: tree.MAX_DEPTH,
         referenceAngle: tree.TRUNK_ANGLE
     });
@@ -150,13 +143,12 @@ Tree.prototype.start = function(callback) {
     console.timeEnd('tree-rendering');
     var renderingTime = Date.now() - t0;
 
-    // Log all the info to the logging endpoint.
-    params.tr = renderingTime;
-    params.seed = tree.seed;
-    params.version = 'LITERAL_TREES_VERSION';
-    // TODO: log this?
-    // var metricsString = qs.format(params);
-    // var i = new Image().src ='http://maple.literal-trees.co/metrics?' + metricsString;
+    // Add more more metadata to the input tree.inputOptions and log all the info to
+    // the logging endpoint.
+    tree.inputOptions.tr = renderingTime;
+    tree.inputOptions.seed = tree.seed;
+    tree.inputOptions.version = 'LITERAL_TREES_VERSION';
+    self.postMessage({event: 'metrics', value: qs.stringify(tree.inputOptions)});
 
     // paper.rect(TREE_MIN_X, TREE_MIN_Y, TREE_MAX_X - TREE_MIN_X, PAPER_HEIGHT - TREE_MIN_Y).attr("stroke", "lightgray");
     // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");

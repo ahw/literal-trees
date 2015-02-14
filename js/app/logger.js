@@ -4,6 +4,7 @@
  * then this class logs all messages from "module_name". Otherwise, call to
  * this logger return nothing.
  */
+throw new Error('here is an error');
 function Logger(args) {
     var logger = this;
     var args = args || {};
