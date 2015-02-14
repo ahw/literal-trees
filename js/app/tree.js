@@ -1,9 +1,9 @@
 var Normal = require('box-muller');
 var Logger = require('./logger');
-// var $ = require('raphael');
 var seed = require('seed-random');
 var qs = require('qs');
 var Utils = require('./utils');
+var Raphael = require('../lib/raphael-lite');
 
 console.log('This is Literal Trees version LITERAL_TREES_VERSION');
 var LOG = new Logger({
@@ -12,16 +12,17 @@ var LOG = new Logger({
 
 var params = qs.parse(window.location.search);
 
-var Tree = function() {
+var Tree = function(opts) {
     var tree = this;
     tree.PERSISTANT_LINK;
-    tree.PAPER_WIDTH = document.getElementById("paper").offsetWidth;
-    tree.PAPER_HEIGHT = window.innerHeight;
+    // console.log('self', self);
+    tree.PAPER_WIDTH = opts.width;
+    tree.PAPER_HEIGHT = opts.height; // window.innerHeight;
     tree.TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MAX_X = 0; // Right-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MIN_Y = Infinity; // Remember y-axis is reversed.
     tree.TREE_MAX_Y = 0; // TODO: Where is this used?
-    tree.paper = Raphael("paper", tree.PAPER_WIDTH, tree.PAPER_HEIGHT);
+    tree.paper = Raphael("#paper", tree.PAPER_WIDTH, tree.PAPER_HEIGHT);
     tree.WINDX = params.windx || 0;
     tree.WINDY = params.windy || 0;
     tree.TRUNK_ANGLE = params.ta || 90;
@@ -34,26 +35,18 @@ var Tree = function() {
     tree.CIRCLE_ORIGINS = params.co;
     tree.BRANCH_AT_TIP = params.bat;
 
-    tree.seed = window.location.hash.replace(/#/, "");
-    if (window.location.hash === "") {
+    if (!opts.seed) {
         // If we haven't been given a seed in the hash then call
         // Math.random to get a random seed, then base64 encode it, then
         // remove non-URL-friendly characters, then strip off the first 16
         // characters. Basically, we just want a manageable-size seed value that
         // is easily placed in the hash of the URL.
-        seed(window.btoa(Math.random()).replace(/\W/g, "").substr(0, 16), true);
-        tree.seed = Math.random();
-        // Old way: tree.seed = window.btoa(Math.seedrandom()).replace(/\W/g, "").substr(0, 16);
-        LOG.info("Generating a new random seed", tree.seed);
+        opts.seed = Math.random().toString(35).substr(2, 16);
     }
-    LOG.debug("Using seed", tree.seed);
-
-    // Set the hash.
-    if (window.location.search.indexOf("mode=dev") < 0) {
-        // TODO: Put this back;
-        // window.location.hash = seed;
-        tree.PERSISTANT_LINK = window.location.origin + "/v/LITERAL_TREES_VERSION/" + window.location.search + "#" + tree.seed;
-    }
+    tree.seed = opts.seed;
+    self.postMessage({event: 'seed', value: tree.seed});
+    seed(tree.seed, {global: true});
+    LOG.debug("Seeded Math.random with", tree.seed);
 };
 
 Tree.prototype.branch = function(args) {
@@ -161,7 +154,7 @@ Tree.prototype.start = function(callback) {
     params.tr = renderingTime;
     params.seed = tree.seed;
     params.version = 'LITERAL_TREES_VERSION';
-    console.log(params);
+    // TODO: log this?
     // var metricsString = qs.format(params);
     // var i = new Image().src ='http://maple.literal-trees.co/metrics?' + metricsString;
 
@@ -169,25 +162,11 @@ Tree.prototype.start = function(callback) {
     // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
     var xMargin = 0.05 * (tree.TREE_MAX_X - tree.TREE_MIN_X);
     var yMargin = 0.05 * (tree.PAPER_HEIGHT - tree.TREE_MIN_Y);
-    tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin , (tree.PAPER_HEIGHT - tree.TREE_MIN_Y) + yMargin, true);
+    tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin , (tree.PAPER_HEIGHT - tree.TREE_MIN_Y) + yMargin);
 
-    var paper = document.getElementById("paper");
-    var svg = paper.getElementsByTagName("svg")[0];
-    paper.style.padding = 0;
-    paper.style.backgroundColor = tree.BACKGROUND_COLOR;
     // svg.setAttribute("preserveAspectRatio", 'xMidYMax');
-    
-    var persistantLink = document.getElementById("persistant-link");
-    persistantLink.href = tree.PERSISTANT_LINK;
-    persistantLink.innerHTML = tree.PERSISTANT_LINK;
-    document.getElementById("persistant-link-container").style.visibility = "visible";
-
-    document.getElementById("loading-message").remove();
-    LOG.debug("Removed loading elements");
-    console.log("Persistant URL:", tree.PERSISTANT_LINK);
-
     if (typeof callback === "function") {
-        callback();
+        callback(tree.paper.toString());
     }
 };
 

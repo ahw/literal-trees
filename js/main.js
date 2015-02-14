@@ -5,9 +5,15 @@
 
 // Start the main app logic
 var Tree = require('./app/tree');
-var wait = 1;
-setTimeout(function() {
-    var t = new Tree();
-    t.start();
-}, wait);
-console.log('Will build a tree in ' + wait + 'ms');
+self.onmessage = function(e) {
+    if (e.data.event === 'dimensions') {
+        var t = new Tree({
+            width: e.data.width,
+            height: e.data.height
+        });
+
+        t.start(function(svg) {
+            self.postMessage({event: 'svg', value: svg});
+        });
+    }
+}
