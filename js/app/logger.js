@@ -109,8 +109,6 @@ Logger.prototype.error = function (msg, obj) {
 // the browser global case, and the requirejs-style AMD case.
 if (typeof module === "object" && module && typeof module.exports === "object") {
     // Expose as Node.js module.
-    console.log("exporting as Node module");
-    console.log("Hacking the window variable to get stuff to work");
     window = {
         location: {
             search: "?log=all"

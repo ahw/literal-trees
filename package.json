@@ -14,7 +14,10 @@
     "requirejs": "~2.1.11",
     "rsync": "~0.3.0",
     "seed-random": "^2.2.0",
-    "semver": "~2.2.1"
+    "semver": "~2.2.1",
+    "uglifyify": "^3.0.1",
+    "uglifyjs": "^2.3.6",
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "grunt": "0.4.4",
