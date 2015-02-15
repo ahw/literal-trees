@@ -1,4 +1,4 @@
-var w = new Worker('main.bundled.js');
+var w = new Worker('js/main.bundled.js');
 w.onmessage = function(e) {
     // console.log('[index.html] Got "' + e.data.event + '" message from worker');
     switch(e.data.event) {
