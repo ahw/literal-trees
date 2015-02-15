@@ -2,7 +2,7 @@ var Normal = require('box-muller');
 var seed = require('seed-random');
 var qs = require('querystring');
 var Utils = require('./utils');
-var Raphael = require('../lib/raphael-lite');
+var Raphael = require('./raphael-lite');
 
 console.log('This is Literal Trees version LITERAL_TREES_VERSION');
 
