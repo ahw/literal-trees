@@ -1,4 +1,4 @@
-all: build
+all: deploy-local
 
 browserify: install
 	# Browserify the web worker thread main.js into main.bundled.js
@@ -9,10 +9,12 @@ browserify: install
 	cat css/bootstrap.css css/nyt-cheltenham.css css/style.css | cleancss > css/style.min.css
 	cp -f source.html index.html
 
-build: clean browserify inject-version-number
+build: clean bump-version-patch browserify inject-version-number
 
 install:
-	npm install
+	# npm install
+	@echo "Warning: NOT re-installing node_modules. If this is a new system"
+	@echo "please uncomment this line."
 
 clean:
 	rm -f js/main.bundled.js
@@ -20,7 +22,8 @@ clean:
 	rm -f js/app.min.js
 	rm -f css/style.min.css
 	rm -f index.html
-	rm -rf node_modules
+	@echo "Warning: NOT removing node_modules (for speed)"
+	# rm -rf node_modules
 
 bump-version-patch:
 	mversion patch
@@ -40,7 +43,8 @@ copy-assets:
 	cp js/main.bundled.js v/$(VERSION)/js
 	cp index.html v/$(VERSION)
 
-	@echo "$(VERSION)"
+	@echo ""
+	@echo "Finished building/deploying v$(VERSION)"
 
 inject-version-number:
 	$(eval VERSION = $(shell mversion | egrep -o "\d+\.\d+\.\d+"))
@@ -49,7 +53,7 @@ inject-version-number:
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/app.min.js
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/main.bundled.js
 
-deploy-local: clean bump-version-patch build copy-assets
+deploy-local: build copy-assets
 
 help:
 	@echo "Targets include:"
