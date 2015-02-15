@@ -16,6 +16,7 @@ build: clean
 	browserify js/app.js | uglifyjs > js/app.min.js
 	# Concatenate and minify all the CSS files
 	cat css/bootstrap.css css/nyt-cheltenham.css css/style.css | cleancss > css/style.min.css
+	cp -f source.html index.html
 
 clean:
 	rm -f js/main.bundled.js
