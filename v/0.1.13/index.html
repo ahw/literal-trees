@@ -1,0 +1,170 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACeElEQVR42p1TSWhTURT9mec0QzNPJmmagSSauQQTmoTMJCYhbgpCSyBSIZCdG7fqQoprF24ElS7ctEWQrFy6F4eqSMlCKIobi1BLn+c9muBGlD548O/795x7z7nvcdwfa3V11Z5IJHZDodDEbrfvezyet+FweFIqlcrc/6y1tbVLNpvtk0ajIUKhkG25XH4MwpetVisFsmS73U4izzMajSRz4NLSkgTVSsFg8IlMJjvi8/lEIBAQkUhEJBIJMRqNJJPJvAb5h0gk8j6dTu9VKpWLc4JisWhzOp3bYrH4BPuUx+MRuil4YWGBQA5xOBxzQpPJ9CuVSt2FZCkjqNVqF9DFrlKpPJVKpQyM1hkYyYwA/whSGYlarSbRaPRruVy2MgIYlwkEAgcz7bPqBoOBWCwW9g1pc1larfZHvV5/sLm5qWUEvV7PksvlnkIjS6AeuN1ukkwmiU6nY2BKTLszm83E5/Pt5/P5CqB8bjwea9bX1wM4eAYfiEqlYq3r9XpitVoZgUKhYGAqw+Vysa5g+KNqtaqj1e9hPDvQ+Y26PQPTStS4mf7FxUV2Rv+dxV8wiTGH8XxGcEJ10krUIAB/0ph2gzvwBvF3SgSfqHmEekVJCoXCYw7V38EU5jpNymazr0B6bWVlZQrwdjwef4i2D+DPx0ajcdxsNqeQdkSLgWCLi8Vit2DKodfrnQI0wXzz8CKECTSQtAfyO/1+/wrk3YDzNwFKoMDz5eXlF5AQ4GCEpdvtXh0Oh5lOp6OBs7zZBYOMOkh2AL7u9/vdZ+9FuLGx4RgMBrp/vg14cBla72MCTu48C7PPAnwb98B2LgKAcwBvYTv+lvMbgTXWz1TKNT8AAAAASUVORK5CYII="
+        rel="icon"/>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/overrides.css">
+
+    <meta name="viewport" content="minimum-scale=1, maximum-scale=1, width=device-width" />
+    <title>literal trees</title>
+    <style>
+        html {
+            margin:0;
+            padding:0;
+            background-color:#fcfcfc;
+        }
+        body {
+            margin:0;
+            padding:0;
+            font-family:Helvetica,Arial,Monospace;
+        }
+        #loading-message {
+            text-align:right;
+            width:65%;
+            margin:0 auto;
+        }
+        #time {
+            position:fixed;
+        }
+        .source {
+            margin-top:1em;
+            text-align:right;
+        }
+        #version {
+            text-align:center;
+            font-size:80%;
+        }
+        #below-paper {
+            background-color:#DEF5FF;
+            background-color:#fcfcfc;
+            padding:5%;
+        }
+
+        /* TODO: Delete if unused. */
+        table.formal {
+            border-collapse:collapse;
+            font-family:"nyt-cheltenham";
+        }
+        table.formal thead {
+            border-bottom:2px solid black;
+            border-top:2px solid black;
+        }
+        table.formal th {
+            padding:0.5em;
+        }
+        table.formal td {
+            padding:0.5em;
+        }
+        table.formal tr.rule {
+            border-top:1px solid black;
+        }
+        table.formal th {
+            text-align:left;
+        }
+    </style>
+</head>
+<body>
+    <div id="paper">
+        <div id="loading-message">
+            <!-- Little birds gotta have a place to put their foots. -->
+            &ldquo;There's nothing wrong with having a tree as a
+            friend.&rdquo;<br/>
+            <div class="source">&mdash; Bob Ross</div>
+            <br/>
+            <br/>
+            <div id="version">version 0.1.13</div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.getElementById("paper").style.height = window.innerHeight + "px";
+        document.getElementById("paper").style.paddingTop = 0.45 * (window.innerHeight) + "px";
+    </script>
+
+    <div id="below-paper">
+        <h1>Inputs</h1>
+
+        <h2>Constants</h2>
+        <p>The inputs listed below are constants in the tree algorithm. Many
+        of them are unit-less; they exist only to tweak the behavior of the
+        algorithm.</p>
+
+        <div class="table-responsive">
+            <table class="table" border="0">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Query String Keys</th>
+                        <th>Default Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Branching Depth</td>
+                        <td><code>depth</code></td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">Wind</td>
+                        <td><code>windx</code></td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><code>windy</code></td>
+                        <td>0</td>
+                    </tr>
+                    <tr class="rule">
+                        <td rowspan="2">Color</td>
+                        <td><code>color</code></td>
+                        <td>"black"</td>
+                    </tr>
+                    <tr>
+                        <td><code>bgcolor</code></td>
+                        <td>"none"</td>
+                    </tr>
+                    <tr class="rule">
+                        <td>Branch at tip</td>
+                        <td><code>bat</code></td>
+                        <td>false</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Random Distributions</h2>
+        <p>The inputs listed below are parameters to various random
+        distributions used in the tree algorithm. For example, the size of
+        the angle between two branches stemming from the same origin is
+        ultimately derived from a <strong>Normal</strong> distribution,
+        (a "bell curve"). The Normal distribution has two parameters which
+        describe it's center and spread, the <strong>mean</strong> and
+        <strong>variance</strong>, respectively. Using the table below we
+        see that those parameters can be provided in the query string using
+        the <code>arm</code> and <code>arv</code> keys, respectively.</p>
+
+        <div class="table-responsive">
+            <table class="table" border="0">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Distribution</th>
+                        <th>Query String Keys</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="rule">
+                        <td>Branch Angles</td>
+                        <td>Normal</td>
+                        <td><code>arm</code>, <code>arv</code></td>
+                        <td>N(arm = 65, arv = 5)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script data-main="app-built.js" src="/v/0.1.13/require.js"></script>
+</body>
+</html>

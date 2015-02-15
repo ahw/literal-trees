@@ -1,0 +1,76 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACeElEQVR42p1TSWhTURT9mec0QzNPJmmagSSauQQTmoTMJCYhbgpCSyBSIZCdG7fqQoprF24ElS7ctEWQrFy6F4eqSMlCKIobi1BLn+c9muBGlD548O/795x7z7nvcdwfa3V11Z5IJHZDodDEbrfvezyet+FweFIqlcrc/6y1tbVLNpvtk0ajIUKhkG25XH4MwpetVisFsmS73U4izzMajSRz4NLSkgTVSsFg8IlMJjvi8/lEIBAQkUhEJBIJMRqNJJPJvAb5h0gk8j6dTu9VKpWLc4JisWhzOp3bYrH4BPuUx+MRuil4YWGBQA5xOBxzQpPJ9CuVSt2FZCkjqNVqF9DFrlKpPJVKpQyM1hkYyYwA/whSGYlarSbRaPRruVy2MgIYlwkEAgcz7bPqBoOBWCwW9g1pc1larfZHvV5/sLm5qWUEvV7PksvlnkIjS6AeuN1ukkwmiU6nY2BKTLszm83E5/Pt5/P5CqB8bjwea9bX1wM4eAYfiEqlYq3r9XpitVoZgUKhYGAqw+Vysa5g+KNqtaqj1e9hPDvQ+Y26PQPTStS4mf7FxUV2Rv+dxV8wiTGH8XxGcEJ10krUIAB/0ph2gzvwBvF3SgSfqHmEekVJCoXCYw7V38EU5jpNymazr0B6bWVlZQrwdjwef4i2D+DPx0ajcdxsNqeQdkSLgWCLi8Vit2DKodfrnQI0wXzz8CKECTSQtAfyO/1+/wrk3YDzNwFKoMDz5eXlF5AQ4GCEpdvtXh0Oh5lOp6OBs7zZBYOMOkh2AL7u9/vdZ+9FuLGx4RgMBrp/vg14cBla72MCTu48C7PPAnwb98B2LgKAcwBvYTv+lvMbgTXWz1TKNT8AAAAASUVORK5CYII="
+        rel="icon"/>
+
+    <meta name="viewport" content="minimum-scale=1, maximum-scale=1, width=device-width" />
+    <title>literal trees</title>
+    <style>
+        html {
+            margin:0;
+            padding:0;
+            background-color:#fcfcfc;
+        }
+        body {
+            margin:0;
+            padding:0;
+            font-family:Helvetica,Arial,Monospace;
+        }
+        #loading-message {
+            text-align:right;
+            width:65%;
+            margin:0 auto;
+        }
+        #time {
+            position:fixed;
+        }
+        .source {
+            margin-top:1em;
+            text-align:right;
+        }
+        #version {
+            text-align:center;
+            font-size:80%;
+        }
+        #below-paper {
+            background-color:#DEF5FF;
+            padding:5% 17.5%;
+        }
+    </style>
+</head>
+<body>
+    <div id="paper">
+        <div id="loading-message">
+            <!-- Little birds gotta have a place to put their foots. -->
+            &ldquo;There's nothing wrong with having a tree as a
+            friend.&rdquo;<br/>
+            <div class="source">&mdash; Bob Ross</div>
+            <br/>
+            <br/>
+            <div id="version">version 0.1.7</div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.getElementById("paper").style.height = window.innerHeight + "px";
+        document.getElementById("paper").style.paddingTop = 0.45 * (window.innerHeight) + "px";
+    </script>
+    <div id="below-paper">
+        Parameters:
+        <ul style="font-family:Monospace">
+            <li>params.windx || 0</li>
+            <li>params.windy || 0</li>
+            <li>params.ta || 90</li>
+            <li>params.color || "black"</li>
+            <li>params.bgcolor || "none"</li>
+            <li>params.depth || 6</li>
+            <li>params.arm || 65</li>
+            <li>params.arv || 5; // TODO: This will have to check for isNumber</li>
+            <li>params.co</li>
+            <li>params.bat</li>
+        </ul>
+    </div>
+    <script data-main="app-built.js" src="/v/0.1.7/require.js"></script>
+</body>
+</html>
