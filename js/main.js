@@ -12,7 +12,6 @@ self.onmessage = function(e) {
             height: e.data.height,
             seed: e.data.seed // Will be "" if one was not supplied
         });
-        console.log('here is something');
 
         t.start(function(svg) {
             self.postMessage({event: 'svg', value: svg});
