@@ -1,15 +1,6 @@
-foo:
-	@echo "here is foo"
-
-bar:
-	@echo "here is bar"
-
-baz: foo bar
-	@echo "here is baz"
-
 all: build
 
-browserify: clean
+browserify: install
 	# Browserify the web worker thread main.js into main.bundled.js
 	browserify -t uglifyify js/main.js | uglifyjs > js/main.bundled.js 
 	# Browserify the main thread app.js into app.min.js
@@ -18,7 +9,10 @@ browserify: clean
 	cat css/bootstrap.css css/nyt-cheltenham.css css/style.css | cleancss > css/style.min.css
 	cp -f source.html index.html
 
-build: browserify inject-version-number
+build: clean browserify inject-version-number
+
+install:
+	npm install
 
 clean:
 	rm -f js/main.bundled.js
@@ -26,19 +20,19 @@ clean:
 	rm -f js/app.min.js
 	rm -f css/style.min.css
 	rm -f index.html
+	rm -rf node_modules
 
 bump-version-patch:
-	npm version patch
+	mversion patch
 
 bump-version-minor:
-	npm version minor
+	mversion minor
 
 bump-version-major:
-	npm version major
+	mversion major
 
 copy-assets:
-	$(eval VERSION = $(shell grep version package.json | egrep -o "\d+\.\d+\.\d+"))
-	# VERSION=`grep version package.json | egrep -o "\d+\.\d+\.\d+"`
+	$(eval VERSION = $(shell mversion | egrep -o "\d+\.\d+\.\d+"))
 	mkdir -p v/$(VERSION)/css
 	mkdir -p v/$(VERSION)/js
 	cp css/style.min.css v/$(VERSION)/css
@@ -49,7 +43,7 @@ copy-assets:
 	@echo "$(VERSION)"
 
 inject-version-number:
-	$(eval VERSION = $(shell grep version package.json | egrep -o "\d+\.\d+\.\d+"))
+	$(eval VERSION = $(shell mversion | egrep -o "\d+\.\d+\.\d+"))
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' index.html
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' css/style.min.css
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/app.min.js
