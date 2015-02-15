@@ -5,13 +5,14 @@ w.onmessage = function(e) {
         case 'seed':
             console.log('[index.html] seed value is', e.data.value);
             var link = document.getElementById("persistant-link");
-            var url = window.location.origin + '/v/LITERAL_TREES_VERSION/' + window.location.search + '#' + e.data.value;
+            // Add /literal-trees/ path part to work on github
+            var url = window.location.origin + '/literal-trees/v/LITERAL_TREES_VERSION/' + window.location.search + '#' + e.data.value;
             link.href = url
             link.innerHTML = url
             document.getElementById("persistant-link-container").style.visibility = "visible";
             break;
         case 'metrics':
-            var i = new Image().src ='http://localhost:8800/metrics?' + e.data.value;
+            (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
             break;
         case 'svg':
             // document.getElementById('loading-message').style.display = 'none';

@@ -58,7 +58,7 @@ Paper.prototype.setSize = function(width, height) {
 
 Paper.prototype.toString = function() {
     var viewBox = this.viewBox ? 'viewBox="' + this.viewBox + '"' : "";
-    var svg = '<svg version="' + this.version + '" xmlns="' + this.xmlns + '" width="' + this.width + '" height="' + this.height + '" ' + viewBox + ' preserveAspectRatio="xMidYMid meet">';
+    var svg = '<svg version="' + this.version + '" xmlns="' + this.xmlns + '" width="' + this.width + '" height="' + this.height + '" ' + viewBox + ' preserveAspectRatio="xMidYMax meet">';
     svg += _.map(this.paths, function(path) {
         return path.toString();
     }).join('\n');
