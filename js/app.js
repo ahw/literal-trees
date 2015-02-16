@@ -1,3 +1,4 @@
+var qs = require('querystring');
 var w = new Worker('js/main.bundled.js');
 w.onmessage = function(e) {
     // console.log('[index.html] Got "' + e.data.event + '" message from worker');
@@ -18,14 +19,32 @@ w.onmessage = function(e) {
             // document.getElementById('loading-message').style.display = 'none';
             // var html = document.getElementById("paper").innerHTML;
             document.getElementById("paper").innerHTML = e.data.value;
+            document.getElementById("download-link").setAttribute('href', "data:text/svg," + e.data.value);
             break;
     }
 };
+
+var query = qs.parse(window.location.search.substr(1));
+console.log('qery', query);
 w.postMessage({
     event: 'inputs',
     width: window.innerWidth,
     height: window.innerHeight,
-    seed: window.location.hash.substr(1) // Always returns "" or the actual hash
+    seed: window.location.hash.substr(1), // Always returns "" or the actual hash
+    windx: query.windx,
+    windy: query.windy,
+    ta: query.ta,
+    trunkheightratio: query.trunkheightratio,
+    color: query.color,
+    bgcolor: query.bgcolor,
+    depth: query.depth,
+    arm: query.arm,
+    arv: query.arv,
+    co: query.c,
+    bat: query.ba,
+    bld: query.bld,
+    co: query.co,
+    ce: query.ce
 });
 
 // var paper = document.getElementById("paper");

@@ -17,17 +17,19 @@ var Tree = function(opts) {
     tree.TREE_MIN_Y = Infinity; // Remember y-axis is reversed.
     tree.TREE_MAX_Y = 0; // TODO: Where is this used?
     tree.paper = Raphael("#paper", tree.PAPER_WIDTH, tree.PAPER_HEIGHT);
-    tree.WINDX = opts.windx || 0;
-    tree.WINDY = opts.windy || 0;
+    tree.WINDX = parseInt(opts.windx, 10) || 0;
+    tree.WINDY = parseInt(opts.windy, 10) || 0;
     tree.TRUNK_ANGLE = opts.ta || 90;
     tree.TRUNK_HEIGHT_RATIO = opts.trunkheightratio || 0.3;
     tree.COLOR = opts.color || "black";
     tree.BACKGROUND_COLOR = opts.bgcolor || "none";
-    tree.MAX_DEPTH = opts.depth || 6;
-    tree.ANGLE_RANGE_MEAN = opts.ar || 65;
+    tree.MAX_DEPTH = parseInt(opts.depth, 10) || 6;
+    tree.ANGLE_RANGE_MEAN = parseInt(opts.arm, 10) || 65;
     tree.ANGLE_RANGE_VARIANCE = opts.arv || 5; // TODO: This will have to check for isNumber.
-    tree.CIRCLE_ORIGINS = opts.co;
+    tree.CIRCLE_ORIGINS = opts.co || false;
+    tree.CIRCLE_ENDS = opts.ce || false;
     tree.BRANCH_AT_TIP = opts.bat;
+    tree.BRANCH_LOCATION_DENOMINATOR = parseFloat(opts.bld, 10) || 3;
 
     if (!opts.seed) {
         // If we haven't been given a seed in the hash then call
@@ -84,7 +86,7 @@ Tree.prototype.branch = function(args) {
             var branchOrigin = {x: point.x, y: point.y};
 
             if (!tree.BRANCH_AT_TIP && relativeAngle != minRelativeAngle) {
-                var branchOriginOffset = Utils.LinearTransform([0, 1], [0, point.previousLength / 3], Math.random());
+                var branchOriginOffset = Utils.LinearTransform([0, 1], [0, point.previousLength / tree.BRANCH_LOCATION_DENOMINATOR], Math.random());
                 var xStartOffset = branchOriginOffset * Math.cos(Utils.rad(point.referenceAngle));
                 var yStartOffset = branchOriginOffset * Math.sin(Utils.rad(point.referenceAngle));
                 branchOrigin.x = point.x - xStartOffset;
@@ -92,7 +94,7 @@ Tree.prototype.branch = function(args) {
             }
 
             if (tree.CIRCLE_ORIGINS) {
-                tree.paper.circle(branchOrigin.x, branchOrigin.y, 2).attr({stroke: "red", fill: "none"});
+                tree.paper.circle(branchOrigin.x, branchOrigin.y, 2).attr({stroke: "none", fill: "black"});
             }
 
             var xOffset = length * Math.cos(Utils.rad(absoluteAngle));
