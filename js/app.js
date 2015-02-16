@@ -25,7 +25,6 @@ w.onmessage = function(e) {
 };
 
 var query = qs.parse(window.location.search.substr(1));
-console.log('qery', query);
 w.postMessage({
     event: 'inputs',
     width: window.innerWidth,
