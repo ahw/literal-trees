@@ -7,9 +7,13 @@ function Path(d) {
 
 Path.prototype.attr = function(map) {
     var e = this;
-    _.keys(map).forEach(function(key) {
-        e[key] = map[key];
-    });
+    if (arguments.length == 2) {
+        e[arguments[0]] = arguments[1];
+    } else {
+        _.keys(map).forEach(function(key) {
+            e[key] = map[key];
+        });
+    }
     return e;
 };
 
@@ -18,7 +22,8 @@ Path.prototype.toString = function() {
     var attrs = _.map(_.keys(path), function(key) {
         return key + '="' + path[key] + '"';
     }).join(" ");
-    var str = '<path ' + attrs + '/>';
+    var tag = path.tag || 'path';
+    var str = '<' + tag + ' ' + attrs + '/>';
     return str;
 };
 
@@ -45,9 +50,15 @@ Paper.prototype.path = function(str, options) {
     return p;
 };
 
-Paper.prototype.circle = function() {
-    console.warn('Paper.circle() is just a pass-through');
-    return this;
+Paper.prototype.circle = function(x, y, r) {
+    var p = new Path("").attr({
+        tag: 'circle',
+        cx: x,
+        cy: y,
+        r: r
+    });
+    this.paths.push(p);
+    return p;
 }
 
 Paper.prototype.setSize = function(width, height) {
@@ -59,6 +70,15 @@ Paper.prototype.setSize = function(width, height) {
 Paper.prototype.toString = function() {
     var viewBox = this.viewBox ? 'viewBox="' + this.viewBox + '"' : "";
     var svg = '<svg version="' + this.version + '" xmlns="' + this.xmlns + '" width="' + this.width + '" height="' + this.height + '" ' + viewBox + ' preserveAspectRatio="xMidYMax meet">';
+
+    svg += '<defs>';
+    svg += '  <style type="text/css"><![CDATA[';
+    svg += '     path {';
+    svg += '       stroke-width:0.5px';
+    svg += '     }';
+    svg += '  ]]></style>';
+    svg += '</defs>';
+
     svg += _.map(this.paths, function(path) {
         return path.toString();
     }).join('\n');
