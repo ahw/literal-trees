@@ -13,7 +13,7 @@ w.onmessage = function(e) {
             document.getElementById("persistant-link-container").style.visibility = "visible";
             break;
         case 'metrics':
-            (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
+            // (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
             break;
         case 'svg':
             // document.getElementById('loading-message').style.display = 'none';
