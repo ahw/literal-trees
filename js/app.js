@@ -43,7 +43,8 @@ w.postMessage({
     bat: query.ba,
     bld: query.bld,
     co: query.co,
-    ce: query.ce
+    ce: query.ce,
+    showbranches : !(query.showbranches == 0)
 });
 
 // var paper = document.getElementById("paper");

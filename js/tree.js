@@ -30,6 +30,8 @@ var Tree = function(opts) {
     tree.CIRCLE_ENDS = opts.ce || false;
     tree.BRANCH_AT_TIP = opts.bat;
     tree.BRANCH_LOCATION_DENOMINATOR = parseFloat(opts.bld, 10) || 3;
+    tree.SHOW_BRANCHES = opts.showbranches;
+    tree.CIRCLE_RADIUS = opts.circleradius || 1;
 
     if (!opts.seed) {
         // If we haven't been given a seed in the hash then call
@@ -94,7 +96,7 @@ Tree.prototype.branch = function(args) {
             }
 
             if (tree.CIRCLE_ORIGINS) {
-                tree.paper.circle(branchOrigin.x, branchOrigin.y, 2).attr({stroke: "none", fill: "black"});
+                tree.paper.circle(branchOrigin.x, branchOrigin.y, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: "black"});
             }
 
             var xOffset = length * Math.cos(Utils.rad(absoluteAngle));
@@ -117,7 +119,13 @@ Tree.prototype.branch = function(args) {
             // var gray = 0; // Math.floor(Utils.LinearTransform([0, maxDepth], [150, 0], depth));
 
             // Draw the branch.
-            tree.paper.path(Utils.path('M', branchOrigin.x, branchOrigin.y, 'l', xOffset, yOffset)).attr("stroke", color);
+            if (tree.SHOW_BRANCHES) {
+                tree.paper.path(Utils.path('M', branchOrigin.x, branchOrigin.y, 'l', xOffset, yOffset)).attr("stroke", color);
+            }
+
+            if (tree.CIRCLE_ENDS) {
+                tree.paper.circle(branchOrigin.x + xOffset, branchOrigin.y + yOffset, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: "black"});
+            }
 
             queue.push({
                 x: branchOrigin.x + xOffset,
