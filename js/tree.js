@@ -96,7 +96,7 @@ Tree.prototype.branch = function(args) {
             }
 
             if (tree.CIRCLE_ORIGINS) {
-                tree.paper.circle(branchOrigin.x, branchOrigin.y, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: "black"});
+                tree.paper.circle(branchOrigin.x, branchOrigin.y, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: tree.COLOR});
             }
 
             var xOffset = length * Math.cos(Utils.rad(absoluteAngle));
@@ -114,17 +114,16 @@ Tree.prototype.branch = function(args) {
             // var green = Math.floor(Utils.LinearTransform([0, maxDepth], [194, 46], point.depth));
             // var blue = Math.floor(Utils.LinearTransform([0, maxDepth], [182, 2], point.depth));
             // var color = Utils.rgb2hex(red, green, blue);
-            var color = tree.COLOR;
 
             // var gray = 0; // Math.floor(Utils.LinearTransform([0, maxDepth], [150, 0], depth));
 
             // Draw the branch.
             if (tree.SHOW_BRANCHES) {
-                tree.paper.path(Utils.path('M', branchOrigin.x, branchOrigin.y, 'l', xOffset, yOffset)).attr("stroke", color);
+                tree.paper.path(Utils.path('M', branchOrigin.x, branchOrigin.y, 'l', xOffset, yOffset)).attr("stroke", tree.COLOR);
             }
 
             if (tree.CIRCLE_ENDS) {
-                tree.paper.circle(branchOrigin.x + xOffset, branchOrigin.y + yOffset, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: "black"});
+                tree.paper.circle(branchOrigin.x + xOffset, branchOrigin.y + yOffset, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: tree.COLOR});
             }
 
             queue.push({
