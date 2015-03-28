@@ -1,7 +1,9 @@
 var _ = require('underscore');
 
 function Path(d) {
-    this.d = d;
+    if (typeof d !== "undefined") {
+        this.d = d;
+    }
     return this;
 }
 
@@ -51,7 +53,7 @@ Paper.prototype.path = function(str, options) {
 };
 
 Paper.prototype.circle = function(x, y, r) {
-    var p = new Path("").attr({
+    var p = new Path().attr({
         tag: 'circle',
         cx: x,
         cy: y,
@@ -59,7 +61,19 @@ Paper.prototype.circle = function(x, y, r) {
     });
     this.paths.push(p);
     return p;
-}
+};
+
+Paper.prototype.rect = function(x, y, width, height) {
+    var p = new Path().attr({
+        tag: 'rect',
+        x: x,
+        y: y,
+        width: width,
+        height: height
+    });
+    this.paths.push(p);
+    return p;
+};
 
 Paper.prototype.setSize = function(width, height) {
     this.width = width;

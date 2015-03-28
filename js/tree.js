@@ -164,6 +164,15 @@ Tree.prototype.start = function(callback) {
     var xMargin = 0.05 * (tree.TREE_MAX_X - tree.TREE_MIN_X);
     var yMargin = 0.05 * (tree.PAPER_HEIGHT - tree.TREE_MIN_Y);
     tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin , (tree.PAPER_HEIGHT - tree.TREE_MIN_Y) + yMargin);
+    if (tree.DEBUG) {
+        tree.paper.rect(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin, (tree.TREE_MAX_Y - tree.TREE_MIN_Y) + yMargin).attr({fill: 'none', stroke: 'red'});;
+        tree.paper.rect(tree.TREE_MIN_X, tree.TREE_MIN_Y, tree.TREE_MAX_X-tree.TREE_MIN_X, tree.TREE_MAX_Y-tree.TREE_MIN_Y).attr({fill: 'none', stroke: 'blue'});
+        // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MIN_Y, 'L', tree.TREE_MAX_X, tree.TREE_MIN_Y)).attr("stroke", 'red');
+        // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MAX_Y, 'L', tree.TREE_MAX_X, tree.TREE_MAX_Y)).attr("stroke", 'green');
+        // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MIN_Y, 'L', tree.TREE_MIN_X, tree.TREE_MAX_Y)).attr("stroke", 'yellow');
+        // tree.paper.path(Utils.path('M', tree.TREE_MAX_X, tree.TREE_MIN_Y, 'L', tree.TREE_MAX_X, tree.TREE_MAX_Y)).attr("stroke", 'blue');
+        // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.PAPER_HEIGHT, 'L', tree.TREE_MAX_X, tree.PAPER_HEIGHT)).attr("stroke", 'violet');
+    }
 
     // svg.setAttribute("preserveAspectRatio", 'xMidYMax');
     if (typeof callback === "function") {
