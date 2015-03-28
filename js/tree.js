@@ -166,16 +166,19 @@ Tree.prototype.start = function(callback) {
 
     // paper.rect(TREE_MIN_X, TREE_MIN_Y, TREE_MAX_X - TREE_MIN_X, PAPER_HEIGHT - TREE_MIN_Y).attr("stroke", "lightgray");
     // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
-    var xMargin = tree.MARGIN;
-    var yMargin = tree.MARGIN;
-    console.log('Margins are', xMargin, yMargin);
-    // tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin , (tree.PAPER_HEIGHT - tree.TREE_MIN_Y) + yMargin);
-    tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin, (tree.TREE_MAX_Y - tree.TREE_MIN_Y) + yMargin);
-    console.log('Tree width', tree.TREE_MAX_X - tree.TREE_MIN_X, 'Tree height', tree.TREE_MAX_Y);
+    var treeHeight = tree.TREE_MAX_Y - tree.TREE_MIN_Y;
+    var treeWidth = tree.TREE_MAX_X - tree.TREE_MIN_X;
+
+    var verticalScale = tree.PAPER_HEIGHT / treeHeight;
+    var horizontalScale = tree.PAPER_WIDTH / treeWidth;
+    var scaleRatio = Math.min(verticalScale, horizontalScale);
+
+    // tree.paper.setSize(scaleRatio * treeWidth - 2 * tree.MARGIN, scaleRatio * treeHeight - tree.MARGIN);
+    tree.paper.setSize('100%', '100%');
+    tree.paper.setViewBox(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight);
 
     if (tree.DEBUG) {
-        tree.paper.rect(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin, (tree.TREE_MAX_Y - tree.TREE_MIN_Y) + yMargin).attr({fill: 'none', stroke: 'red'});;
-        tree.paper.rect(tree.TREE_MIN_X, tree.TREE_MIN_Y, tree.TREE_MAX_X-tree.TREE_MIN_X, tree.TREE_MAX_Y-tree.TREE_MIN_Y).attr({fill: 'none', stroke: 'blue'});
+        tree.paper.rect(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight).attr({fill: 'none', stroke: 'blue'});
         // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MIN_Y, 'L', tree.TREE_MAX_X, tree.TREE_MIN_Y)).attr("stroke", 'red');
         // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MAX_Y, 'L', tree.TREE_MAX_X, tree.TREE_MAX_Y)).attr("stroke", 'green');
         // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MIN_Y, 'L', tree.TREE_MIN_X, tree.TREE_MAX_Y)).attr("stroke", 'yellow');
