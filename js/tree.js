@@ -12,6 +12,7 @@ var Tree = function(opts) {
     tree.inputOptions = opts;
     tree.PAPER_WIDTH = opts.width;
     tree.PAPER_HEIGHT = opts.height;
+    tree.DEBUG = opts.debug || false;
     tree.TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MAX_X = 0; // Right-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MIN_Y = Infinity; // Remember y-axis is reversed.
@@ -32,6 +33,7 @@ var Tree = function(opts) {
     tree.BRANCH_LOCATION_DENOMINATOR = parseFloat(opts.bld, 10) || 3;
     tree.SHOW_BRANCHES = opts.showbranches;
     tree.CIRCLE_RADIUS = opts.circleradius || 1;
+    tree.MARGIN = typeof opts.margin !== 'undefined' ? parseFloat(opts.margin) : 0.05;
 
     if (!opts.seed) {
         // If we haven't been given a seed in the hash then call
@@ -61,7 +63,10 @@ Tree.prototype.branch = function(args) {
 
         if (point.depth === 0) {
             // Draw the trunk downwards
-            tree.paper.path(Utils.path('M', point.x, point.y, 'L', point.x, tree.PAPER_HEIGHT)).attr("stroke", tree.COLOR);
+            var height = tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT;
+            tree.paper.path(Utils.path('M', point.x, point.y, 'L', point.x, height)).attr("stroke", tree.COLOR);
+            if (point.y + height < tree.TREE_MIN_Y) tree.TREE_MIN_Y = point.y + height;
+            if (point.y + height > tree.TREE_MAX_Y) tree.TREE_MAX_Y = point.y + height;
         }
 
         var angleRange = Normal() * tree.ANGLE_RANGE_VARIANCE + tree.ANGLE_RANGE_MEAN;
@@ -143,8 +148,8 @@ Tree.prototype.start = function(callback) {
     var tree = this;
 
     tree.branch({
-        x: tree.PAPER_WIDTH / 2,
-        y: tree.PAPER_HEIGHT - (tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT),
+        x: 0, // tree.PAPER_WIDTH / 2,
+        y: 0, // tree.PAPER_HEIGHT - (tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT),
         maxDepth: tree.MAX_DEPTH,
         referenceAngle: tree.TRUNK_ANGLE
     });
@@ -161,9 +166,13 @@ Tree.prototype.start = function(callback) {
 
     // paper.rect(TREE_MIN_X, TREE_MIN_Y, TREE_MAX_X - TREE_MIN_X, PAPER_HEIGHT - TREE_MIN_Y).attr("stroke", "lightgray");
     // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
-    var xMargin = 0.05 * (tree.TREE_MAX_X - tree.TREE_MIN_X);
-    var yMargin = 0.05 * (tree.PAPER_HEIGHT - tree.TREE_MIN_Y);
-    tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin , (tree.PAPER_HEIGHT - tree.TREE_MIN_Y) + yMargin);
+    var xMargin = tree.MARGIN;
+    var yMargin = tree.MARGIN;
+    console.log('Margins are', xMargin, yMargin);
+    // tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin , (tree.PAPER_HEIGHT - tree.TREE_MIN_Y) + yMargin);
+    tree.paper.setViewBox(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin, (tree.TREE_MAX_Y - tree.TREE_MIN_Y) + yMargin);
+    console.log('Tree width', tree.TREE_MAX_X - tree.TREE_MIN_X, 'Tree height', tree.TREE_MAX_Y);
+
     if (tree.DEBUG) {
         tree.paper.rect(tree.TREE_MIN_X - xMargin, tree.TREE_MIN_Y - yMargin, (tree.TREE_MAX_X - tree.TREE_MIN_X) + 2 * xMargin, (tree.TREE_MAX_Y - tree.TREE_MIN_Y) + yMargin).attr({fill: 'none', stroke: 'red'});;
         tree.paper.rect(tree.TREE_MIN_X, tree.TREE_MIN_Y, tree.TREE_MAX_X-tree.TREE_MIN_X, tree.TREE_MAX_Y-tree.TREE_MIN_Y).attr({fill: 'none', stroke: 'blue'});

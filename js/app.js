@@ -51,6 +51,7 @@ w.postMessage({
     width: window.innerWidth,
     height: window.innerHeight,
     seed: window.location.hash.substr(1), // Always returns "" or the actual hash
+    debug: query.debug,
     windx: query.windx,
     windy: query.windy,
     ta: query.ta,
@@ -65,5 +66,6 @@ w.postMessage({
     bld: query.bld,
     co: query.co,
     ce: query.ce,
+    margin: query.margin,
     showbranches : !(query.showbranches == 0)
 });
