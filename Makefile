@@ -53,7 +53,10 @@ inject-version-number:
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/app.min.js
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/main.bundled.js
 
-deploy-local: build copy-assets
+add-new-version-to-git:
+	git add v/
+
+deploy-local: build copy-assets add-new-version-to-git
 
 help:
 	@echo "Targets include:"
