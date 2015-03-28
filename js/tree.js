@@ -20,7 +20,7 @@ var Tree = function(opts) {
     tree.WINDX = parseInt(opts.windx, 10) || 0;
     tree.WINDY = parseInt(opts.windy, 10) || 0;
     tree.TRUNK_ANGLE = opts.ta || 90;
-    tree.TRUNK_HEIGHT_RATIO = opts.trunkheightratio || 0.3;
+    tree.TRUNK_HEIGHT = opts.trunkheight || 0.3;
     tree.COLOR = opts.color || "black";
     tree.BACKGROUND_COLOR = opts.bgcolor || "none";
     tree.MAX_DEPTH = parseInt(opts.depth, 10) || 6;
@@ -144,7 +144,7 @@ Tree.prototype.start = function(callback) {
 
     tree.branch({
         x: tree.PAPER_WIDTH / 2,
-        y: tree.PAPER_HEIGHT - (tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT_RATIO),
+        y: tree.PAPER_HEIGHT - (tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT),
         maxDepth: tree.MAX_DEPTH,
         referenceAngle: tree.TRUNK_ANGLE
     });

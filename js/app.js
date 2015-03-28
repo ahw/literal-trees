@@ -55,7 +55,7 @@ w.postMessage({
     windx: query.windx,
     windy: query.windy,
     ta: query.ta,
-    trunkheightratio: query.trunkheightratio,
+    trunkheight: query.trunkheight,
     color: query.color,
     bgcolor: query.bgcolor,
     depth: query.depth,
