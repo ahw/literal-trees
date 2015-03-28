@@ -39,7 +39,6 @@ w.onmessage = function(e) {
             document.getElementById('paper').innerHTML = e.data.value;
             // document.getElementById("download-link").setAttribute('href', "data:text/svg," + e.data.value);
             document.getElementById("download-link").onclick = function(ev) {
-                console.log('Got click on download-link');
                 ev.preventDefault();
                 download(e.data.value, 'tree-' + seed + '.svg', 'text/svg');
             };
