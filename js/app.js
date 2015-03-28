@@ -1,15 +1,33 @@
 var qs = require('querystring');
+var download = require('./download');
+
+var query = qs.parse(window.location.search.substr(1));
+document.getElementById("paper").style.background = query.bgcolor || 'transparent';
+document.getElementById("loading-message").style.color = query.color || 'black';
+
+var seed;
 var w = new Worker('js/main.bundled.js');
 w.onmessage = function(e) {
     // console.log('[index.html] Got "' + e.data.event + '" message from worker');
     switch(e.data.event) {
         case 'seed':
-            console.log('[index.html] seed value is', e.data.value);
+            seed = e.data.value;
+            console.log('Seed value is', seed);
             var link = document.getElementById("persistant-link");
-            // Add /literal-trees/ path part to work on github
-            var url = window.location.origin + '/literal-trees/v/LITERAL_TREES_VERSION/' + window.location.search + '#' + e.data.value;
-            link.href = url
-            link.innerHTML = url
+            var url;
+            if ('LITERAL_TREES_VERSION' === 'LITERAL_' + 'TREES_' + 'VERSION') {
+                // Assert: this is localhost for testing
+                url = window.location.origin + window.location.search + '#' + seed;
+            } else if (window.location.host === 'ahw.github.io') {
+                // Assert: this is a GitHub pages site
+                url = window.location.origin + '/literal-trees/v/LITERAL_TREES_VERSION/' + window.location.search + '#' + seed;
+            } else {
+                // Assert: This is hosted on a real domain.
+                url = window.location.origin + '/v/LITERAL_TREES_VERSION/' + window.location.search + '#' + seed;
+            }
+
+            link.href = url;
+            link.innerHTML = seed;
             document.getElementById("persistant-link-container").style.visibility = "visible";
             break;
         case 'metrics':
@@ -18,13 +36,17 @@ w.onmessage = function(e) {
         case 'svg':
             // document.getElementById('loading-message').style.display = 'none';
             // var html = document.getElementById("paper").innerHTML;
-            document.getElementById("paper").innerHTML = e.data.value;
-            document.getElementById("download-link").setAttribute('href', "data:text/svg," + e.data.value);
+            document.getElementById('paper').innerHTML = e.data.value;
+            // document.getElementById("download-link").setAttribute('href', "data:text/svg," + e.data.value);
+            document.getElementById("download-link").onclick = function(ev) {
+                console.log('Got click on download-link');
+                ev.preventDefault();
+                download(e.data.value, 'tree-' + seed + '.svg', 'text/svg');
+            };
             break;
     }
 };
 
-var query = qs.parse(window.location.search.substr(1));
 w.postMessage({
     event: 'inputs',
     width: window.innerWidth,
@@ -46,20 +68,3 @@ w.postMessage({
     ce: query.ce,
     showbranches : !(query.showbranches == 0)
 });
-
-// var paper = document.getElementById("paper");
-// var svg = paper.getElementsByTagName("svg")[0];
-// paper.style.padding = 0;
-// paper.style.backgroundColor = tree.BACKGROUND_COLOR;
-
-// document.getElementById("loading-message").remove();
-// LOG.debug("Removed loading elements");
-// console.log("Persistant URL:", tree.PERSISTANT_LINK);
-
-
-// Set the hash.
-// if (window.location.search.indexOf("mode=dev") < 0) {
-//     // TODO: Put this back;
-//     // window.location.hash = seed;
-//     tree.PERSISTANT_LINK = window.location.origin + "/v/LITERAL_TREES_VERSION/" + window.location.search + "#" + tree.seed;
-// }
