@@ -41,8 +41,8 @@ path {
     -moz-transform:translate(-50%, -50%);
 }
 
-#time {
-    position:fixed;
+#seed-printed {
+    display:none;
 }
 
 #quote-container {
@@ -112,32 +112,37 @@ path {
     display:none;
 }
 
-@media only screen and (min-width:960px) {
-    /* browsers larger than 960px; */
+@page {
+    margin:1in;
+    margin-bottom:0;
 }
 
-@media only screen and (min-width:1440px) {
-    /* browsers larger than 1440px; */
-}
+@media print {
+    #seed-printed {
+        display:block;
+        position:absolute;
+        top:0;
+        left:0;
+        /* bottom:0.5in; */
+        /* width:100%; */
+        /* text-align:center; */
+        font-size:8pt;
+        padding:2px;
+        background:white;
+    }
 
-@media only screen and (min-width:2000px) {
-    /* sumo sized (mac) screens */
-}
+    #btf {
+        display:none;
+    }
 
-@media only screen and (max-device-width:480px) {
-   /* mobile browsers smaller than 480px; (iPhone) */
-    display:normal;
-}
+    #paper {
+        position:absolute;
+        bottom:0;
+        height:6in!important;
+        width:100%;
+    }
 
-@media only screen and (device-width:768px) {
-    /* default iPad screens */
-}
-
-/* different techniques for iPad screening */
-@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
-    /* portrait layouts only */
-}
-
-@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
-    /* landscape layouts only */
+    #paper:after {
+        content: element("#pesistant-link");
+    }
 }

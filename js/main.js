@@ -1,8 +1,3 @@
-// BEGIN:dev
-// importScripts("/js/lib/require.js");
-// importScripts("/js/require-config.js");
-// END:dev
-
 // Start the main app logic
 var Tree = require('./tree');
 self.onmessage = function(e) {

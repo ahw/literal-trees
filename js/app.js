@@ -14,6 +14,7 @@ w.onmessage = function(e) {
             seed = e.data.value;
             console.log('Seed value is', seed);
             var link = document.getElementById("persistant-link");
+            var printedSeed = document.getElementById("seed-printed");
             var url;
             if ('LITERAL_TREES_VERSION' === 'LITERAL_' + 'TREES_' + 'VERSION') {
                 // Assert: this is localhost for testing
@@ -28,6 +29,7 @@ w.onmessage = function(e) {
 
             link.href = url;
             link.innerHTML = seed;
+            printedSeed.innerHTML = seed;
             document.getElementById("persistant-link-container").style.visibility = "visible";
             break;
         case 'metrics':
