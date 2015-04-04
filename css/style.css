@@ -112,10 +112,6 @@ path {
     display:none;
 }
 
-#svg-copy-button {
-    outline:none;
-}
-
 @media only screen and (min-width:960px) {
     /* browsers larger than 960px; */
 }
