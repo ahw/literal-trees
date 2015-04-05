@@ -53,22 +53,26 @@ inject-version-number:
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/app.min.js
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/main.bundled.js
 
-add-new-version-to-git:
+git-commit:
+	$(eval VERSION = $(shell mversion | egrep -o "\d+\.\d+\.\d+"))
+	git add -u
 	git add v/
+	git commit -m "Build version $(VERSION)"
 
-deploy-local: build copy-assets add-new-version-to-git
+deploy-local: build copy-assets git-commit
 
 help:
 	@echo "Targets include:"
-	@echo "    clean: Remove built files"
-	@echo ""
-	@echo "    build: Build all CSS/JS assets (style.min.css, app.min.js, main.bundled.js)"
-	@echo ""
-	@echo "    deploy-local:"
+	@echo "    deploy-local (default):"
 	@echo "     1. clean"
 	@echo "     2. bump npm patch version"
 	@echo "     3. build"
 	@echo "     5. copy the assets to a version directory under v/"
+	@echo "     6. automatic git add -u and git add v/ and commit"
+	@echo ""
+	@echo "    clean: Remove built files"
+	@echo ""
+	@echo "    build: Build all CSS/JS assets (style.min.css, app.min.js, main.bundled.js)"
 	@echo ""
 	@echo "Note: deploy-local always increases the patch version. If you want to"
 	@echo "increase the major or minor version you must do so manually first via"
