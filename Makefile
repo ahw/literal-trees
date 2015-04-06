@@ -61,6 +61,11 @@ git-commit:
 
 deploy-local: build copy-assets git-commit
 
+deploy-s3: deploy-local sync-s3
+
+sync-s3:
+	aws --profile s3access s3 sync . s3://literal-trees.co --recursive --acl public-read --cache-control no-cache --delete --exclude .git
+
 help:
 	@echo "Targets include:"
 	@echo "    deploy-local (default):"
@@ -69,6 +74,10 @@ help:
 	@echo "     3. build"
 	@echo "     5. copy the assets to a version directory under v/"
 	@echo "     6. automatic git add -u and git add v/ and commit"
+	@echo ""
+	@echo "    deploy-s3:"
+	@echo "     1-6. same as above"
+	@echo "     7. synchronize files with literal-trees.co S3 bucket"
 	@echo ""
 	@echo "    clean: Remove built files"
 	@echo ""
