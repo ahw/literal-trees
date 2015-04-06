@@ -64,7 +64,7 @@ deploy-local: build copy-assets git-commit
 deploy-s3: deploy-local sync-s3
 
 sync-s3:
-	aws --profile s3access s3 sync . s3://literal-trees.co --recursive --acl public-read --cache-control no-cache --delete --exclude .git
+	aws --profile s3access s3 sync . s3://literal-trees.co --recursive --acl public-read --cache-control no-cache --delete --exclude ".git/*" --exclude "node_modules/*"
 
 help:
 	@echo "Targets include:"
