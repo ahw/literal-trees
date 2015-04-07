@@ -174,7 +174,7 @@ Tree.prototype.start = function(callback) {
     var scaleRatio = Math.min(verticalScale, horizontalScale);
 
     // tree.paper.setSize(scaleRatio * treeWidth - 2 * tree.MARGIN, scaleRatio * treeHeight - tree.MARGIN);
-    tree.paper.setSize('100%', '100%');
+    tree.paper.setSize('100%', '95%');
     tree.paper.setViewBox(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight);
 
     if (tree.DEBUG) {

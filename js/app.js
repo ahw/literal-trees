@@ -4,6 +4,25 @@ var download = require('./download');
 var query = qs.parse(window.location.search.substr(1));
 document.getElementById("paper").style.background = query.bgcolor || 'transparent';
 document.getElementById("loading-message").style.color = query.color || 'black';
+var extraCSS = "";
+if (query.maxprintheight) {
+    extraCSS += "#paper { height:" + query.maxprintheight + "!important; }";
+}
+if (query.maxprintwidth) {
+    var matches = query.maxprintwidth.match(/(\d+)(.*)/);
+    var value = matches[1];
+    var units = matches[2];
+    // Set the width and then add a left and margin-left to center
+    // horizontally.
+    extraCSS += "#paper { width:" + query.maxprintwidth + "; }";
+    extraCSS += "#paper { left:50%; }";
+    extraCSS += "#paper { margin-left: -" + (value/2) + units + "; }";
+}
+if (extraCSS) {
+    var style = document.createElement('style');
+    style.innerHTML = "@media print {" + extraCSS + "}";
+    document.head.appendChild(style);
+}
 
 var seed;
 var w = new Worker('js/main.bundled.js');
