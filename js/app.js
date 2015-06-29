@@ -24,13 +24,14 @@ if (query.bgcolor) {
     }
 
     if (typeof query.color === 'undefined') {
-        var contrastBlack = chroma.contrast(bgcolor, "black");
-        var contrastWhite = chroma.contrast(bgcolor, "white");
-        if (contrastBlack > contrastWhite) {
-            messageColor = "black"
-        } else {
-            messageColor = "white"
-        }
+        // var contrastBlack = chroma.contrast(bgcolor, "black");
+        // var contrastWhite = chroma.contrast(bgcolor, "white");
+        // if (contrastBlack > contrastWhite) {
+        //     messageColor = "black"
+        // } else {
+        //     messageColor = "white"
+        // }
+        messageColor = color; // More consistent to just always make this match the color
     } else {
         messageColor = color;
     }
