@@ -1,9 +1,43 @@
 var qs = require('querystring');
 var download = require('./download');
-
+var chroma = require('chroma-js');
 var query = qs.parse(window.location.search.substr(1));
-document.getElementById("paper").style.background = query.bgcolor || 'transparent';
-document.getElementById("loading-message").style.color = query.color || 'black';
+
+var messageColor = 'black';
+var bgcolor = 'transparent';
+var color = 'black';
+
+if(query.color) {
+    try {
+        color = chroma(query.color).css();
+    } catch(e) {
+        console.warn('Unknown foreground color: ' + query.color);
+    }
+}
+
+if (query.bgcolor) {
+    try {
+        bgcolor = chroma(query.bgcolor).css();
+    } catch (e) {
+        console.warn('Unknown color: ' + query.bgcolor + ', defaulting to transparent');
+        bgcolor = 'transparent';
+    }
+
+    if (typeof query.color === 'undefined') {
+        var contrastBlack = chroma.contrast(bgcolor, "black");
+        var contrastWhite = chroma.contrast(bgcolor, "white");
+        if (contrastBlack > contrastWhite) {
+            messageColor = "black"
+        } else {
+            messageColor = "white"
+        }
+    } else {
+        messageColor = color;
+    }
+}
+document.getElementById("paper").style.backgroundColor = bgcolor;
+document.getElementById("loading-message").style.color = messageColor;
+
 var extraCSS = "";
 if (query.maxprintheight) {
     extraCSS += "#paper { height:" + query.maxprintheight + "!important; }";
@@ -77,7 +111,7 @@ w.postMessage({
     windy: query.windy,
     ta: query.ta,
     trunkheight: query.trunkheight,
-    color: query.color,
+    color: color,
     bgcolor: query.bgcolor,
     depth: query.depth,
     arm: query.arm,
