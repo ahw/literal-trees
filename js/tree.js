@@ -62,11 +62,22 @@ Tree.prototype.branch = function(args) {
         }
 
         if (point.depth === 0) {
-            // Draw the trunk downwards
             var height = tree.PAPER_HEIGHT * tree.TRUNK_HEIGHT;
-            tree.paper.path(Utils.path('M', point.x, point.y, 'L', point.x, height)).attr("stroke", tree.COLOR);
             if (point.y + height < tree.TREE_MIN_Y) tree.TREE_MIN_Y = point.y + height;
             if (point.y + height > tree.TREE_MAX_Y) tree.TREE_MAX_Y = point.y + height;
+
+            if (tree.SHOW_BRANCHES) {
+                // Draw the trunk downwards
+                tree.paper.path(Utils.path('M', point.x, point.y, 'L', point.x, height)).attr("stroke", tree.COLOR);
+            }
+
+            if (tree.CIRCLE_ORIGINS) {
+                tree.paper.circle(point.x, height, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: tree.COLOR});
+            }
+
+            if (tree.CIRCLE_ENDS) {
+                tree.paper.circle(point.x, point.y, tree.CIRCLE_RADIUS).attr({stroke: "none", fill: tree.COLOR});
+            }
         }
 
         var angleRange = Normal() * tree.ANGLE_RANGE_VARIANCE + tree.ANGLE_RANGE_MEAN;
