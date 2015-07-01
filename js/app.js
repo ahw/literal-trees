@@ -90,9 +90,69 @@ w.onmessage = function(e) {
             // (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
             break;
         case 'svg':
+            console.log('[literal-trees] "svg" event, width:', e.data.width, 'height:', e.data.height);
+            var paperEl = document.getElementById('paper');
+            paperEl.innerHTML = "";
+            var canvas = document.createElement('canvas');
+            canvas.setAttribute('width', e.data.width);
+            canvas.setAttribute('height', e.data.height);
+            var ctx = canvas.getContext('2d');
+            paperEl.appendChild(canvas);
+
+            if (window.devicePixelRatio > 1) {
+                var canvasWidth = canvas.width;
+                var canvasHeight = canvas.height;
+
+                canvas.width = canvasWidth * window.devicePixelRatio;
+                canvas.height = canvasHeight * window.devicePixelRatio;
+                canvas.style.width = canvasWidth + 'px';
+                canvas.style.height = canvasHeight + 'px';
+                ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+                console.log('width attribute is', canvas.width);
+                console.log('height attribute is', canvas.height);
+                console.log('width style attribute is', canvas.style.width);
+                console.log('height style attribute is', canvas.style.height);
+            }
+
+            var image = new Image();
+            image.onload = function () {
+                ctx.drawImage(image, 0, 0);
+                var anotherImage = document.createElement('img');
+                anotherImage.style['max-width'] = '100%';
+                anotherImage.style['max-height'] = '100%';
+                anotherImage.style.display = 'block';
+                anotherImage.style.margin = 'auto';
+                anotherImage.src = canvas.toDataURL();
+                paperEl.innerHTML = "";
+                paperEl.appendChild(anotherImage);
+            }
+            image.src = 'data:image/svg+xml,' + escape(e.data.value);
+            // -- canvg -- var canvas = document.createElement('canvas');
+            // -- canvg -- var ctx = canvas.getContext('2d');
+            // -- canvg -- canvas.id = 'tree-canvas';
+            // -- canvg -- // canvas.width = e.data.width;
+            // -- canvg -- // canvas.height = e.data.height;
+            // -- canvg -- document.getElementById('paper').appendChild(canvas);
+            // -- canvg -- canvg('tree-canvas', e.data.value);
+
+            // -- canvg -- setTimeout(function() {
+            // -- canvg --     if (window.devicePixelRatio > 1) {
+            // -- canvg --         var canvasWidth = e.data.width;
+            // -- canvg --         var canvasHeight = e.data.height;
+            // -- canvg --         canvas.width = canvasWidth * window.devicePixelRatio;
+            // -- canvg --         canvas.height = canvasHeight * window.devicePixelRatio;
+            // -- canvg --         canvas.style.width = canvasWidth + 'px';
+            // -- canvg --         canvas.style.height = canvasHeight + 'px';
+            // -- canvg --         ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            // -- canvg --         console.log('width attribute is', canvas.width);
+            // -- canvg --         console.log('height attribute is', canvas.height);
+            // -- canvg --         console.log('width style attribute is', canvas.style.width);
+            // -- canvg --         console.log('height style attribute is', canvas.style.height);
+            // -- canvg --     }
+            // -- canvg -- }, 1);
+
             // document.getElementById('loading-message').style.display = 'none';
             // var html = document.getElementById("paper").innerHTML;
-            document.getElementById('paper').innerHTML = e.data.value;
             // document.getElementById("download-link").setAttribute('href', "data:text/svg," + e.data.value);
             document.getElementById("download-link").onclick = function(ev) {
                 ev.preventDefault();

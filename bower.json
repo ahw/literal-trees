@@ -1,0 +1,26 @@
+{
+  "name": "literal-trees",
+  "version": "0.1.100",
+  "homepage": "https://github.com/ahw/literal-trees",
+  "authors": [
+    "ahw <andrewhallagan@gmail.com>"
+  ],
+  "description": "Building a place for the birds to put their foots",
+  "main": "app.js",
+  "keywords": [
+    "literal",
+    "trees"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "canvg": "gabelerner/canvg"
+  }
+}

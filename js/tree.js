@@ -199,7 +199,7 @@ Tree.prototype.start = function(callback) {
 
     // svg.setAttribute("preserveAspectRatio", 'xMidYMax');
     if (typeof callback === "function") {
-        callback(tree.paper.toString());
+        callback(tree.paper.toString(), treeWidth, treeHeight);
     }
 };
 
