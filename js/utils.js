@@ -67,3 +67,18 @@ module.exports.decimal2hex = function (n) {
 module.exports.rgb2hex = function (r, g, b) {
     return "#" + module.exports.decimal2hex(r) + module.exports.decimal2hex(g) + module.exports.decimal2hex(b);
 };
+
+module.exports.applyStyles = function(el, styles, options) {
+    options = options || {};
+    Object.keys(styles).forEach(function(property) {
+        el.style[property] = styles[property];
+        if (options.prefix) {
+            if (typeof options.prefix !== 'object') {
+                options.prefix = ['webkit', 'moz'];
+            }
+            options.prefix.forEach(function(prefix) {
+                el.style['-' + prefix + '-' + property] = styles[property];
+            });
+        }
+    });
+};
