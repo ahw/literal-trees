@@ -35,7 +35,7 @@ bump-version-major:
 	mversion major
 
 copy-assets:
-	$(eval VERSION = $(shell mversion | egrep -o "\d+\.\d+\.\d+"))
+	$(eval VERSION = $(shell mversion | grep package.json | egrep -o "\d+\.\d+\.\d+"))
 	mkdir -p v/$(VERSION)/css
 	mkdir -p v/$(VERSION)/js
 	cp css/style.min.css v/$(VERSION)/css
@@ -47,14 +47,14 @@ copy-assets:
 	@echo "Finished building/deploying v$(VERSION)"
 
 inject-version-number:
-	$(eval VERSION = $(shell mversion | egrep -o "\d+\.\d+\.\d+"))
+	$(eval VERSION = $(shell mversion | grep package.json | egrep -o "\d+\.\d+\.\d+"))
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' index.html
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' css/style.min.css
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/app.min.js
 	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/main.bundled.js
 
 git-commit:
-	$(eval VERSION = $(shell mversion | egrep -o "\d+\.\d+\.\d+"))
+	$(eval VERSION = $(shell mversion | grep package.json | egrep -o "\d+\.\d+\.\d+"))
 	git add -u
 	git add v/
 	git commit -m "Build version $(VERSION)"
