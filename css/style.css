@@ -19,6 +19,7 @@ body {
     margin:auto;
     position:absolute;
     bottom:0;
+    max-height:95%;
 }
 
 path {

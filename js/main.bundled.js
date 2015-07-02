@@ -179,7 +179,7 @@ var Tree = function(opts) {
     tree.BRANCH_LOCATION_DENOMINATOR = parseFloat(opts.bld, 10) || 3;
     tree.SHOW_BRANCHES = opts.showbranches;
     tree.CIRCLE_RADIUS = opts.circleradius || 1;
-    tree.MARGIN = typeof opts.margin !== 'undefined' ? parseFloat(opts.margin) : 0.05;
+    tree.MARGIN = typeof opts.margin !== 'undefined' ? parseFloat(opts.margin) : 0;
 
     if (!opts.seed) {
         // If we haven't been given a seed in the hash then call
@@ -325,17 +325,23 @@ Tree.prototype.start = function(callback) {
     // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
     var treeHeight = tree.TREE_MAX_Y - tree.TREE_MIN_Y;
     var treeWidth = tree.TREE_MAX_X - tree.TREE_MIN_X;
+    var viewBoxWidth = treeWidth + 2 * tree.MARGIN;
+    // Why is viewbox height not treeHeight + 2*tree.MARGIN? Because we
+    // don't care about the bottom margin.
+    var viewBoxHeight = treeHeight + tree.MARGIN;
 
     var verticalScale = tree.PAPER_HEIGHT / treeHeight;
     var horizontalScale = tree.PAPER_WIDTH / treeWidth;
     var scaleRatio = Math.min(verticalScale, horizontalScale);
 
     // tree.paper.setSize(scaleRatio * treeWidth - 2 * tree.MARGIN, scaleRatio * treeHeight - tree.MARGIN);
-    tree.paper.setSize('100%', '95%');
-    tree.paper.setViewBox(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight);
+    tree.paper.setSize('100%', '100%');
+    // tree.paper.setViewBox(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight);
+    tree.paper.setViewBox(tree.TREE_MIN_X - tree.MARGIN, tree.TREE_MIN_Y - tree.MARGIN, viewBoxWidth, viewBoxHeight);
 
     if (tree.DEBUG) {
-        tree.paper.rect(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight).attr({fill: 'none', stroke: 'blue'});
+        tree.paper.rect(tree.TREE_MIN_X - tree.MARGIN, tree.TREE_MIN_Y - tree.MARGIN, treeWidth + 2 * tree.MARGIN, treeHeight + 2 * tree.MARGIN).attr({fill: 'none', strokeWidth: 2, stroke: 'red'});
+        tree.paper.rect(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight).attr({fill: 'none', strokeWidth: 2, stroke: 'blue'});
         // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MIN_Y, 'L', tree.TREE_MAX_X, tree.TREE_MIN_Y)).attr("stroke", 'red');
         // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MAX_Y, 'L', tree.TREE_MAX_X, tree.TREE_MAX_Y)).attr("stroke", 'green');
         // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MIN_Y, 'L', tree.TREE_MIN_X, tree.TREE_MAX_Y)).attr("stroke", 'yellow');
@@ -345,7 +351,7 @@ Tree.prototype.start = function(callback) {
 
     // svg.setAttribute("preserveAspectRatio", 'xMidYMax');
     if (typeof callback === "function") {
-        callback(tree.paper.toString(), treeWidth, treeHeight);
+        callback(tree.paper.toString(), viewBoxWidth, viewBoxHeight);
     }
 };
 
