@@ -94,51 +94,63 @@ w.onmessage = function(e) {
             if (query.raster) {
                 console.log('[literal-trees] "svg" event, width:', e.data.width, 'height:', e.data.height, 'svg size:', Math.ceil(e.data.value.length/1000) + 'KB');
                 var paperEl = document.getElementById('paper');
-                paperEl.innerHTML = "";
+                // paperEl.innerHTML = "";
+                var canvasWidth = e.data.width;
+                var canvasHeight = e.data.height;
                 var canvas = document.createElement('canvas');
-                canvas.setAttribute('width', e.data.width);
-                canvas.setAttribute('height', e.data.height);
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
                 var ctx = canvas.getContext('2d');
-                paperEl.appendChild(canvas);
+                // paperEl.appendChild(canvas);
 
-                var canvasWidth = canvas.width;
-                var canvasHeight = canvas.height;
                 if (window.devicePixelRatio > 1) {
                     canvas.width = canvasWidth * window.devicePixelRatio;
                     canvas.height = canvasHeight * window.devicePixelRatio;
                     canvas.style.width = canvasWidth + 'px';
                     canvas.style.height = canvasHeight + 'px';
                     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-                    console.log('width attribute is', canvas.width);
-                    console.log('height attribute is', canvas.height);
-                    console.log('width style attribute is', canvas.style.width);
-                    console.log('height style attribute is', canvas.style.height);
                 }
 
-                var image = new Image();
-                image.onload = function () {
-                    ctx.drawImage(image, 0, 0);
+                var svgImage = new Image();
+                svgImage.onload = function () {
+                    ctx.fillStyle = bgcolor;
+                    ctx.fillRect(0, 0, e.data.width, e.data.height);
+                    ctx.drawImage(svgImage, 0, 0);
+
                     var container = document.createElement('div');
                     utils.applyStyles(container, {
                         width: '100%',
                         height:'95%',
                         margin: 'auto',
-                        position: 'relative',
-                        top: '5%'
+                        position: 'absolute',
+                        bottom: 0
                     });
-                    var anotherImage = document.createElement('img');
-                    utils.applyStyles(anotherImage, {
+
+                    var rasterImage = document.createElement('img');
+                    utils.applyStyles(rasterImage, {
                         'max-width': '100%',
                         'max-height': '100%',
                         display: 'block',
                         margin: 'auto'
                     });
-                    anotherImage.src = canvas.toDataURL();
-                    paperEl.innerHTML = "";
-                    paperEl.appendChild(container);
-                    container.appendChild(anotherImage);
+                    rasterImage.onload = function() {
+                        paperEl.innerHTML = "";
+                        paperEl.appendChild(container);
+                        container.appendChild(rasterImage);
+                        setTimeout(function() {
+                            // This is happening.
+                            var mediaQuery = document.createElement('style');
+                            var style = '@media screen and (max-width : ' + rasterImage.width + 'px) { #paper div img { position:absolute; bottom:0; } }';
+                            console.log('style is', style);
+                            mediaQuery.innerHTML = style;
+                            document.head.appendChild(mediaQuery);
+
+                        }, 1)
+                    }
+                    rasterImage.src = canvas.toDataURL();
                 }
-                image.src = 'data:image/svg+xml,' + escape(e.data.value);
+                svgImage.src = 'data:image/svg+xml,' + escape(e.data.value);
+
                 // -- canvg -- var canvas = document.createElement('canvas');
                 // -- canvg -- var ctx = canvas.getContext('2d');
                 // -- canvg -- canvas.id = 'tree-canvas';
