@@ -1,4 +1,4 @@
-var qs = require('querystring');
+var qs = require('./diet-qs-no-sugar');
 var download = require('./download');
 var chroma = require('chroma-js');
 var query = qs.parse(window.location.search.substr(1));
@@ -169,13 +169,13 @@ w.onmessage = function(e) {
 
 w.postMessage({
     event: 'inputs',
-    width: window.innerWidth,
-    height: window.innerHeight,
+    paperWidth: window.innerWidth,
+    paperHeight: window.innerHeight,
     seed: window.location.hash.substr(1), // Always returns "" or the actual hash
     debug: query.debug,
     windx: query.windx,
     windy: query.windy,
-    ta: query.ta,
+    trunkangle: query.trunkangle,
     trunkheight: query.trunkheight,
     color: color,
     bgcolor: query.bgcolor,
@@ -188,5 +188,5 @@ w.postMessage({
     co: query.co,
     ce: query.ce,
     margin: query.margin,
-    showbranches : !(query.showbranches == 0)
+    showbranches: query.showbranches
 });

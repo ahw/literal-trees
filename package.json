@@ -4,16 +4,15 @@
   "private": true,
   "description": "Actual trees.",
   "main": "index.html",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "box-muller": "0.0.1",
+    "mversion": "^1.9.0",
     "qs": "^2.3.3",
     "seed-random": "^2.2.0",
-    "underscore": "^1.7.0"
-  },
-  "devDependencies": {
-    "mversion": "^1.9.0",
+    "uglify-js": "^2.3.6",
     "uglifyify": "^3.0.1",
-    "uglify-js": "^2.3.6"
+    "underscore": "^1.7.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
