@@ -15,5 +15,7 @@ module.exports = {
     bld: 3, // branch location denominator
     showbranches: true,
     circleradius: 1,
-    margin: 0
+    margin: 0,
+    aspectratio: undefined,
+    sizeAdjustmentMethod: 'pad'
 };

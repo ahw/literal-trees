@@ -5,15 +5,15 @@ var Utils = require('./utils');
 var Raphael = require('./raphael-lite');
 var _ = require('underscore');
 var defaultTreeOptions = require('./default-tree-options');
+var TreeSizing = require('./tree-sizing');
 
-console.log('This is Literal Trees version LITERAL_TREES_VERSION');
+console.log('[literal-trees] This is Literal Trees version LITERAL_TREES_VERSION');
 
 var Tree = function(userOptions) {
     var tree = this;
     tree.userOptions = userOptions;
     tree.options = {};
     _.defaults(tree.options, userOptions, defaultTreeOptions);
-    console.log('tree options', tree.options);
     tree.PERSISTANT_LINK;
     tree.TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MAX_X = 0; // Right-most branch tip of tree. Gets updated as tree is built.
@@ -165,10 +165,22 @@ Tree.prototype.start = function(callback) {
     // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
     var treeHeight = tree.TREE_MAX_Y - tree.TREE_MIN_Y;
     var treeWidth = tree.TREE_MAX_X - tree.TREE_MIN_X;
-    var viewBoxWidth = treeWidth + 2 * tree.options.margin;
-    // Why is viewbox height not treeHeight + 2*tree.options.margin? Because we
-    // don't care about the bottom margin.
-    var viewBoxHeight = treeHeight + tree.options.margin;
+
+    // This function will calculate the appropriate view box, taking
+    // into account tree.options.aspectratio if it is defined. If
+    // aspectratio is undefined the function will try to guess if this
+    // is a small mobile device where it makes the most sense to return
+    // a view box which matches the aspect ratio of the device. On
+    // desktop browsers with large screens it isn't as important.
+    var viewBox = TreeSizing.calculateViewBox({
+        aspectratio: tree.options.aspectratio,
+        treeWidth: treeWidth,
+        treeHeight: treeHeight,
+        margin: tree.options.margin,
+        treeMinX: tree.TREE_MIN_X,
+        treeMinY: tree.TREE_MIN_Y,
+        sizeAdjustmentMethod: tree.options.sizeAdjustmentMethod
+    });
 
     var verticalScale = tree.options.paperHeight / treeHeight;
     var horizontalScale = tree.options.paperWidth / treeWidth;
@@ -177,7 +189,7 @@ Tree.prototype.start = function(callback) {
     // tree.paper.setSize(scaleRatio * treeWidth - 2 * tree.options.margin, scaleRatio * treeHeight - tree.options.margin);
     tree.paper.setSize('100%', '100%');
     // tree.paper.setViewBox(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight);
-    tree.paper.setViewBox(tree.TREE_MIN_X - tree.options.margin, tree.TREE_MIN_Y - tree.options.margin, viewBoxWidth, viewBoxHeight);
+    tree.paper.setViewBox(viewBox.x, viewBox.y, viewBox.width, viewBox.height);
 
     if (tree.options.debug) {
         tree.paper.rect(tree.TREE_MIN_X - tree.options.margin, tree.TREE_MIN_Y - tree.options.margin, treeWidth + 2 * tree.options.margin, treeHeight + 2 * tree.options.margin).attr({fill: 'none', strokeWidth: 2, stroke: 'red'});
@@ -191,7 +203,7 @@ Tree.prototype.start = function(callback) {
 
     // svg.setAttribute("preserveAspectRatio", 'xMidYMax');
     if (typeof callback === "function") {
-        callback(tree.paper.toString(), viewBoxWidth, viewBoxHeight);
+        callback(tree.paper.toString(), viewBox.width, viewBox.height);
     }
 };
 

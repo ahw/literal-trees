@@ -92,7 +92,7 @@ w.onmessage = function(e) {
             break;
         case 'svg':
             if (query.raster) {
-                console.log('[literal-trees] "svg" event, width:', e.data.width, 'height:', e.data.height, 'svg size:', Math.ceil(e.data.value.length/1000) + 'KB');
+                // console.log('[literal-trees] "svg" event, width:', e.data.width, 'height:', e.data.height, 'svg size:', Math.ceil(e.data.value.length/1000) + 'KB');
                 var paperEl = document.getElementById('paper');
                 // paperEl.innerHTML = "";
                 var canvasWidth = Math.ceil(e.data.width);
@@ -141,7 +141,6 @@ w.onmessage = function(e) {
                             // This is happening.
                             var mediaQuery = document.createElement('style');
                             var style = '@media screen and (max-width : ' + rasterImage.width + 'px) { #paper div img { position:absolute; bottom:0; } }';
-                            console.log('style is', style);
                             mediaQuery.innerHTML = style;
                             document.head.appendChild(mediaQuery);
 

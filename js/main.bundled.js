@@ -16,7 +16,9 @@ module.exports = {
     bld: 3, // branch location denominator
     showbranches: true,
     circleradius: 1,
-    margin: 0
+    margin: 0,
+    aspectratio: undefined,
+    sizeAdjustmentMethod: 'pad'
 };
 
 },{}],2:[function(require,module,exports){
@@ -32,7 +34,7 @@ self.onmessage = function(e) {
     }
 }
 
-},{"./tree":4}],3:[function(require,module,exports){
+},{"./tree":5}],3:[function(require,module,exports){
 var _ = require('underscore');
 
 function Path(d) {
@@ -164,7 +166,25 @@ function Raphael(selector, width, height) {
 
 module.exports = Raphael;
 
-},{"underscore":8}],4:[function(require,module,exports){
+},{"underscore":9}],4:[function(require,module,exports){
+module.exports.shouldForceAspectRatio = function() {
+    return false;
+}
+
+module.exports.calculateViewBox = function(args) {
+    var viewBox = {
+        x: args.treeMinX - args.margin,
+        y: args.treeMinY - args.margin,
+        width: args.treeWidth + 2 * args.margin,
+        // Why is viewbox height not treeHeight + 2*margin?
+        // Because we don't care about the bottom margin.
+        height: args.treeHeight + args.margin
+    };
+
+    return viewBox;
+}
+
+},{}],5:[function(require,module,exports){
 var Normal = require('box-muller');
 var seed = require('seed-random');
 var qs = require('querystring');
@@ -172,15 +192,15 @@ var Utils = require('./utils');
 var Raphael = require('./raphael-lite');
 var _ = require('underscore');
 var defaultTreeOptions = require('./default-tree-options');
+var TreeSizing = require('./tree-sizing');
 
-console.log('This is Literal Trees version LITERAL_TREES_VERSION');
+console.log('[literal-trees] This is Literal Trees version LITERAL_TREES_VERSION');
 
 var Tree = function(userOptions) {
     var tree = this;
     tree.userOptions = userOptions;
     tree.options = {};
     _.defaults(tree.options, userOptions, defaultTreeOptions);
-    console.log('tree options', tree.options);
     tree.PERSISTANT_LINK;
     tree.TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MAX_X = 0; // Right-most branch tip of tree. Gets updated as tree is built.
@@ -332,10 +352,22 @@ Tree.prototype.start = function(callback) {
     // paper.rect(0, 0, PAPER_WIDTH, PAPER_HEIGHT).attr("stroke", "lightgray");
     var treeHeight = tree.TREE_MAX_Y - tree.TREE_MIN_Y;
     var treeWidth = tree.TREE_MAX_X - tree.TREE_MIN_X;
-    var viewBoxWidth = treeWidth + 2 * tree.options.margin;
-    // Why is viewbox height not treeHeight + 2*tree.options.margin? Because we
-    // don't care about the bottom margin.
-    var viewBoxHeight = treeHeight + tree.options.margin;
+
+    // This function will calculate the appropriate view box, taking
+    // into account tree.options.aspectratio if it is defined. If
+    // aspectratio is undefined the function will try to guess if this
+    // is a small mobile device where it makes the most sense to return
+    // a view box which matches the aspect ratio of the device. On
+    // desktop browsers with large screens it isn't as important.
+    var viewBox = TreeSizing.calculateViewBox({
+        aspectratio: tree.options.aspectratio,
+        treeWidth: treeWidth,
+        treeHeight: treeHeight,
+        margin: tree.options.margin,
+        treeMinX: tree.TREE_MIN_X,
+        treeMinY: tree.TREE_MIN_Y,
+        sizeAdjustmentMethod: tree.options.sizeAdjustmentMethod
+    });
 
     var verticalScale = tree.options.paperHeight / treeHeight;
     var horizontalScale = tree.options.paperWidth / treeWidth;
@@ -344,7 +376,7 @@ Tree.prototype.start = function(callback) {
     // tree.paper.setSize(scaleRatio * treeWidth - 2 * tree.options.margin, scaleRatio * treeHeight - tree.options.margin);
     tree.paper.setSize('100%', '100%');
     // tree.paper.setViewBox(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight);
-    tree.paper.setViewBox(tree.TREE_MIN_X - tree.options.margin, tree.TREE_MIN_Y - tree.options.margin, viewBoxWidth, viewBoxHeight);
+    tree.paper.setViewBox(viewBox.x, viewBox.y, viewBox.width, viewBox.height);
 
     if (tree.options.debug) {
         tree.paper.rect(tree.TREE_MIN_X - tree.options.margin, tree.TREE_MIN_Y - tree.options.margin, treeWidth + 2 * tree.options.margin, treeHeight + 2 * tree.options.margin).attr({fill: 'none', strokeWidth: 2, stroke: 'red'});
@@ -358,13 +390,13 @@ Tree.prototype.start = function(callback) {
 
     // svg.setAttribute("preserveAspectRatio", 'xMidYMax');
     if (typeof callback === "function") {
-        callback(tree.paper.toString(), viewBoxWidth, viewBoxHeight);
+        callback(tree.paper.toString(), viewBox.width, viewBox.height);
     }
 };
 
 module.exports = Tree;
 
-},{"./default-tree-options":1,"./raphael-lite":3,"./utils":5,"box-muller":6,"querystring":11,"seed-random":7,"underscore":8}],5:[function(require,module,exports){
+},{"./default-tree-options":1,"./raphael-lite":3,"./tree-sizing":4,"./utils":6,"box-muller":7,"querystring":12,"seed-random":8,"underscore":9}],6:[function(require,module,exports){
 /**
  * Performs a linear transformation of values in the domain to corresponding
  * values in the range. Requires two values from each in order to compute a
@@ -450,7 +482,7 @@ module.exports.applyStyles = function(el, styles, options) {
     });
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = polar
 module.exports.basic = basic
 
@@ -482,7 +514,7 @@ function basic() {
   return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v)
 }
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -659,7 +691,7 @@ function tostring(a) {
 mixkey(Math.random(), pool);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 //     Underscore.js 1.7.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -2076,7 +2108,7 @@ mixkey(Math.random(), pool);
   }
 }.call(this));
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2162,7 +2194,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2249,10 +2281,10 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":9,"./encode":10}]},{},[2]);
+},{"./decode":10,"./encode":11}]},{},[2]);
