@@ -4,6 +4,7 @@ var chroma = require('chroma-js');
 var query = qs.parse(window.location.search.substr(1));
 var utils = require('./utils');
 
+var IS_DEBUG = query.debug;
 var messageColor = 'black';
 var bgcolor = 'transparent';
 var color = 'black';
@@ -68,19 +69,21 @@ w.onmessage = function(e) {
     // console.log('[index.html] Got "' + e.data.event + '" message from worker');
     switch(e.data.event) {
         case 'log':
-            if (document.getElementById('logging')) {
-                logging.innerHTML = logging.innerHTML + "\n" + e.data.msg;
-            } else {
-                var logging = document.createElement('pre');
-                logging.id = 'logging';
-                logging.innerHTML = e.data.msg;
-                logging.style.position = 'fixed';
-                logging.style.background = 'gray';
-                logging.style['z-index'] = 10;
-                logging.style.borderRadius = 0;
-                logging.style.opacity = 0.9;
-                logging.style.border = 'none';
-                document.body.insertBefore(logging, document.getElementById('paper'));
+            if (IS_DEBUG) {
+                if (document.getElementById('logging')) {
+                    logging.innerHTML = logging.innerHTML + "\n" + e.data.msg;
+                } else {
+                    var logging = document.createElement('pre');
+                    logging.id = 'logging';
+                    logging.innerHTML = e.data.msg;
+                    logging.style.position = 'fixed';
+                    logging.style.background = 'gray';
+                    logging.style['z-index'] = 10;
+                    logging.style.borderRadius = 0;
+                    logging.style.opacity = 0.9;
+                    logging.style.border = 'none';
+                    document.body.insertBefore(logging, document.getElementById('paper'));
+                }
             }
             break;
         case 'seed':
