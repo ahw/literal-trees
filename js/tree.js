@@ -185,7 +185,11 @@ Tree.prototype.start = function(callback) {
         margin: tree.options.margin,
         treeMinX: tree.TREE_MIN_X,
         treeMinY: tree.TREE_MIN_Y,
-        sizeAdjustmentMethod: tree.options.sizeAdjustmentMethod
+        clientWidth: tree.options.clientWidth,
+        clientHeight: tree.options.clientHeight,
+        screenWidth: tree.options.screenWidth,
+        screenHeight: tree.options.screenHeight,
+        sizingmethod: tree.options.sizingmethod
     });
 
     var verticalScale = tree.options.paperHeight / treeHeight;
@@ -198,6 +202,7 @@ Tree.prototype.start = function(callback) {
     tree.paper.setViewBox(viewBox.x, viewBox.y, viewBox.width, viewBox.height);
 
     if (tree.options.debug) {
+        tree.paper.rect(viewBox.x, viewBox.y, viewBox.width, viewBox.height).attr({fill: 'none', strokeWidth: 2, stroke: '#008C53'});
         tree.paper.rect(tree.TREE_MIN_X - tree.options.margin, tree.TREE_MIN_Y - tree.options.margin, treeWidth + 2 * tree.options.margin, treeHeight + 2 * tree.options.margin).attr({fill: 'none', strokeWidth: 2, stroke: 'red'});
         tree.paper.rect(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight).attr({fill: 'none', strokeWidth: 2, stroke: 'blue'});
         // tree.paper.path(Utils.path('M', tree.TREE_MIN_X, tree.TREE_MIN_Y, 'L', tree.TREE_MAX_X, tree.TREE_MIN_Y)).attr("stroke", 'red');

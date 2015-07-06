@@ -184,10 +184,15 @@ w.onmessage = function(e) {
     }
 };
 
+
 w.postMessage({
     event: 'inputs',
-    paperWidth: window.innerWidth,
-    paperHeight: window.innerHeight,
+    paperWidth: window.innerWidth, // TODO: remove when backward functionality not required
+    paperHeight: window.innerHeight, // TODO: remove when backward functionality not required
+    clientWidth: document.documentElement.clientWidth,
+    clientHeight: document.documentElement.clientHeight,
+    screenWidth: window.screen && window.screen.width,
+    screenHeight: window.screen && window.screen.height,
     seed: window.location.hash.substr(1), // Always returns "" or the actual hash
     debug: query.debug,
     windx: query.windx,
@@ -205,5 +210,6 @@ w.postMessage({
     co: query.co,
     ce: query.ce,
     margin: query.margin,
-    showbranches: query.showbranches
+    showbranches: query.showbranches,
+    sizingmethod: query.sizingmethod
 });

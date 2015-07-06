@@ -17,5 +17,5 @@ module.exports = {
     circleradius: 1,
     margin: 0,
     aspectratio: undefined,
-    sizeAdjustmentMethod: 'pad'
+    sizingmethod: 'contain' // could be "contain" or "cover"
 };
