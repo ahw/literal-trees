@@ -13,9 +13,9 @@ var color = 'black';
 
 if(query.color) {
     try {
-        // Prefix with "#" so chroma doesn't think it's a Number and try to
-        // parse as part of an RGB triple
-        color = chroma('#' + query.color).css();
+        // Coerce to a string so chroma doesn't think it's a number and
+        // subsequently parse as part of an RGB triple
+        color = chroma("" + query.color).css();
     } catch(e) {
         console.warn('Unknown foreground color: ' + query.color);
     }
@@ -23,7 +23,7 @@ if(query.color) {
 
 if (query.bgcolor) {
     try {
-        bgcolor = chroma('#' + query.bgcolor).css();
+        bgcolor = chroma("" + query.bgcolor).css();
     } catch (e) {
         console.warn('Unknown color: ' + query.bgcolor + ', defaulting to transparent');
         bgcolor = 'transparent';
