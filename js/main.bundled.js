@@ -387,7 +387,6 @@ Tree.prototype.branch = function(args) {
 };
 
 Tree.prototype.start = function(callback) {
-    console.time('tree-rendering');
     var t0 = Date.now();
     var tree = this;
 
@@ -398,7 +397,6 @@ Tree.prototype.start = function(callback) {
         referenceAngle: tree.options.trunkangle
     });
 
-    console.timeEnd('tree-rendering');
     var renderingTime = Date.now() - t0;
 
     // Add more more metadata to the input tree.userOptions and log all the info to

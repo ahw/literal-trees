@@ -1,3 +1,5 @@
+var timers = require('./timer-utils');
+timers.startTimer('click to loaded');
 var qs = require('./diet-qs-no-sugar');
 var download = require('./download');
 var chroma = require('chroma-js');
@@ -112,8 +114,10 @@ w.onmessage = function(e) {
             // (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
             break;
         case 'svg':
+            timers.endTimer('svg computed');
             if (query.raster) {
                 // console.log('[literal-trees] "svg" event, width:', e.data.width, 'height:', e.data.height, 'svg size:', Math.ceil(e.data.value.length/1000) + 'KB');
+                timers.startTimer('total client-side raster');
                 var paperEl = document.getElementById('paper');
                 // paperEl.innerHTML = "";
                 var canvasWidth = Math.ceil(e.data.width);
@@ -134,6 +138,7 @@ w.onmessage = function(e) {
 
                 var svgImage = new Image();
                 svgImage.onload = function () {
+                    timers.endTimer('raster.image/svg+xml.onload');
                     ctx.fillStyle = bgcolor;
                     ctx.fillRect(0, 0, Math.ceil(e.data.width), Math.ceil(e.data.height));
                     ctx.drawImage(svgImage, 0, 0);
@@ -155,20 +160,26 @@ w.onmessage = function(e) {
                         margin: 'auto'
                     });
                     rasterImage.onload = function() {
+                        timers.endTimer('raster.image/png.onload');
+                        timers.startTimer('raster.image/png.appended-to-dom');
                         paperEl.innerHTML = "";
                         paperEl.appendChild(container);
                         container.appendChild(rasterImage);
+                        timers.endTimer('raster.image/png.appended-to-dom');
+                        timers.endTimer('click to loaded');
                         setTimeout(function() {
                             // This is happening.
                             var mediaQuery = document.createElement('style');
                             var style = '@media screen and (max-width : ' + rasterImage.width + 'px) { #paper div img { position:absolute; bottom:0; } }';
                             mediaQuery.innerHTML = style;
                             document.head.appendChild(mediaQuery);
-
+                            timers.endTimer('total client-side raster');
                         }, 1)
                     }
+                    timers.startTimer('raster.image/png.onload');
                     rasterImage.src = canvas.toDataURL();
                 }
+                timers.startTimer('raster.image/svg+xml.onload');
                 svgImage.src = 'data:image/svg+xml,' + escape(e.data.value);
 
             } else {
@@ -188,6 +199,7 @@ w.onmessage = function(e) {
 };
 
 
+timers.startTimer('svg computed');
 w.postMessage({
     event: 'inputs',
     paperWidth: window.innerWidth, // TODO: remove when backward functionality not required
