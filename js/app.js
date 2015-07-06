@@ -94,8 +94,8 @@ w.onmessage = function(e) {
             var link = document.getElementById("persistant-link");
             var printedSeed = document.getElementById("seed-printed");
             var url;
-            if ('LITERAL_TREES_VERSION' === 'LITERAL_' + 'TREES_' + 'VERSION') {
-                // Assert: this is localhost for testing
+            if (/^[A-Z_]+$/.test('LITERAL_TREES_VERSION')) {
+                // Assert: has not been replaced with the version number -- this is localhost for testing
                 url = window.location.origin + window.location.search + '#' + seed;
             } else if (window.location.host === 'ahw.github.io') {
                 // Assert: this is a GitHub pages site
