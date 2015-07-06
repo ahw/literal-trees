@@ -13,7 +13,13 @@ var Tree = function(userOptions) {
     var tree = this;
     tree.userOptions = userOptions;
     tree.options = {};
-    _.defaults(tree.options, userOptions, defaultTreeOptions);
+    _.defaults(tree.options, userOptions)
+    _.defaults(tree.options, defaultTreeOptions);
+    var IS_DEBUG = tree.options.debug;
+    if (IS_DEBUG) {
+        console.log('[literal-trees] user options', tree.userOptions);
+        console.log('[literal-trees] tree options', tree.options);
+    }
     tree.PERSISTANT_LINK;
     tree.TREE_MIN_X = Infinity; // Left-most branch tip of tree. Gets updated as tree is built.
     tree.TREE_MAX_X = 0; // Right-most branch tip of tree. Gets updated as tree is built.
