@@ -6,7 +6,6 @@ var query = qs.parse(window.location.search.substr(1));
 var utils = require('./utils');
 
 var IS_DEBUG = query.debug;
-var messageColor = 'black';
 var bgcolor = 'white';
 var color = 'black';
 
@@ -16,7 +15,7 @@ if (query.color) {
         // subsequently parse as part of an RGB triple
         color = chroma("" + query.color).css();
     } catch(e) {
-        console.warn('Unknown foreground color: ' + query.color);
+        console.warn('Unknown foreground color: ' + query.color + ', default to ' + color);
     }
 }
 
@@ -32,22 +31,9 @@ if (query.bgcolor) {
     } catch (e) {
         console.warn('Unknown color: ' + query.bgcolor + ', defaulting to ' + bgcolor);
     }
-
-    if (typeof query.color === 'undefined') {
-        // var contrastBlack = chroma.contrast(bgcolor, "black");
-        // var contrastWhite = chroma.contrast(bgcolor, "white");
-        // if (contrastBlack > contrastWhite) {
-        //     messageColor = "black"
-        // } else {
-        //     messageColor = "white"
-        // }
-        messageColor = color; // More consistent to just always make this match the color
-    } else {
-        messageColor = color;
-    }
 }
 document.getElementById("paper").style.backgroundColor = bgcolor;
-document.getElementById("loading-message").style.color = messageColor;
+document.getElementById("loading-message").style.color = color;
 
 var extraCSS = "";
 if (query.maxprintheight) {
@@ -122,6 +108,8 @@ w.onmessage = function(e) {
             if (query.svg) {
                 // User explicitly asked for SVG only
                 document.getElementById('paper').innerHTML = e.data.value;
+            } else if (query.svgraw) {
+                document.write(e.data.value);
             } else {
                 // Else go through the rasterizing process to get a bitmap
                 // image.
@@ -174,7 +162,6 @@ w.onmessage = function(e) {
                         paperEl.appendChild(container);
                         container.appendChild(rasterImage);
                         timers.endTimer('raster.image/png.appended-to-dom');
-                        timers.endTimer('click to loaded');
                         setTimeout(function() {
                             // This is happening.
                             var mediaQuery = document.createElement('style');
@@ -182,6 +169,7 @@ w.onmessage = function(e) {
                             mediaQuery.innerHTML = style;
                             document.head.appendChild(mediaQuery);
                             timers.endTimer('total client-side raster');
+                            timers.endTimer('click to loaded');
                         }, 1)
                     }
                     timers.startTimer('raster.image/png.onload');
