@@ -7,10 +7,10 @@ var utils = require('./utils');
 
 var IS_DEBUG = query.debug;
 var messageColor = 'black';
-var bgcolor = 'transparent';
+var bgcolor = 'white';
 var color = 'black';
 
-if(query.color) {
+if (query.color) {
     try {
         // Coerce to a string so chroma doesn't think it's a number and
         // subsequently parse as part of an RGB triple
@@ -22,10 +22,15 @@ if(query.color) {
 
 if (query.bgcolor) {
     try {
-        bgcolor = chroma("" + query.bgcolor).css();
+        if (query.bgcolor === 'transparent') {
+            // If bgcolor is transparent, don't try to parse it.
+            bgcolor = query.bgcolor;
+        } else {
+            // Else, do try and parse it.
+            bgcolor = chroma("" + query.bgcolor).css();
+        }
     } catch (e) {
-        console.warn('Unknown color: ' + query.bgcolor + ', defaulting to transparent');
-        bgcolor = 'transparent';
+        console.warn('Unknown color: ' + query.bgcolor + ', defaulting to ' + bgcolor);
     }
 
     if (typeof query.color === 'undefined') {
@@ -114,8 +119,12 @@ w.onmessage = function(e) {
             break;
         case 'svg':
             timers.endTimer('svg computed');
-            if (query.raster) {
-                // console.log('[literal-trees] "svg" event, width:', e.data.width, 'height:', e.data.height, 'svg size:', Math.ceil(e.data.value.length/1000) + 'KB');
+            if (query.svg) {
+                // User explicitly asked for SVG only
+                document.getElementById('paper').innerHTML = e.data.value;
+            } else {
+                // Else go through the rasterizing process to get a bitmap
+                // image.
                 timers.startTimer('total client-side raster');
                 var paperEl = document.getElementById('paper');
                 // paperEl.innerHTML = "";
@@ -180,10 +189,6 @@ w.onmessage = function(e) {
                 }
                 timers.startTimer('raster.image/svg+xml.onload');
                 svgImage.src = 'data:image/svg+xml,' + escape(e.data.value);
-
-            } else {
-                document.getElementById('paper').innerHTML = e.data.value;
-
             }
             break;
     }
