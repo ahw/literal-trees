@@ -9,7 +9,7 @@ browserify: install
 	cat css/bootstrap.css css/nyt-cheltenham.css css/style.css | cleancss > css/style.min.css
 	cp -f source.html index.html
 
-build: clean bump-version-patch browserify inject-version-number
+build: clean bump-version-minor browserify inject-version-number
 
 install:
 	# npm install
@@ -70,7 +70,7 @@ help:
 	@echo "Targets include:"
 	@echo "    deploy-local (default):"
 	@echo "     1. clean"
-	@echo "     2. bump npm patch version"
+	@echo "     2. bump npm minor version"
 	@echo "     3. build"
 	@echo "     5. copy the assets to a version directory under v/"
 	@echo "     6. automatic git add -u and git add v/ and commit"
@@ -83,6 +83,6 @@ help:
 	@echo ""
 	@echo "    build: Build all CSS/JS assets (style.min.css, app.min.js, main.bundled.js)"
 	@echo ""
-	@echo "Note: deploy-local always increases the patch version. If you want to"
-	@echo "increase the major or minor version you must do so manually first via"
-	@echo "\"npm version [major|minor]\" on the command line."
+	@echo "Note: deploy-local always increases the minor version. If you want to"
+	@echo "increase a different version value you must do so manually first via"
+	@echo "\"npm version [major|minor|patch]\" on the command line."
