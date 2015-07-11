@@ -105,6 +105,7 @@ w.onmessage = function(e) {
             break;
         case 'svg':
             timers.endTimer('svg computed');
+            console.log('[literal-trees] svg document is ~' + Math.ceil(.75 * (e.data.value.length/1024)) + ' KB');
             if (query.svg) {
                 // User explicitly asked for SVG only
                 document.getElementById('paper').innerHTML = e.data.value;
@@ -173,7 +174,9 @@ w.onmessage = function(e) {
                         }, 1)
                     }
                     timers.startTimer('raster.image/png.onload');
-                    rasterImage.src = canvas.toDataURL();
+                    var dataUrl = canvas.toDataURL();
+                    rasterImage.src = dataUrl;
+                    console.log('[literal-trees] rasterized image is ~' + Math.ceil(.75 * (dataUrl.length/1024)) + ' KB');
                 }
                 timers.startTimer('raster.image/svg+xml.onload');
                 svgImage.src = 'data:image/svg+xml,' + escape(e.data.value);
