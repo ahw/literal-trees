@@ -44,7 +44,7 @@
                 <thead>
                     <tr>
                         <th>Parameter</th>
-                        <th>Query String Keys</th>
+                        <th>Query String Key</th>
                         <th>Type</th>
                         <th>Default Value</th>
                     </tr>
@@ -60,7 +60,7 @@
                         <td>Trunk height</td>
                         <td><code>trunkheight</code></td>
                         <td>Float (0, &infin;)</td>
-                        <td>0.6</td>
+                        <td>1.0</td>
                     </tr>
                     <!--
                     <tr>
@@ -85,7 +85,7 @@
                         <td style="display:none"></td>
                         <td><code>bgcolor</code></td>
                         <td>String</td>
-                        <td>"none"</td>
+                        <td>"white"</td>
                     </tr>
                     <tr class="rule">
                         <td>Branch at tip</td>
@@ -115,13 +115,13 @@
                         <td rowspan="2">Printing</td>
                         <td><code>maxprintheight</code></td>
                         <td>String</td>
-                        <td>"9in" (include units!)</td>
+                        <td>9in</td>
                     </tr>
                     <tr>
                         <td style="display:none"></td>
                         <td><code>maxprintwidth</code></td>
                         <td>String</td>
-                        <td>"6.5in" (include units!)</td>
+                        <td>6.5in</td>
                     </tr>
                 </tbody>
             </table>
@@ -143,16 +143,22 @@
                     <tr>
                         <th>Parameter</th>
                         <th>Distribution</th>
-                        <th>Query String Keys</th>
+                        <th>Query String Key</th>
                         <th>Usage</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="rule">
-                        <td>Branch Angles</td>
-                        <td>Normal</td>
-                        <td><code>arm</code>, <code>arv</code></td>
-                        <td>N(arm = 65, arv = 5)</td>
+                        <td rowspan="2">Branch Angles</td>
+                        <td rowspan="2">Normal</td>
+                        <td><code>arm</code></td>
+                        <td rowspan="2">N(arm = 65, arv = 5)</td>
+                    </tr>
+                    <tr>
+                        <td style="display:none"></td>
+                        <td style="display:none"></td>
+                        <td><code>arv</code></td>
+                        <td style="display:none"></td>
                     </tr>
                 </tbody>
             </table>

@@ -131,17 +131,21 @@ path {
         border-bottom:2px solid #ddd;
         padding:8px 0px;
     }
-    .table.constant-inputs th:nth-of-type(2) {
+    .table.constant-inputs th:nth-of-type(1) {
         display:none;
+        /* background:blue; opacity:0.4; */
     }
-    .table.constant-inputs td:nth-of-type(2) {
+    .table.constant-inputs td:nth-of-type(1) {
         display:none;
+        /* background:blue; opacity:0.4; */
     }
     .table.constant-inputs th:nth-of-type(3) {
         display:none;
+        /* background:blue; opacity:0.4; */
     }
     .table.constant-inputs td:nth-of-type(3) {
         display:none;
+        /* background:blue; opacity:0.4; */
     }
 }
 
