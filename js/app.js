@@ -1,7 +1,6 @@
 var timers = require('./timer-utils');
 timers.startTimer('click to loaded');
 var qs = require('./diet-qs-no-sugar');
-var download = require('./download');
 var chroma = require('chroma-js');
 var query = qs.parse(window.location.search.substr(1));
 var utils = require('./utils');
@@ -186,14 +185,6 @@ w.onmessage = function(e) {
                 document.getElementById('paper').innerHTML = e.data.value;
 
             }
-
-            // document.getElementById('loading-message').style.display = 'none';
-            // var html = document.getElementById("paper").innerHTML;
-            // document.getElementById("download-link").setAttribute('href', "data:text/svg," + e.data.value);
-            document.getElementById("download-link").onclick = function(ev) {
-                ev.preventDefault();
-                download(e.data.value, 'tree-' + seed + '.svg', 'text/svg');
-            };
             break;
     }
 };
