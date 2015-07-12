@@ -67,6 +67,7 @@ if (extraCSS) {
     document.head.appendChild(style);
 }
 
+if (query.norender) { return; }
 var seed;
 var w = new Worker('js/main.bundled.js');
 w.onmessage = function(e) {
