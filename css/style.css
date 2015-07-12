@@ -1,5 +1,5 @@
 body {
-    font-family: "nyt-cheltenham"
+    font-family: "nyt-cheltenham";
 }
 
 code {
@@ -12,6 +12,14 @@ html {
 }
 
 body {
+}
+
+input {
+    border:none;
+    background:#c00;
+    width:100%;
+    margin:0;
+    padding:0;
 }
 
 #paper svg {
@@ -107,6 +115,12 @@ path {
     background-color:#DEF5FF;
     background-color:#fcfcfc;
     padding:5%;
+    visibility:hidden;
+    -webkit-animation: fadein 100ms; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 100ms; /* Firefox < 16 */
+        -ms-animation: fadein 100ms; /* Internet Explorer */
+         -o-animation: fadein 100ms; /* Opera < 12.1 */
+            animation: fadein 100ms;
 }
 
 .phone-only {
@@ -124,14 +138,6 @@ path {
 
 td.input {
     background:#008C53;
-}
-
-input {
-    border:none;
-    background:none;
-    width:100%;
-    margin:0;
-    padding:0;
 }
 
 @media screen and (max-width: 500px) {
