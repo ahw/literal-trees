@@ -5,9 +5,21 @@ var chroma = require('chroma-js');
 var query = qs.parse(window.location.search.substr(1));
 var utils = require('./utils');
 var DebugLogger = require('./debug-logger');
+var LOG = new DebugLogger();
+
+var detect = require('./interaction-mode-detector');
+window.lt = {};
+detect(window.lt, function(interactionMode) {
+    LOG.log('Interaction mode:', window.lt.interactionMode);
+    LOG.log('Has touch:', window.lt.hasTouch);
+    document.onpointerdown = false;
+    document.ontouchstart = false;
+    document.onmousedown = false;
+    document.onkeydown = false;
+});
+
 var bgcolor = 'white';
 var color = 'black';
-var LOG = new DebugLogger();
 
 if (query.color) {
     try {
@@ -144,19 +156,24 @@ w.onmessage = function(e) {
                     rasterImage.onload = function() {
                         timers.endTimer('raster.image/png.onload');
                         timers.startTimer('raster.image/png.appended-to-dom');
+                        LOG.log('Natural image width:', rasterImage.width);
                         paperEl.innerHTML = "";
                         paperEl.appendChild(container);
                         container.appendChild(rasterImage);
                         timers.endTimer('raster.image/png.appended-to-dom');
                         setTimeout(function() {
-                            // This is happening.
+                            // Put this in a timeout so that the browser has
+                            // a change to compute the correct layout and
+                            // thus determine the correct width of the image
+                            // needed in the media query we're about to add.
                             var mediaQuery = document.createElement('style');
                             var style = '@media screen and (max-width : ' + rasterImage.width + 'px) { #paper div img { position:absolute; bottom:0; } }';
+                            LOG.log('Rendered image width:', rasterImage.width);
                             mediaQuery.innerHTML = style;
                             document.head.appendChild(mediaQuery);
                             timers.endTimer('total client-side raster');
                             timers.endTimer('click to loaded');
-                        }, 1)
+                        }, 100)
                     }
                     timers.startTimer('raster.image/png.onload');
                     var dataUrl = canvas.toDataURL();
