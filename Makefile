@@ -6,7 +6,7 @@ browserify: install
 	# Browserify the main thread app.js into app.min.js
 	browserify js/app.js | uglifyjs -c -m > js/app.min.js
 	# Concatenate and minify all the CSS files
-	cat css/bootstrap.css css/nyt-cheltenham.css css/style.css | cleancss > css/style.min.css
+	cd css && /usr/bin/scss style.scss | /usr/local/bin/cleancss > style.min.css
 	cp -f source.html index.html
 
 build: clean bump-version-minor browserify inject-version-number
