@@ -21,6 +21,6 @@
     "tests"
   ],
   "dependencies": {
-    "canvg": "gabelerner/canvg"
+    "history": "~1.8.0"
   }
 }
