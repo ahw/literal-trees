@@ -35,10 +35,14 @@ exports.stringify = function(query){
 	return result;
 }
 exports.value = function(value){
-	if(value == 'true'){ 
+	if (value == 'true'){
 		value = true; 	// boolean true
 	} else if (value == 'false') {
 		value = false; 	// boolean false
+    } else if (isset(value) && (/[0-9a-f]{3}/i.test(value) || /[0-9a-f]{6}/i.test(value))) {
+        // AWH: Do not parse as int -- this is probably a CSS value and
+        // parsing 001234 as an int instead of a CSS color code breaks
+        // stuff.
 	} else if (isset(value) && !isNaN(value)) {
 		value = +value; // number
 	}
