@@ -7,6 +7,7 @@ var query = qs.parse(window.location.search.substr(1));
 var utils = require('./utils');
 var DebugLogger = require('./debug-logger');
 var LOG = new DebugLogger();
+// require('../bower_components/history/scripts/bundled/html5/native.history.js');
 
 var detect = require('./interaction-mode-detector');
 window.lt = {};
