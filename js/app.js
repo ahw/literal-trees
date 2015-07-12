@@ -81,18 +81,34 @@ inputCells.forEach(function(input) {
 var rerenderNewSeed = document.getElementById('rerender-new-seed');
 var rerenderOldSeed = document.getElementById('rerender-old-seed');
 
-rerenderNewSeed.onclick = function(e) {
+rerenderNewSeed.addEventListener('click', function(e) {
+    if (window.lt.hasTouch) {
+        return; // Ignore since this is just a touch bubbling up
+    }
     e.preventDefault();
     rerender(false);
-};
+});
 
-rerenderOldSeed.onclick = function(e) {
+rerenderOldSeed.addEventListener('click', function(e) {
+    if (window.lt.hasTouch) {
+        // LOG.log('Ignoring click event since hasTouch = true');
+        return; // Ignore since this is just a touch bubbling up
+    }
     e.preventDefault();
     rerender(true);
-};
+});
+
+rerenderNewSeed.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    rerender(false);
+});
+
+rerenderOldSeed.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    rerender(true);
+});
 
 document.addEventListener('keydown', function(e) {
-    console.log('got keydown');
     if (e.which === 13 || e.keyIdentifier === 'Enter') {
         rerender(true);
     }
@@ -122,7 +138,13 @@ function rerender(useOldSeed) {
         window.location.search = newQueryString;
     } else {
         window.location.hash = "";
-        window.location.search = newQueryString;
+        var loc = window.location.href;
+        var index = loc.indexOf('#');
+        if (index > 0) {
+          window.location = loc.substring(0, index);
+        } else {
+            window.location.reload();
+        }
     }
 }
 
