@@ -4,10 +4,10 @@ var qs = require('./diet-qs-no-sugar');
 var chroma = require('chroma-js');
 var query = qs.parse(window.location.search.substr(1));
 var utils = require('./utils');
-
-var IS_DEBUG = query.debug;
+var DebugLogger = require('./debug-logger');
 var bgcolor = 'white';
 var color = 'black';
+var LOG = new DebugLogger();
 
 if (query.color) {
     try {
@@ -61,22 +61,7 @@ w.onmessage = function(e) {
     // console.log('[index.html] Got "' + e.data.event + '" message from worker');
     switch(e.data.event) {
         case 'log':
-            if (IS_DEBUG) {
-                if (document.getElementById('logging')) {
-                    logging.innerHTML = logging.innerHTML + "\n" + e.data.msg;
-                } else {
-                    var logging = document.createElement('pre');
-                    logging.id = 'logging';
-                    logging.innerHTML = e.data.msg;
-                    logging.style.position = 'fixed';
-                    logging.style.background = 'gray';
-                    logging.style['z-index'] = 10;
-                    logging.style.borderRadius = 0;
-                    logging.style.opacity = 0.9;
-                    logging.style.border = 'none';
-                    document.body.insertBefore(logging, document.getElementById('paper'));
-                }
-            }
+            LOG.log(e.data.msg);
             break;
         case 'seed':
             seed = e.data.value;

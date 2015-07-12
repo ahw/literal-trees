@@ -37,6 +37,7 @@ module.exports.calculateViewBox = function(args) {
         var imageAspectRatio = imageHeight / imageWidth;
 
         if (screenAspectRatio > 1) {
+            self.postMessage({event: 'log', msg: 'Screen aspect ratio > 1. Resizing.'});
             // Assert: viewport is tall and skinny. Or at least height is
             // greater than width. Probably on something mobile. To prevent
             // having image dimensions that are slightly mis-matched with
@@ -51,17 +52,18 @@ module.exports.calculateViewBox = function(args) {
                     var extraWidthNeeded = (imageHeight / args.screenHeight) * args.screenWidth - imageWidth;
                     viewBox.x = viewBox.x - (extraWidthNeeded/2);
                     viewBox.width = viewBox.width + extraWidthNeeded;
-                    self.postMessage({event: 'log', msg: 'Extra width needed: ' + extraWidthNeeded});
+                    self.postMessage({event: 'log', msg: 'Extra width needed: ' + extraWidthNeeded.toFixed(2)});
                 } else if (imageAspectRatio < screenAspectRatio) {
                     var extraHeightNeeded = (imageWidth / args.screenWidth) * args.screenHeight - imageHeight;
                     viewBox.y = viewBox.y - extraHeightNeeded;
                     viewBox.height = viewBox.height + extraHeightNeeded;
-                    self.postMessage({event: 'log', msg: 'Extra height needed: ' + extraHeightNeeded});
+                    self.postMessage({event: 'log', msg: 'Extra height needed: ' + extraHeightNeeded.toFixed(2)});
                 } else {
                     // Assert: it's exactly the same. No adjustment needed.
                 }
             } else if (args.sizingmethod === 'cover') {
                 // Nothing, for now. TODO: Implement this.
+                self.postMessage({event: 'log', msg: '"cover" sizingmethod not implemented!'});
             }
         }
     }
