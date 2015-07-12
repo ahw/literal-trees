@@ -1,6 +1,7 @@
 var timers = require('./timer-utils');
 timers.startTimer('click to loaded');
 var qs = require('./diet-qs-no-sugar');
+var _ = require('underscore');
 var chroma = require('chroma-js');
 var query = qs.parse(window.location.search.substr(1));
 var utils = require('./utils');
@@ -66,6 +67,86 @@ if (extraCSS) {
     style.innerHTML = "@media print {" + extraCSS + "}";
     document.head.appendChild(style);
 }
+
+
+// Set up various UI things
+var inputCells = Array.prototype.slice.call(document.querySelectorAll('td.input'));
+inputCells.forEach(function(input) {
+    input.addEventListener('click', function(e) {
+        // Focus the <input> element contained inside
+        e.currentTarget.querySelector('input').focus();
+    });
+});
+
+var rerenderNewSeed = document.getElementById('rerender-new-seed');
+var rerenderOldSeed = document.getElementById('rerender-old-seed');
+
+rerenderNewSeed.onclick = function(e) {
+    e.preventDefault();
+    rerender(false);
+};
+
+rerenderOldSeed.onclick = function(e) {
+    e.preventDefault();
+    rerender(true);
+};
+
+document.addEventListener('keydown', function(e) {
+    console.log('got keydown');
+    if (e.which === 13 || e.keyIdentifier === 'Enter') {
+        rerender(true);
+    }
+});
+
+function rerender(useOldSeed) {
+    console.log('possiby re-rendering');
+    var newQuery = {};
+    var inputs = Array.prototype.slice.call(document.querySelectorAll('input'));
+    inputs.forEach(function(input) {
+        if (query[input.name] && input.value != query[input.name]) {
+            // Assert: isn't default value, isn't the old query string
+            // value.
+            newQuery[input.name] = input.value;
+        } else if (typeof query[input.name] === 'undefined' && input.value != input.defaultValue) {
+            newQuery[input.name] = input.value;
+        }
+
+        // if (input.value !== input.defaultValue && input.value !== query[input.name]) {
+        //     console.log('New/updated query string key', 'input.value', input.value, 'input.defaultvalue', input.defaultValue, 'querystring', query[input.name]);
+        //     newQuery[input.name] = input.value;
+        // }
+    });
+    _.extend(query, newQuery);
+    query = _.omit(newQuery, function(value, key, obj) {
+        var input = document.querySelector('input[name="' + key + '"]');
+        if (input && input.defaultValue == newQuery[key]) {
+            // Asert: the new query string's value for this key is the
+            // default value, so no need to add it.
+            console.log('ommitting ' + key + '=' + value + ' from query string since it is the default value');
+            return true;
+        }
+    });
+    var newQueryString = qs.stringify(query);
+    console.log('[literal-trees] New rendering query string', newQueryString);
+    if (useOldSeed) {
+        window.location.hash = seed;
+        window.location.search = newQueryString;
+    } else {
+        window.location.hash = "";
+        window.location.search = newQueryString;
+    }
+}
+
+function updateInputValues(query) {
+    _.keys(query).forEach(function(key) {
+        var input = document.querySelector('input[name="' + key + '"]');
+        if (input) {
+            input.value = query[key];
+        }
+    });
+}
+
+updateInputValues(query);
 
 if (query.norender) { return; }
 var seed;
@@ -188,7 +269,6 @@ w.onmessage = function(e) {
     }
 };
 
-
 timers.startTimer('svg computed');
 w.postMessage({
     event: 'inputs',
@@ -217,13 +297,4 @@ w.postMessage({
     margin: query.margin,
     showbranches: query.showbranches,
     sizingmethod: query.sizingmethod
-});
-
-// Set up various UI things
-var inputCells = Array.prototype.slice.call(document.querySelectorAll('td.input'));
-inputCells.forEach(function(input) {
-    input.addEventListener('click', function(e) {
-        // Focus the <input> element contained inside
-        e.currentTarget.querySelector('input').focus();
-    });
 });

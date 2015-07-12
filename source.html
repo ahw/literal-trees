@@ -54,7 +54,19 @@
             <p>Persistant link: <a target="_blank" id="persistant-link" href="#"></a></p>
         </div>
 
-        <h1>Inputs</h1>
+        <div style="position:relative">
+            <h1>Inputs</h1>
+            <div id="rerender-container">
+                <a id="rerender-old-seed" href="/">
+                    <img
+                    src="https://pd93f014.s3.amazonaws.com/tree-blue.png"/>
+                    Re-render (same seed)</a>
+                <a id="rerender-new-seed" href="/">
+                    <img
+                    src="https://pd93f014.s3.amazonaws.com/tree-green.png"/>
+                    Re-render (new)</a>
+            </div>
+        </div>
 
         <!-- <h2>Constants and Flags</h2> -->
         <!-- <p>These are just plain constants. Some are boolean flags.</p> -->
@@ -70,16 +82,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Branching depth</td>
-                        <td><code>depth</code></td>
-                        <td>Integer [1, &infin;)</td>
-                        <td class="input"><label>&#9998;</label><input value="6" type="text" pattern="[0-9]*"></input></td>
-                    </tr>
-                    <tr class="rule">
                         <td>Trunk height</td>
                         <td><code>trunkheight</code></td>
                         <td>Float (0, &infin;)</td>
-                        <td class="input"><label>&#9998;</label><input value="1.0" type="number" step=".1"></input></td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="trunkheight" defaultvalue="1.0" value="1.0" type="number" step=".1"></input></td>
                         <!-- <td class="inputx">1.0</td> -->
                     </tr>
                     <!--
@@ -99,13 +106,15 @@
                         <td rowspan="2">Color</td>
                         <td><code>color</code></td>
                         <td>String</td>
-                        <td class="input"><label>&#9998;</label><input value="black" type="text"></input></td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="color" defaultvalue="black" value="black" type="text"></input></td>
                     </tr>
                     <tr>
                         <td style="display:none"></td>
                         <td><code>bgcolor</code></td>
                         <td>String</td>
-                        <td class="input"><label>&#9998;</label><input value="white" type="text"></input></td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="bgcolor" defaultvalue="white" value="white" type="text"></input></td>
                     </tr>
                     <tr class="rule disabled">
                         <td>Branch at tip</td>
@@ -136,26 +145,47 @@
                         <td rowspan="2">Branch Angles</td>
                         <td><code>arm</code></td>
                         <td>Float</td>
-                        <td class="input"><label>&#9998;</label><input value="65" type="text" pattern="[0-9]*"></input></td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="arm" defaultvalue="65" value="65"
+                            type="number"
+                            step="1"
+                            pattern="[0-9]*"></input></td>
                     </tr>
                     <tr>
                         <td style="display:none"></td>
                         <td><code>arv</code></td>
                         <td>Float</td>
-                        <td class="input"><label>&#9998;</label><input value="5" type="text" pattern="[0-9]*"></input></td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="arv" defaultvalue="5" value="5"
+                            type="number"
+                            step="1"
+                            pattern="[0-9]*"></input></td>
+                    </tr>
+
+                    <tr class="rule">
+                        <td>Branching depth</td>
+                        <td><code>depth</code></td>
+                        <td>Integer [1, &infin;)</td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="depth" defaultvalue="6" value="6"
+                            type="number"
+                            step="1"
+                            pattern="[0-9]*"></input></td>
                     </tr>
 
                     <tr class="rule">
                         <td rowspan="2">Printing</td>
                         <td><code>maxprintheight</code></td>
                         <td>String</td>
-                        <td class="input"><label>&#9998;</label><input value="9in" type="text"></input></td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="maxprintheight" defaultvalue="9in" value="9in" type="text"></input></td>
                     </tr>
                     <tr>
                         <td style="display:none"></td>
                         <td><code>maxprintwidth</code></td>
                         <td>String</td>
-                        <td class="input"><label>&#9998;</label><input value="6.5in" type="text"></input></td>
+                        <td class="input"><label>&#9998;</label><input
+                            name="maxprintwidth" defaultvalue="6.5in" value="6.5in" type="text"></input></td>
                     </tr>
 
                 </tbody>

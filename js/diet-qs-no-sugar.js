@@ -8,20 +8,21 @@ exports.stringifyTraverse = function(subject, level, key){
 		var child_appendix = level > 0 ? '['+prop+']' : prop ;
 		var appendix = parent_appendix + child_appendix;
 		var value = subject[prop];
-	    if (Object.isObject(value)) {
-	        //output(appendix.red, value, level);
-	        result += exports.stringifyTraverse(value, level + 1, appendix);
-	    } else if (Array.isArray(value)) {
-	    	for(var i = 0; i < value.length; i++){
-	    		result += appendix+'='+exports.stringifyValue(value[i])+'&';
-	    		//console.log((appendix+'='+exports.stringifyValue(value[i])+'&').toString().white);
-	    	}
-	    	
-	    } else {
-	        //output(appendix.yellow, value, level);
-	        //console.log((appendix +'='+ value).toString().white);
-	        result += appendix +'='+ exports.stringifyValue(value) + '&';
-	    }
+	    // -- if (Object.isObject(value)) {
+	    // --     //output(appendix.red, value, level);
+	    // --     result += exports.stringifyTraverse(value, level + 1, appendix);
+	    // -- } else if (Array.isArray(value)) {
+	    // -- 	for(var i = 0; i < value.length; i++){
+	    // -- 		result += appendix+'='+exports.stringifyValue(value[i])+'&';
+	    // -- 		//console.log((appendix+'='+exports.stringifyValue(value[i])+'&').toString().white);
+	    // -- 	}
+	    // -- 	
+	    // -- } else {
+	    // --     //output(appendix.yellow, value, level);
+	    // --     //console.log((appendix +'='+ value).toString().white);
+	    // --     result += appendix +'='+ exports.stringifyValue(value) + '&';
+	    // -- }
+        result += appendix +'='+ exports.stringifyValue(value) + '&';
 	}
 	return result;
 }

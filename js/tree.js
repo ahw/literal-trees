@@ -72,6 +72,8 @@ Tree.prototype.branch = function(args) {
             }
         }
 
+        var branchWidth = point.depth < 3 ? 4 : 1;
+
         var angleRange = Normal() * tree.options.arv + tree.options.arm;
         var numBranches = Math.floor(Normal() * 0.5 + Utils.LinearTransform([0, maxDepth], [4, 8], point.depth));
 
