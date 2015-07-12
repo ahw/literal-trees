@@ -16,10 +16,10 @@ body {
 
 input {
     border:none;
-    background:#c00;
-    width:100%;
+    width:4em;
     margin:0;
     padding:0;
+    background:none;
 }
 
 #paper svg {
@@ -137,7 +137,6 @@ path {
 }
 
 td.input {
-    background:#008C53;
 }
 
 @media screen and (max-width: 500px) {
