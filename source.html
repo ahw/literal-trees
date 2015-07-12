@@ -38,8 +38,8 @@
 
         <h1>Inputs</h1>
 
-        <h2>Constants and Flags</h2>
-        <p>These are just plain constants. Some are boolean flags.</p>
+        <!-- <h2>Constants and Flags</h2> -->
+        <!-- <p>These are just plain constants. Some are boolean flags.</p> -->
         <div class="table-responsive">
             <table class="table constant-inputs" border="0">
                 <thead>
@@ -47,7 +47,7 @@
                         <th>Parameter</th>
                         <th>Query String Key</th>
                         <th>Type</th>
-                        <th>Default Value</th>
+                        <th>Value</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,30 +89,44 @@
                         <td>String</td>
                         <td class="input"><label>&#9998;</label><input value="white" type="text"></input></td>
                     </tr>
-                    <tr class="rule">
+                    <tr class="rule disabled">
                         <td>Branch at tip</td>
                         <td><code>bat</code></td>
                         <td>Boolean</td>
                         <td>false</td>
                     </tr>
-                    <tr class="rule">
+                    <tr class="rule disabled">
                         <td rowspan="2">Circle endpoints</td>
                         <td><code>co</code></td>
                         <td>Boolean</td>
                         <td>false</td>
                     </tr>
-                    <tr>
+                    <tr class="disabled">
                         <td style="display:none"></td>
                         <td><code>ce</code></td>
                         <td>Boolean</td>
                         <td>false</td>
                     </tr>
-                    <tr class="rule">
+                    <tr class="rule disabled">
                         <td>Show branches</td>
                         <td><code>showbranches</code></td>
                         <td>Boolean</td>
                         <td>true</td>
                     </tr>
+
+                    <tr class="rule">
+                        <td rowspan="2">Branch Angles</td>
+                        <td><code>arm</code></td>
+                        <td>Float</td>
+                        <td class="input"><label>&#9998;</label><input value="65" type="text" pattern="[0-9]*"></input></td>
+                    </tr>
+                    <tr>
+                        <td style="display:none"></td>
+                        <td><code>arv</code></td>
+                        <td>Float</td>
+                        <td class="input"><label>&#9998;</label><input value="5" type="text" pattern="[0-9]*"></input></td>
+                    </tr>
+
                     <tr class="rule">
                         <td rowspan="2">Printing</td>
                         <td><code>maxprintheight</code></td>
@@ -125,11 +139,12 @@
                         <td>String</td>
                         <td class="input"><label>&#9998;</label><input value="6.5in" type="text"></input></td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
-        <p class="phone-only">Tip: scroll this table left and right.</p>
 
+        <!--
         <h2>Random Distributions</h2>
         <p>The inputs listed below are parameters to various random
         distributions used. If they're inputs to a <strong>Normal</strong>
@@ -166,6 +181,7 @@
             </table>
         </div>
         <p class="phone-only">Tip: scroll this table left and right.</p>
+        -->
     </div>
 
     <script type="text/javascript">

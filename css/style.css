@@ -15,12 +15,13 @@ body {
 }
 
 input {
-    border:none;
     width:4em;
     margin:0;
     padding:0;
     background:none;
-    cursor:pointer;
+    height:100%;
+    padding-left:4px;
+    border-style:solid;
 }
 
 input:focus {
@@ -29,7 +30,7 @@ input:focus {
 
 label {
     margin-right:6px;
-    color:lightgray;
+    color:black;
     cursor:pointer;
 }
 
@@ -149,6 +150,10 @@ path {
 
 td.input {
     cursor:pointer;
+}
+
+tr.disabled,tr.disabled code {
+    color:gray;
 }
 
 @media screen and (max-width: 500px) {
