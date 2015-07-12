@@ -7,7 +7,7 @@ var _ = require('underscore');
 var defaultTreeOptions = require('./default-tree-options');
 var TreeSizing = require('./tree-sizing');
 
-console.log('[literal-trees] This is Literal Trees version LITERAL_TREES_VERSION');
+console.log('[literal-trees] this is Literal Trees version LITERAL_TREES_VERSION');
 
 var Tree = function(userOptions) {
     var tree = this;
