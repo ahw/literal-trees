@@ -23,6 +23,10 @@ input {
     cursor:pointer;
 }
 
+input:focus {
+    background:white;
+}
+
 label {
     margin-right:6px;
     color:lightgray;
@@ -150,7 +154,7 @@ td.input {
 @media screen and (max-width: 500px) {
     .table.constant-inputs>tbody>tr>td, .table.constant-inputs>tbody>tr>th, .table.constant-inputs>tfoot>tr>td, .table.constant-inputs>tfoot>tr>th, .table.constant-inputs>thead>tr>td, .table.constant-inputs>thead>tr>th {
         border:none;
-        padding:8px 0px;
+        padding:12px 0px;
     }
     .table.constant-inputs>thead>tr>td, .table.constant-inputs>thead>tr>th {
         border-bottom:2px solid #ddd;
