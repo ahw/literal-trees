@@ -122,6 +122,18 @@ path {
     border:none;
 }
 
+td.input {
+    background:#008C53;
+}
+
+input {
+    border:none;
+    background:none;
+    width:100%;
+    margin:0;
+    padding:0;
+}
+
 @media screen and (max-width: 500px) {
     .table.constant-inputs>tbody>tr>td, .table.constant-inputs>tbody>tr>th, .table.constant-inputs>tfoot>tr>td, .table.constant-inputs>tfoot>tr>th, .table.constant-inputs>thead>tr>td, .table.constant-inputs>thead>tr>th {
         border:none;
