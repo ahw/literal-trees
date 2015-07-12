@@ -99,35 +99,24 @@ document.addEventListener('keydown', function(e) {
 });
 
 function rerender(useOldSeed) {
-    console.log('possiby re-rendering');
     var newQuery = {};
     var inputs = Array.prototype.slice.call(document.querySelectorAll('input'));
     inputs.forEach(function(input) {
-        if (query[input.name] && input.value != query[input.name]) {
-            // Assert: isn't default value, isn't the old query string
-            // value.
-            newQuery[input.name] = input.value;
-        } else if (typeof query[input.name] === 'undefined' && input.value != input.defaultValue) {
+        if (input.value !== input.defaultValue) {
             newQuery[input.name] = input.value;
         }
-
-        // if (input.value !== input.defaultValue && input.value !== query[input.name]) {
-        //     console.log('New/updated query string key', 'input.value', input.value, 'input.defaultvalue', input.defaultValue, 'querystring', query[input.name]);
-        //     newQuery[input.name] = input.value;
-        // }
     });
-    _.extend(query, newQuery);
-    query = _.omit(newQuery, function(value, key, obj) {
+    _.keys(query).forEach(function(key) {
         var input = document.querySelector('input[name="' + key + '"]');
-        if (input && input.defaultValue == newQuery[key]) {
-            // Asert: the new query string's value for this key is the
-            // default value, so no need to add it.
-            console.log('ommitting ' + key + '=' + value + ' from query string since it is the default value');
-            return true;
+        if (input === null) {
+            // If there is no input corresponding to this key/value, then
+            // add it.
+            newQuery[key] = query[key];
         }
     });
-    var newQueryString = qs.stringify(query);
-    console.log('[literal-trees] New rendering query string', newQueryString);
+
+    var newQueryString = qs.stringify(newQuery);
+    // console.log('[literal-trees] New rendering query string', newQueryString);
     if (useOldSeed) {
         window.location.hash = seed;
         window.location.search = newQueryString;

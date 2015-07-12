@@ -103,6 +103,9 @@ exports.traverse = function(subject, key, value){
 	return subject;
 }
 exports.parse = function(body){
+    if (body.toString() === "") {
+        return {};
+    }
 	var result = {};
 	body = body.toString().replace(/\+/gi,' ')
 	//console.log('###ORIGINAL', body);
@@ -117,6 +120,7 @@ exports.parse = function(body){
 		
 	});
 	//console.log('PARSE RESULT', result);
+    console.log('result', result);
 	return result;
 }
 
