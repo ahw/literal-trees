@@ -20,6 +20,13 @@ input {
     margin:0;
     padding:0;
     background:none;
+    cursor:pointer;
+}
+
+label {
+    margin-right:6px;
+    color:lightgray;
+    cursor:pointer;
 }
 
 #paper svg {
@@ -137,6 +144,7 @@ path {
 }
 
 td.input {
+    cursor:pointer;
 }
 
 @media screen and (max-width: 500px) {

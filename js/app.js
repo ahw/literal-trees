@@ -218,3 +218,12 @@ w.postMessage({
     showbranches: query.showbranches,
     sizingmethod: query.sizingmethod
 });
+
+// Set up various UI things
+var inputCells = Array.prototype.slice.call(document.querySelectorAll('td.input'));
+inputCells.forEach(function(input) {
+    input.addEventListener('click', function(e) {
+        // Focus the <input> element contained inside
+        e.currentTarget.querySelector('input').focus();
+    });
+});
