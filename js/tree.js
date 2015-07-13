@@ -53,6 +53,7 @@ Tree.prototype.branch = function(args) {
             continue;
         }
 
+        var branchWidth = 0.5; // Utils.LinearTransform([0, maxDepth - 1], [5, 0.5], point.depth);
         if (point.depth === 0) {
             var height = tree.options.paperHeight * tree.options.trunkheight;
             if (point.y + height < tree.TREE_MIN_Y) tree.TREE_MIN_Y = point.y + height;
@@ -60,7 +61,10 @@ Tree.prototype.branch = function(args) {
 
             if (tree.options.showbranches) {
                 // Draw the trunk downwards
-                tree.paper.path(Utils.path('M', point.x, point.y, 'L', point.x, height)).attr("stroke", tree.options.color);
+                tree.paper.path(Utils.path('M', point.x, point.y, 'L', point.x, height)).attr({
+                    "stroke": tree.options.color,
+                    "stroke-width": 0.5 // 10
+                });
             }
 
             if (tree.options.co) {
@@ -71,8 +75,6 @@ Tree.prototype.branch = function(args) {
                 tree.paper.circle(point.x, point.y, tree.options.circleradius).attr({stroke: "none", fill: tree.options.color});
             }
         }
-
-        var branchWidth = point.depth < 3 ? 4 : 1;
 
         var angleRange = Normal() * tree.options.arv + tree.options.arm;
         var numBranches = Math.floor(Normal() * 0.5 + Utils.LinearTransform([0, maxDepth], [4, 8], point.depth));
@@ -129,7 +131,10 @@ Tree.prototype.branch = function(args) {
 
             // Draw the branch.
             if (tree.options.showbranches) {
-                tree.paper.path(Utils.path('M', branchOrigin.x, branchOrigin.y, 'l', xOffset, yOffset)).attr("stroke", tree.options.color);
+                tree.paper.path(Utils.path('M', branchOrigin.x, branchOrigin.y, 'l', xOffset, yOffset)).attr({
+                    "stroke": tree.options.color,
+                    "stroke-width": branchWidth
+                });
             }
 
             if (tree.options.ce) {
