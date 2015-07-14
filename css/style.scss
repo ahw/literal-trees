@@ -20,12 +20,23 @@ body {
 
 input {
     width:4em;
+    width:105px!important;
+    height:28px!important;
     margin:0;
     padding:0;
     background:none;
     height:100%;
     padding-left:4px;
     border-style:solid;
+}
+
+input.color {
+    text-align:right;
+    padding-right:8px;
+}
+
+.minicolors-theme-default .minicolors-input {
+    height:28px;
 }
 
 input:focus {

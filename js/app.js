@@ -71,13 +71,13 @@ if (extraCSS) {
 
 
 // Set up various UI things
-var inputCells = Array.prototype.slice.call(document.querySelectorAll('td.input'));
-inputCells.forEach(function(input) {
-    input.addEventListener('click', function(e) {
-        // Focus the <input> element contained inside
-        e.currentTarget.querySelector('input').focus();
-    });
-});
+// -- var inputCells = Array.prototype.slice.call(document.querySelectorAll('td.input'));
+// -- inputCells.forEach(function(input) {
+// --     input.addEventListener('click', function(e) {
+// --         // Focus the <input> element contained inside
+// --         e.currentTarget.querySelector('input').focus();
+// --     });
+// -- });
 
 var rerenderNewSeed = document.getElementById('rerender-new-seed');
 var rerenderOldSeed = document.getElementById('rerender-old-seed');
@@ -167,6 +167,33 @@ function updateInputValues(query) {
 }
 
 updateInputValues(query);
+
+function addResource(url, cb) {
+    var tag;
+    cb = cb || function() {};
+    if (/js$/.test(url)) {
+        tag = document.createElement('script');
+        tag.src = url;
+        tag.onload = cb;
+    } else if (/css$/.test(url)) {
+        tag  = document.createElement('link');
+        tag.type = 'text/css';
+        tag.href = url;
+        tag.rel = 'stylesheet';
+        tag.onload = cb;
+    }
+    document.body.appendChild(tag);
+}
+
+function runAfterRendering() {
+    addResource('bower_components/minicolors/jquery.minicolors.css');
+    addResource('bower_components/jquery/dist/jquery.min.js', function() {
+        // Should probably be using a library for this chaining.
+        addResource('bower_components/minicolors/jquery.minicolors.min.js', function() {
+            $('input.color').minicolors();
+        });
+    });
+}
 
 if (query.norender) { return; }
 var seed;
@@ -275,7 +302,8 @@ w.onmessage = function(e) {
                             document.head.appendChild(mediaQuery);
                             timers.endTimer('total client-side raster');
                             timers.endTimer('click to loaded');
-                        }, 100)
+                        }, 100);
+                        runAfterRendering();
                     }
                     timers.startTimer('raster.image/png.onload');
                     var dataUrl = canvas.toDataURL();
