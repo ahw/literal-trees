@@ -302,7 +302,7 @@ w.onmessage = function(e) {
                             document.head.appendChild(mediaQuery);
                             timers.endTimer('total client-side raster');
                             timers.endTimer('click to loaded');
-                        }, 100);
+                        }, 1000);
                         runAfterRendering();
                     }
                     timers.startTimer('raster.image/png.onload');
