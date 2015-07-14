@@ -21,6 +21,8 @@
     "tests"
   ],
   "dependencies": {
-    "history": "~1.8.0"
+    "history": "~1.8.0",
+    "minicolors": "~2.1.12",
+    "jquery": "~2.1.4"
   }
 }
