@@ -305,6 +305,13 @@ tr.disabled,tr.disabled code {
         -webkit-transform:none;
     }
 
+    .minicolors-position-left .minicolors-panel {
+        left:-50%!important;
+    }
+
+    .minicolors-position-bottom .minicolors-panel {
+        top:-50%!important;
+    }
 }
 
 @media screen and (max-width: 400px) {
