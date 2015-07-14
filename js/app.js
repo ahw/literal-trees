@@ -144,13 +144,14 @@ function rerender(useOldSeed) {
         window.location.search = newQueryString;
     } else {
         window.location.hash = "";
-        var loc = window.location.href;
-        var index = loc.indexOf('#');
-        if (index > 0) {
-          window.location = loc.substring(0, index);
-        } else {
-            window.location.reload();
-        }
+        window.location.search = newQueryString;
+        // var loc = window.location.href;
+        // var index = loc.indexOf('#');
+        // if (index > 0) {
+        // window.location = loc.substring(0, index);
+        // } else {
+        //   window.location.reload();
+        // }
     }
 }
 
