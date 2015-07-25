@@ -140,16 +140,12 @@ function rerender(useOldSeed) {
     if (useOldSeed) {
         window.location.hash = seed;
         window.location.search = newQueryString;
+    } else if (window.location.search.replace(/^\?/, "") === newQueryString) {
+        window.location.hash = "";
+        window.location.reload();
     } else {
         window.location.hash = "";
         window.location.search = newQueryString;
-        // var loc = window.location.href;
-        // var index = loc.indexOf('#');
-        // if (index > 0) {
-        // window.location = loc.substring(0, index);
-        // } else {
-        //   window.location.reload();
-        // }
     }
 }
 
