@@ -15,7 +15,7 @@ module.exports = {
     bld: 3, // branch location denominator
     showbranches: true,
     circleradius: 1,
-    margin: 0,
+    margin: 20,
     aspectratio: undefined,
     sizingmethod: 'contain' // could be "contain" or "cover"
 };
