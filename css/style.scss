@@ -1,22 +1,21 @@
-// @import "nyt-cheltenham.css";
+@import "nyt-cheltenham.css";
 @import "bootstrap.css";
 
 body {
-    font-family:Monospace;
-    // font-family: "nyt-cheltenham";
-    font-size:14px;
+    font-family: "nyt-cheltenham";
+    // font-size:14px;
 }
 
 table {
-    font-size:14px;
+    // font-size:14px;
 }
 
 
 code {
     color:black;
     background:none;
-    font-weight:bold;
-    font-family:Monospace;
+    // font-weight:bold;
+    // font-family:Monospace;
 }
 
 html {
@@ -74,7 +73,7 @@ path {
 }
 
 #loading-message {
-    font-size:10px;
+    // font-size:10px;
     text-align:center;
     width:60%;
     margin:0 auto;
@@ -107,11 +106,11 @@ path {
 #version {
     margin-top:3em;
     text-align:center;
-    // font-size:80%;
+    font-size:80%;
 }
 
 #persistant-link-container {
-    font-size:10px;
+    // font-size:10px;
     -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
        -moz-animation: fadein 1s; /* Firefox < 16 */
         -ms-animation: fadein 1s; /* Internet Explorer */
