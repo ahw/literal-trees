@@ -122,7 +122,6 @@ exports.parse = function(body){
 		
 	});
 	//console.log('PARSE RESULT', result);
-    console.log('result', result);
 	return result;
 }
 

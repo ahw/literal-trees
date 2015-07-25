@@ -1,5 +1,4 @@
 var timers = require('./timer-utils');
-timers.startTimer('click to loaded');
 var qs = require('./diet-qs-no-sugar');
 var _ = require('underscore');
 var chroma = require('chroma-js');
@@ -264,7 +263,7 @@ w.onmessage = function(e) {
             // (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
             break;
         case 'svg':
-            timers.endTimer('svg computed');
+            timers.endTimer('SVG compute time');
             console.log('[literal-trees] svg document is ~' + Math.ceil(.75 * (e.data.value.length/1024)) + ' KB');
             if (query.svg) {
                 // User explicitly asked for SVG only
@@ -274,7 +273,7 @@ w.onmessage = function(e) {
             } else {
                 // Else go through the rasterizing process to get a bitmap
                 // image.
-                timers.startTimer('total client-side raster');
+                timers.startTimer('Total client-side raster time');
                 var paperEl = document.getElementById('paper');
                 // paperEl.innerHTML = "";
                 var canvasWidth = Math.ceil(e.data.width);
@@ -295,7 +294,7 @@ w.onmessage = function(e) {
 
                 var svgImage = new Image();
                 svgImage.onload = function () {
-                    timers.endTimer('raster.image/svg+xml.onload');
+                    timers.endTimer('SVG load time');
                     ctx.fillStyle = bgcolor;
                     ctx.fillRect(0, 0, Math.ceil(e.data.width), Math.ceil(e.data.height));
                     ctx.drawImage(svgImage, 0, 0);
@@ -317,13 +316,13 @@ w.onmessage = function(e) {
                         margin: 'auto'
                     });
                     rasterImage.onload = function() {
-                        timers.endTimer('raster.image/png.onload');
-                        timers.startTimer('raster.image/png.appended-to-dom');
+                        timers.endTimer('PNG load time');
+                        timers.startTimer('PNG appended to DOM time');
                         LOG.log('Natural image width:', rasterImage.width);
                         paperEl.innerHTML = "";
                         paperEl.appendChild(container);
                         container.appendChild(rasterImage);
-                        timers.endTimer('raster.image/png.appended-to-dom');
+                        timers.endTimer('PNG appended to DOM time');
                         setTimeout(function() {
                             // Put this in a timeout so that the browser has
                             // a change to compute the correct layout and
@@ -334,24 +333,25 @@ w.onmessage = function(e) {
                             LOG.log('Rendered image width:', rasterImage.width);
                             mediaQuery.innerHTML = style;
                             document.head.appendChild(mediaQuery);
-                            timers.endTimer('total client-side raster');
-                            timers.endTimer('click to loaded');
+                            timers.endTimer('Total client-side raster time');
+                            // console.log('[literal-trees] First byte to loaded time:', (new Date()).valueOf() - window.lt_t0 + 'ms');
+                            console.timeEnd('First byte to loaded time');
                         }, 1000);
                         runAfterRendering();
                     }
-                    timers.startTimer('raster.image/png.onload');
+                    timers.startTimer('PNG load time');
                     var dataUrl = canvas.toDataURL();
                     rasterImage.src = dataUrl;
                     console.log('[literal-trees] rasterized image is ~' + Math.ceil(.75 * (dataUrl.length/1024)) + ' KB');
                 }
-                timers.startTimer('raster.image/svg+xml.onload');
+                timers.startTimer('SVG load time');
                 svgImage.src = 'data:image/svg+xml,' + escape(e.data.value);
             }
             break;
     }
 };
 
-timers.startTimer('svg computed');
+timers.startTimer('SVG compute time');
 w.postMessage({
     event: 'inputs',
     paperWidth: window.innerWidth, // TODO: remove when backward functionality not required
