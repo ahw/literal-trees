@@ -149,12 +149,30 @@ function rerender(useOldSeed) {
     }
 }
 
+function updateSlider($input, $slider) {
+    // Assume we have jquery
+    var $inner = $slider.find('.toggle-switch-inner');
+    if ($input.is(":checked")) {
+        $inner.css({
+            right: 'initial',
+            left: '3px',
+            background: 'black'
+        });
+    } else {
+        $inner.css({
+            left: 'initial',
+            right: '3px',
+            background: 'white'
+        });
+    }
+}
+
 function updateInputValues(query) {
     _.keys(query).forEach(function(key) {
         var input = document.querySelector('input[name="' + key + '"]');
         if (input && input.type === 'checkbox') {
             input.checked = query[key] ? true : false;
-        } else {
+        } else if (input) {
             input.value = query[key];
         }
     });
@@ -184,7 +202,26 @@ function runAfterRendering() {
     addResource('bower_components/jquery/dist/jquery.min.js', function() {
         // Should probably be using a library for this chaining.
         addResource('bower_components/minicolors/jquery.minicolors.min.js', function() {
+            // Assert: jQuery is on the page, as is the mini colors CSS and
+            // JS.
+
+            // Initialize the mini colors plugin
             $('input.color').minicolors();
+
+            $('input[type="checkbox"]').each(function() {
+                var $input = $(this);
+                var $slider = $('<div class="toggle-switch-outer"><div class="toggle-switch-inner"></div></div>');
+                $input.hide();
+                $slider.insertAfter($input);
+                updateSlider($input, $slider);
+
+                $slider.on('click', function() {
+                    var props = {};
+                    $input.click();
+                    updateSlider($input, $slider);
+                });
+            });
+
         });
     });
 }

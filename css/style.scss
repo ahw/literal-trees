@@ -25,7 +25,7 @@ html {
 body {
 }
 
-input {
+input, .toggle-switch-outer {
     width:4em;
     width:105px!important;
     height:28px!important;
@@ -35,6 +35,24 @@ input {
     height:100%;
     padding-left:4px;
     border-style:solid;
+    border-width:2px;
+    display:inline-block;
+}
+
+.toggle-switch-outer {
+    position:relative;
+    vertical-align:middle;
+}
+
+.toggle-switch-inner {
+    background:black;
+    position:absolute;
+    top:3px;
+    left:3px;
+    bottom:3px;
+    width:50%;
+    box-sizing:border-box;
+    border:1px solid black;
 }
 
 input.color {
