@@ -255,7 +255,10 @@ w.onmessage = function(e) {
             link.href = url;
             link.innerHTML = seed;
             printedSeed.innerHTML = seed;
-            document.getElementById("persistant-link-container").style.visibility = "visible";
+            document.getElementById('persistant-link-container').style.visibility = "visible";
+            var oldSeedRenderLink = document.getElementById('rerender-old-seed');
+            var title = oldSeedRenderLink.getAttribute('title');
+            oldSeedRenderLink.setAttribute('title', title + ' (' + seed + ').');
             break;
         case 'metrics':
             // (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;

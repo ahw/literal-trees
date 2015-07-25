@@ -51,15 +51,15 @@
     <div id="btf">
         <div id="persistant-link-container" style="text-align:center; visibility:hidden">
             <p>Literal Trees version LITERAL_TREES_VERSION</p>
-            <p>Persistant link: <a target="_blank" id="persistant-link" href="#"></a></p>
+            <p>Persistant link: <a title="A link to this tree which should theoretically always work and always produce exactly the same tree." id="persistant-link" href="#"></a></p>
         </div>
 
         <div style="position:relative">
             <div class="flexbox" id="rerender-container">
-                <a id="rerender-new-seed" href="/">
+                <a id="rerender-new-seed" href="/" title="Render a new random tree using the input values below.">
                     <!-- <img src="https://pd93f014.s3.amazonaws.com/tree-green.png"/> -->
                     New Tree</a>
-                <a id="rerender-old-seed" href="/">
+                <a id="rerender-old-seed" href="/" title="Render a tree with the input values below but re-use this same input seed to the PRNG">
                     <!-- <img src="https://pd93f014.s3.amazonaws.com/tree-blue.png"/> -->
                     Same Tree</a>
             </div>
@@ -259,7 +259,43 @@
         </div>
         <p class="phone-only">Tip: scroll this table left and right.</p>
         -->
-    </div>
+
+        <h1>Dev Notes</h1>
+        <p>
+        <!-- This is just a simple thing that draw random trees.A Cliff's Notes version of some of the interesting things: -->
+            <ul>
+                <li>All of this code is available on <a href="https://github.com/ahw/literal-trees" title="GitHub: ahw/literal-trees">GitHub</a>, natch.</li>
+
+                <li>Everything starts with Math.random.
+                The <a href="https://www.npmjs.com/package/seed-random"
+                title="seed-random">seed-random</a> library provides
+                a PRNG that overrides Math.random so you can get reproducible
+                sequences of psuedo-random numbers given the same input seed.
+                That's how the persistant link is made possible.</li>
+
+                <li>A lot of the random values are coming from the Normal
+                distribution. I'm pulling values from that distribution using the
+                <a href="https://www.npmjs.com/package/box-muller"
+                title="box-muller">box-muller</a> module (which itself is using some sort of approximation built from Math.random).</li>
+
+                <li>The tree-rendering code is actually kind of basic &mdash;
+                it's just a BFS algorithm. Still, it takes a fair amount of time
+                and processing power. To unblock the main thread it's all running
+                in a WebWorker. The WebWorker runs the BFS algorithm and
+                returns a giant stringified version of the SVG document.</li>
+
+                <li>The SVG document is rasterized client-side (!) into 
+                image/png data using HTML5 canvas.</li>
+
+                <li>What's with the name? I don't know. I guess I thought it was funny because Millenials say &ldquo;literally&rdquo; literally all the time.</li>
+
+            </ul>
+  
+        </p>
+
+        <h1>About Me</h1>
+        <p>My name is Andrew Hallagan. I'd love to hear what you think of this or anything similar via <a href="mailto:andrewhallagan@outlook.com" title="andrewhallagan@outlook.com">email</a>. You can follow me on Twitter &ndash; <a href="https://twitter.com/andrewhallagan" title="@andrewhallagan">@andrewhallagan</a> &ndash; though I'm kind of all over the place.</p>
+    </div> <!-- end #btf -->
 
     <script type="text/javascript">
         document.getElementById("btf").style.visibility = "visible";
