@@ -41,7 +41,7 @@ copy-assets:
 	cp css/style.min.css v/$(VERSION)/css
 	cp js/app.min.js v/$(VERSION)/js
 	cp js/main.bundled.js v/$(VERSION)/js
-	cp -r bower_components v/$(VERSION)/js
+	cp -r bower_components v/$(VERSION)
 	cp index.html v/$(VERSION)
 
 	@echo ""
