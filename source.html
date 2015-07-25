@@ -282,19 +282,39 @@
                 it's just a BFS algorithm. Still, it takes a fair amount of time
                 and processing power. To unblock the main thread it's all running
                 in a WebWorker. The WebWorker runs the BFS algorithm and
-                returns a giant stringified version of the SVG document.</li>
+                returns a giant stringified version of the SVG document. In
+                an earlier version I was building the SVG in the DOM
+                directly using <a href="http://raphaeljs.com/"
+                    title="RaphaelJS">RaphaelJS</a> and it was 60X slower.</li>
 
-                <li>The SVG document is rasterized client-side (!) into 
-                image/png data using HTML5 canvas.</li>
+                <li>Back in the main thread, the SVG document is rasterized client-side (!) into 
+                image/png data using HTML5 canvas. Data URLs abound, as do
+                onload callbacks.</li>
 
-                <li>What's with the name? I don't know. I guess I thought it was funny because Millenials say &ldquo;literally&rdquo; literally all the time.</li>
+                <li>If the device screen is taller than it is wide I
+                assume you're on a phone and pad the image as necessary
+                so that it matches the aspect ratio of the device
+                exactly. This makes it easy to just save the image and
+                have it work seamlessly as a phone background or
+                whatever.</li>
+
+                <li>What's with the name? I don't know anymore. I guess I
+                thought it was funny because Millenials say
+                &ldquo;literally,&rdquo; literally, all the time.</li>
 
             </ul>
   
         </p>
 
         <h1>About Me</h1>
-        <p>My name is Andrew Hallagan. I'd love to hear what you think of this or anything similar via <a href="mailto:andrewhallagan@outlook.com" title="andrewhallagan@outlook.com">email</a>. You can follow me on Twitter &ndash; <a href="https://twitter.com/andrewhallagan" title="@andrewhallagan">@andrewhallagan</a> &ndash; though I'm kind of all over the place.</p>
+        <p>My name is Andrew Hallagan. I enjoy this sort of thing and I hope
+        you do too. I'd love to hear what you think of this or anything
+        similar via <a href="mailto:andrewhallagan@outlook.com"
+        title="andrewhallagan@outlook.com">email</a>. You can follow me on
+        Twitter &ndash; <a href="https://twitter.com/andrewhallagan"
+        title="@andrewhallagan">@andrewhallagan</a> &ndash; though I'm kind
+        of all over the place.</p>
+
     </div> <!-- end #btf -->
 
     <script type="text/javascript">
