@@ -119,7 +119,6 @@ function rerender(useOldSeed) {
     var newQuery = {};
     var inputs = Array.prototype.slice.call(document.querySelectorAll('input'));
     inputs.forEach(function(input) {
-        console.log(input.type, input.checked, input.defaultChecked);
         if (input.type === 'checkbox' && input.checked !== input.defaultChecked) {
             newQuery[input.name] = (input.checked ? 1 : 0);
         } else if (input.type !== 'checkbox' && input.value.replace(/^#/, "") !== input.defaultValue) {

@@ -55,7 +55,9 @@ exports.stringifyValue = function(value){
 	} else if (value === false) {
 		value = 'false'; 	// boolean false
 	} else if (isset(value) && !isNaN(value)) {
-		value = +value; // number
+		// value = +value; // number
+        // Don't coerce into actual Numbers. If it's a CSS color value we
+        // want the leading 0's.
 	}
 	return value;
 }
