@@ -119,12 +119,11 @@ function rerender(useOldSeed) {
     var newQuery = {};
     var inputs = Array.prototype.slice.call(document.querySelectorAll('input'));
     inputs.forEach(function(input) {
-        if (input.type === 'text' && input.value !== input.defaultValue) {
-            newQuery[input.name] = input.value.replace(/^#/, "");
-        }
-
+        console.log(input.type, input.checked, input.defaultChecked);
         if (input.type === 'checkbox' && input.checked !== input.defaultChecked) {
             newQuery[input.name] = (input.checked ? 1 : 0);
+        } else if (input.type !== 'checkbox' && input.value.replace(/^#/, "") !== input.defaultValue) {
+            newQuery[input.name] = input.value.replace(/^#/, "");
         }
     });
 
@@ -158,10 +157,10 @@ function rerender(useOldSeed) {
 function updateInputValues(query) {
     _.keys(query).forEach(function(key) {
         var input = document.querySelector('input[name="' + key + '"]');
-        if (input && input.type === 'text') {
-            input.value = query[key];
-        } else if (input && input.type === 'checkbox') {
+        if (input && input.type === 'checkbox') {
             input.checked = query[key] ? true : false;
+        } else {
+            input.value = query[key];
         }
     });
 }
