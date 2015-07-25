@@ -1,14 +1,22 @@
-@import "nyt-cheltenham.css";
+// @import "nyt-cheltenham.css";
 @import "bootstrap.css";
 
 body {
-    font-family: "nyt-cheltenham";
+    // font-family: "nyt-cheltenham";
+    font-family:Monospace;
+    font-size:14px;
+}
+
+table {
+    font-size:14px;
 }
 
 
 code {
     color:black;
     background:none;
+    font-weight:bold;
+    font-family:Monospace;
 }
 
 html {
@@ -172,7 +180,7 @@ tr.disabled,tr.disabled code {
 }
 
 .table>thead>tr>th {
-    border-bottom:2px solid #ddd;
+    border-bottom:2px solid black;
 }
 
 @media print {
@@ -223,30 +231,42 @@ tr.disabled,tr.disabled code {
     max-width:16px;
 }
 
+#rerender-old-seed, #rerender-new-seed {
+    background:white;
+    text-decoration:none;
+    display:inline-block;
+    margin:0;
+    // padding:2px 10px;
+    // font-family:Arial;
+    text-align:center;
+    cursor:pointer;
+    color:black;
+    border:1px solid black;
+    margin:3px;
+    box-shadow:0px 0px 15px -4px gray;
+}
+
 #rerender-new-seed {
     // background:#005938;
     // color:#00C279;
-    background:#D1F8E5;
-    border-top-left-radius:4px;
-    border-bottom-left-radius:4px;
+    // background:#D1F8E5;
+    // border-top-left-radius:4px;
+    // border-bottom-left-radius:4px;
 }
 
 #rerender-old-seed {
     // background:#112233;
     // color:#55ACFF;
-    background:#CAEAF9;
-    border-top-right-radius:4px;
-    border-bottom-right-radius:4px;
+    // background:#CAEAF9;
+    // border-top-right-radius:4px;
+    // border-bottom-right-radius:4px;
+    // border-left-width:0;
 }
 
-#rerender-old-seed, #rerender-new-seed {
-    display:inline-block;
-    margin:0;
-    padding:2px 10px;
-    font-family:Arial;
-    text-align:center;
-    cursor:pointer;
-    color:black;
+
+#rerender-old-seed:hover, #rerender-new-seed:hover {
+    // background:lightgray;
+    box-shadow:0px 0px 15px -4px black;
 }
 
 #rerender-old-seed:hover, #rerender-new-seed:hover {
@@ -254,11 +274,11 @@ tr.disabled,tr.disabled code {
 }
 
 #rerender-old-seed:hover {
-    color:#0D8BD5;
+    // color:#0D8BD5;
 }
 
 #rerender-new-seed:hover {
-    color:green;
+    // color:green;
 }
 
 #rerender-old-seed:hover img, #rerender-new-seed:hover img {
@@ -270,6 +290,14 @@ tr.disabled,tr.disabled code {
   display: -ms-flexbox;      /* TWEENER - IE 10 */
   display: -webkit-flex;     /* NEW - Chrome */
   display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+#rerender-container {
+    align-items: center;
+    justify-content: center;
+    position:static;
+    transform:none;
+    -webkit-transform:none;
 }
 
 @media screen and (max-width: 520px) {
@@ -297,14 +325,6 @@ tr.disabled,tr.disabled code {
         /* background:blue; opacity:0.4; */
     }
 
-    #rerender-container {
-        align-items: center;
-        justify-content: center;
-        position:static;
-        transform:none;
-        -webkit-transform:none;
-    }
-
     .minicolors-position-left .minicolors-panel {
         left:-50%!important;
     }
@@ -315,13 +335,6 @@ tr.disabled,tr.disabled code {
 }
 
 @media screen and (max-width: 400px) {
-    #rerender-container {
-        align-items: center;
-        justify-content: center;
-        position:static;
-        transform:none;
-        -webkit-transform:none;
-    }
 
     #btf {
         padding-left:0;
@@ -343,5 +356,24 @@ tr.disabled,tr.disabled code {
         border-radius:0;
         height:60px;
         line-height:58px;
+        margin:3px;
+        box-shadow:0px 0px 15px -4px;
     }
+}
+
+
+#rerender-old-seed, #rerender-new-seed {
+    line-height:58px;
+    margin:3px;
+    padding:inherit 2em;
+    border-radius:2px;
+}
+
+#rerender-old-seed {
+    // border-right-width:0;
+}
+
+#rerender-new-seed {
+    line-height:58px;
+    // border-left-width:0;
 }
