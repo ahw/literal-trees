@@ -2,8 +2,8 @@
 @import "bootstrap.css";
 
 body {
-    // font-family: "nyt-cheltenham";
     font-family:Monospace;
+    // font-family: "nyt-cheltenham";
     font-size:14px;
 }
 
@@ -74,6 +74,7 @@ path {
 }
 
 #loading-message {
+    font-size:10px;
     text-align:center;
     width:60%;
     margin:0 auto;
@@ -106,10 +107,11 @@ path {
 #version {
     margin-top:3em;
     text-align:center;
-    font-size:80%;
+    // font-size:80%;
 }
 
 #persistant-link-container {
+    font-size:10px;
     -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
        -moz-animation: fadein 1s; /* Firefox < 16 */
         -ms-animation: fadein 1s; /* Internet Explorer */
