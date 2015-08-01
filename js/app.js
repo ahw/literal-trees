@@ -53,7 +53,7 @@ if (query.maxprintheight) {
     extraCSS += "#paper { height:" + query.maxprintheight + "!important; }";
 }
 if (query.maxprintwidth) {
-    var matches = query.maxprintwidth.match(/(\d+)(.*)/);
+    var matches = query.maxprintwidth.match(/([\.\d]+)([a-z]*)/);
     var value = matches[1];
     var units = matches[2];
     // Set the width and then add a left and margin-left to center
