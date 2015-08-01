@@ -91,7 +91,7 @@
                         <td><code>trunkheight</code></td>
                         <td>Float (0, &infin;)</td>
                         <td class="input"><label>&#9998;</label><input
-                            name="trunkheight" defaultvalue="1.5" value="1.5" type="number" step=".1"/></td>
+                            name="trunkheight" defaultvalue="1.0" value="1.0" type="number" step=".1"/></td>
                         <!-- <td class="inputx">1.0</td> -->
                     </tr>
                     <!--
@@ -249,12 +249,11 @@
         this page, allowing you to complete the circle of life by printing a
         tree on a dead tree! If the height or width of the tree doesn't fit
         on a single page, then the values of maxprintheight and
-        maxprintwidth come into play in order to scale the image. Being the
-        selfish American that I am, I have only tested this stuff on US
-        Letter but theoretically it should work on any page (the tree is
-        centered horizontally and fixed to the bottom edge of the page). Any
-        valid CSS number with units should work for the maxprintwidth/height
-        values (e.g., maxprintheight=2.54cm).
+        maxprintwidth are used to scale the image, depending on which
+        dimension it is too big for. Any valid CSS number with units should
+        work for the maxprintwidth/height values (e.g.,
+        maxprintheight=2.54cm). When printing, the tree is centered
+        horizontally and fixed to the bottom edge of the page.
         </p>
     </div> <!-- end #btf -->
 

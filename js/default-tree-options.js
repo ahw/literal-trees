@@ -3,7 +3,7 @@ module.exports = {
     windx: 0,
     windy: 0,
     trunkangle: 90, // trunk angle
-    trunkheight: 1.5,
+    trunkheight: 1,
     color: 'black',
     bgcolor: 'none',
     depth: 6,
