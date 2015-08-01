@@ -74,7 +74,9 @@
         <p style="font-size:14px">Adjust the inputs below and either click &ldquo;New Seed&rdquo; on the
         left to generate a tree with a new random input seed, or click
         &ldquo;Same Seed&rdquo; on the right to generate a tree starting with the same
-        input seed as the one you're looking at.</p>
+        input seed as the one you're looking at. If you're on a desktop,
+        pressing "Enter" does the same thing as clicking &ldquo;Same
+        Seed.&rdquo;</p>
         <div class="table-responsive">
             <table class="table constant-inputs" border="0">
                 <thead>
@@ -202,7 +204,7 @@
                     </tr>
 
                     <tr class="rule">
-                        <td rowspan="2">Printing</td>
+                        <td rowspan="3">Printing</td>
                         <td><code>maxprintheight</code></td>
                         <td>String</td>
                         <td class="input"><label>&#9998;</label><input
@@ -216,6 +218,14 @@
                         <td class="input"><label>&#9998;</label><input
                             name="maxprintwidth" defaultvalue="6.5in"
                             value="6.5in" type="text"></input></td>
+                    </tr>
+                    <tr>
+                        <td style="display:none"></td>
+                        <td><code>printseed</code></td>
+                        <td>Boolean</td>
+                        <td class="input"><label>&#9998;</label><input
+                        name="printseed" checked="checked" defaultchecked="true"
+                        type="checkbox"></input></td>
                     </tr>
 
                     <tr class="rule">

@@ -52,6 +52,7 @@ var extraCSS = "";
 if (query.maxprintheight) {
     extraCSS += "#paper { height:" + query.maxprintheight + "!important; }";
 }
+
 if (query.maxprintwidth) {
     var matches = query.maxprintwidth.match(/([\.\d]+)([a-z]*)/);
     var value = matches[1];
@@ -63,6 +64,12 @@ if (query.maxprintwidth) {
     extraCSS += "#paper { margin-left: -" + (value/2) + units + "; }";
     extraCSS += "#paper img { position:absolute; bottom:0; }";
 }
+
+if (query.printseed === 0) {
+    extraCSS += "#seed-printed { display: none; }";
+    extraCSS += "#paper { bottom: 0; }";
+}
+
 if (extraCSS) {
     var style = document.createElement('style');
     style.innerHTML = "@media print {" + extraCSS + "}";
