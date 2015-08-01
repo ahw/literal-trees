@@ -61,6 +61,7 @@ if (query.maxprintwidth) {
     extraCSS += "#paper { width:" + query.maxprintwidth + "; }";
     extraCSS += "#paper { left:50%; }";
     extraCSS += "#paper { margin-left: -" + (value/2) + units + "; }";
+    extraCSS += "#paper img { position:absolute; bottom:0; }";
 }
 if (extraCSS) {
     var style = document.createElement('style');
