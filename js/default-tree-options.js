@@ -4,7 +4,7 @@ module.exports = {
     windy: 0,
     trunkangle: 90, // trunk angle
     trunkheight: 1,
-    color: 'black',
+    color: '000000',
     bgcolor: 'none',
     depth: 6,
     arm: 65, // angle range mean
