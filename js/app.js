@@ -305,6 +305,7 @@ w.onmessage = function(e) {
                     timers.endTimer('SVG load time');
                     ctx.fillStyle = bgcolor;
                     ctx.fillRect(0, 0, Math.ceil(e.data.width), Math.ceil(e.data.height));
+                    // Problems in FF: https://bugzilla.mozilla.org/show_bug.cgi?id=700533
                     ctx.drawImage(svgImage, 0, 0);
 
                     var container = document.createElement('div');
