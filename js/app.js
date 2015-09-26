@@ -276,6 +276,15 @@ w.onmessage = function(e) {
             if (query.svg) {
                 // User explicitly asked for SVG only
                 document.getElementById('paper').innerHTML = e.data.value;
+                var style = document.createElement('style');
+                // Manually center. This used to "just work" when we had the
+                // width and height of the svg document set to 100%, but
+                // Firefox has issues with that - it does not properly
+                // rasterize an SVG document unless the document has
+                // absolute width and height dimensions.
+                var leftAdjustment = '#paper svg { margin-left:-' + (e.data.width/2) + 'px; }';
+                style.innerHTML = leftAdjustment;
+                document.head.appendChild(style);
             } else if (query.svgraw) {
                 document.write(e.data.value);
             } else {
@@ -305,7 +314,7 @@ w.onmessage = function(e) {
                     timers.endTimer('SVG load time');
                     ctx.fillStyle = bgcolor;
                     ctx.fillRect(0, 0, Math.ceil(e.data.width), Math.ceil(e.data.height));
-                    // Problems in FF: https://bugzilla.mozilla.org/show_bug.cgi?id=700533
+                    // Problems in Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=700533
                     ctx.drawImage(svgImage, 0, 0);
 
                     var container = document.createElement('div');

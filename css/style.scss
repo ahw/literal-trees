@@ -82,6 +82,10 @@ label {
     position:absolute;
     bottom:0;
     max-height:95%;
+    left:50%;
+    /* JavaScript will dynamically add a margin-left with whatever value
+     * makes the tree image perfectly centered.
+     */
 }
 
 path {

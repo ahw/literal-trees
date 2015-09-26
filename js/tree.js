@@ -201,9 +201,8 @@ Tree.prototype.start = function(callback) {
     var horizontalScale = tree.options.paperWidth / treeWidth;
     var scaleRatio = Math.min(verticalScale, horizontalScale);
 
-    // tree.paper.setSize(scaleRatio * treeWidth - 2 * tree.options.margin, scaleRatio * treeHeight - tree.options.margin);
-    tree.paper.setSize('100%', '100%');
-    // tree.paper.setViewBox(tree.TREE_MIN_X, tree.TREE_MIN_Y, treeWidth, treeHeight);
+    // Old way (worked in Chrome, Safari) tree.paper.setSize('100%', '100%');
+    tree.paper.setSize(viewBox.width, viewBox.height); // Firefox needs absolute values for rasterizing to work.
     tree.paper.setViewBox(viewBox.x, viewBox.y, viewBox.width, viewBox.height);
 
     if (tree.options.debug) {
