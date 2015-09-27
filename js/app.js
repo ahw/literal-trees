@@ -269,6 +269,7 @@ w.onmessage = function(e) {
             break;
         case 'metrics':
             // (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
+            (new Image()).src = 'https://2dbjfwpz3h.execute-api.us-east-1.amazonaws.com/prod/testMe';
             break;
         case 'svg':
             timers.endTimer('SVG compute time');
