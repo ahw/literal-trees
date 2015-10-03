@@ -161,16 +161,20 @@ function updateSlider($input, $slider) {
     var $inner = $slider.find('.toggle-switch-inner');
     if ($input.is(":checked")) {
         $inner.css({
-            right: 'initial',
-            left: '3px',
-            background: 'black'
-        });
-    } else {
-        $inner.css({
             left: 'initial',
             right: '3px',
-            background: 'white'
+            background: 'black',
+            color:'white'
         });
+        $inner.text('True');
+    } else {
+        $inner.css({
+            right: 'initial',
+            left: '3px',
+            background: 'white',
+            color:'black'
+        });
+        $inner.text('False');
     }
 }
 
