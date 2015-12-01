@@ -1,5 +1,9 @@
 all: deploy-local
 
+vars:
+	$(eval VERSION = $(shell mversion | grep package.json | egrep -o "\d+\.\d+\.\d+"))
+	$(eval TIMESTAMP = $(shell date +"%s"))
+
 browserify: install
 	# Browserify the web worker thread main.js into main.bundled.js
 	browserify -t uglifyify js/main.js | uglifyjs -c -m > js/main.bundled.js 
@@ -37,8 +41,7 @@ bump-version-minor:
 bump-version-major:
 	mversion major
 
-copy-assets:
-	$(eval VERSION = $(shell mversion | grep package.json | egrep -o "\d+\.\d+\.\d+"))
+copy-assets: vars
 	mkdir -p v/$(VERSION)/css
 	mkdir -p v/$(VERSION)/js
 	cp css/style.min.css v/$(VERSION)/css
@@ -50,15 +53,13 @@ copy-assets:
 	@echo ""
 	@echo "Finished building/deploying v$(VERSION)"
 
-inject-version-number:
-	$(eval VERSION = $(shell mversion | grep package.json | egrep -o "\d+\.\d+\.\d+"))
-	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' index.html
-	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' css/style.min.css
-	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/app.min.js
-	sed -i .backup 's/LITERAL_TREES_VERSION/$(VERSION)/g' js/main.bundled.js
+inject-version-number: vars
+	sed -i .backup -e 's/LITERAL_TREES_VERSION/$(VERSION)/g' -e 's/TIMESTAMP/$(TIMESTAMP)/g' index.html
+	sed -i .backup -e 's/LITERAL_TREES_VERSION/$(VERSION)/g' -e 's/TIMESTAMP/$(TIMESTAMP)/g' css/style.min.css
+	sed -i .backup -e 's/LITERAL_TREES_VERSION/$(VERSION)/g' -e 's/TIMESTAMP/$(TIMESTAMP)/g' js/app.min.js
+	sed -i .backup -e 's/LITERAL_TREES_VERSION/$(VERSION)/g' -e 's/TIMESTAMP/$(TIMESTAMP)/g' js/main.bundled.js
 
-git-commit:
-	$(eval VERSION = $(shell mversion | grep package.json | egrep -o "\d+\.\d+\.\d+"))
+git-commit: vars
 	git add -u
 	git add v/
 	git commit -m "Build version $(VERSION)"
@@ -70,9 +71,9 @@ deploy-s3: deploy-local sync-s3
 sync-s3:
 	aws --profile s3access s3 sync . s3://literal-trees.co --recursive --acl public-read --cache-control no-cache --delete --exclude ".git/*" --exclude "node_modules/*"
 
-manifest:
-	$(eval TIMESTAMP = $(shell date +"%s"))
-	sed 's/TIMESTAMP/$(TIMESTAMP)/g' offline.appcache.template > offline.appcache
+manifest: vars
+	sed -e 's/LITERAL_TREES_VERSION/$(VERSION)/g' -e 's/TIMESTAMP/$(TIMESTAMP)/g' offline.appcache.template > offline.appcache
+	cat offline.appcache
 
 help:
 	@echo "Targets include:"

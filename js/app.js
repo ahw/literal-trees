@@ -239,7 +239,7 @@ function runAfterRendering() {
 
 if (query.norender) { return; }
 var seed;
-var w = new Worker('js/main.bundled.js');
+var w = new Worker('js/main.bundled.js?v=TIMESTAMP');
 w.onmessage = function(e) {
     // console.log('[index.html] Got "' + e.data.event + '" message from worker');
     switch(e.data.event) {
