@@ -16,7 +16,7 @@ browserify: install
 styles:
 	cd css && /usr/local/bin/scss style.scss | /usr/local/bin/cleancss > style.min.css
 
-build: clean bump-version-minor browserify inject-version-number
+build: clean bump-version-minor browserify inject-version-number manifest
 
 install:
 	# npm install
