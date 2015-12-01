@@ -166,7 +166,7 @@ function updateSlider($input, $slider) {
             background: 'black',
             color:'white'
         });
-        $inner.text('True');
+        // $inner.text('True');
     } else {
         $inner.css({
             right: 'initial',
@@ -174,7 +174,7 @@ function updateSlider($input, $slider) {
             background: 'white',
             color:'black'
         });
-        $inner.text('False');
+        // $inner.text('False');
     }
 }
 

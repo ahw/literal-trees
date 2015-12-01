@@ -1,0 +1,14 @@
+CACHE MANIFEST
+
+# 1448943896
+css/style.min.css?v=1448943896
+js/app.min.js?v=1448943896
+js/main.bundled.js?v=1448943896
+bower_components/minicolors/jquery.minicolors.css
+bower_components/jquery/dist/jquery.min.js
+bower_components/minicolors/jquery.minicolors.min.js
+https://fonts.googleapis.com/css?family=Roboto:400,300
+
+# Allow all connections to non-cached resources from a cached page.
+NETWORK:
+*

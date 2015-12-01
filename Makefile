@@ -9,6 +9,9 @@ browserify: install
 	cd css && /usr/local/bin/scss style.scss | /usr/local/bin/cleancss > style.min.css
 	cp -f source.html index.html
 
+styles:
+	cd css && /usr/local/bin/scss style.scss | /usr/local/bin/cleancss > style.min.css
+
 build: clean bump-version-minor browserify inject-version-number
 
 install:
@@ -66,6 +69,10 @@ deploy-s3: deploy-local sync-s3
 
 sync-s3:
 	aws --profile s3access s3 sync . s3://literal-trees.co --recursive --acl public-read --cache-control no-cache --delete --exclude ".git/*" --exclude "node_modules/*"
+
+manifest:
+	$(eval TIMESTAMP = $(shell date +"%s"))
+	sed 's/TIMESTAMP/$(TIMESTAMP)/g' offline.appcache.template > offline.appcache
 
 help:
 	@echo "Targets include:"
