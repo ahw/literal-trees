@@ -1,6 +1,6 @@
-![A Literal Tree](https://s3.amazonaws.com/pd93f014/tree-iq6iwj7748d8hf6a-2000.png?v=1)
-
 Building a place for the birds to put their foots.
+
+![A Literal Tree](https://s3.amazonaws.com/pd93f014/tree-iq6iwj7748d8hf6a-2000.png?v=1)
 
 http://literal-trees.co<br/>
 https://ahw.github.io/literal-trees
@@ -29,12 +29,11 @@ https://ahw.github.io/literal-trees
   and pad the image as necessary so that it matches the aspect ratio of the
   device exactly. This makes it easy to just save the image and have it work
   seamlessly as a phone background or whatever.
-* Print styles! Print a tree on a dead tree! I spent some time (a lot)
-  fiddling with the print styles. If the height or width of the tree doesn't
-  fit on a single page, then the values of maxprintheight and maxprintwidth
-  come into play in order to scale the image. Being the selfish American
-  that I am, I have only tested this stuff on US Letter but theoretically
-  any valid CSS number with units should work (e.g., maxprintheight=2.54cm);
+* Print styles! I spent some time (a lot) fiddling with the print styles. If
+  the height or width of the tree doesn't fit on a single page, then the
+  values of maxprintheight and maxprintwidth come into play in order to
+  scale the image.
+* Works offline just 'cause. (After the initial visit of course.)
 
 # About Me
 My name is Andrew Hallagan. I enjoy this sort of thing and I hope you do
