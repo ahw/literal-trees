@@ -273,7 +273,7 @@ w.onmessage = function(e) {
             break;
         case 'metrics':
             // (new Image()).src ='http://localhost:8800/metrics?' + e.data.value;
-            (new Image()).src = 'https://2dbjfwpz3h.execute-api.us-east-1.amazonaws.com/prod/testMe';
+            // (new Image()).src = 'https://2dbjfwpz3h.execute-api.us-east-1.amazonaws.com/prod/testMe';
             break;
         case 'svg':
             timers.endTimer('SVG compute time');
@@ -374,11 +374,23 @@ w.onmessage = function(e) {
     }
 };
 
+// LOG.log('window.innerHeight', window.innerHeight);
+// LOG.log('window.innerWidth', window.innerWidth);
+// LOG.log('document.documentElement.clientHeight', document.documentElement.clientHeight);
+// LOG.log('document.documentElement.clientWidth', document.documentElement.clientWidth);
+// LOG.log('window.screen.height', window.screen.height);
+// LOG.log('window.screen.width', window.screen.width);
+
 timers.startTimer('SVG compute time');
 w.postMessage({
     event: 'inputs',
-    paperWidth: window.innerWidth, // TODO: remove when backward functionality not required
-    paperHeight: window.innerHeight, // TODO: remove when backward functionality not required
+    // Using clientWidth/Height instead of innerWidth/Height due to a
+    // possible bug in iOS 9 Safari?
+    // https://gist.github.com/baptistebriel/ae67afca884e21b5b425. Honestly
+    // not entirely sure why I thought I needed innerWidth/Height in the
+    // first place.
+    paperWidth: document.documentElement.clientWidth, // window.innerWidth,
+    paperHeight: document.documentElement.clientHeight, // window.innerHeight,
     clientWidth: document.documentElement.clientWidth,
     clientHeight: document.documentElement.clientHeight,
     screenWidth: window.screen && window.screen.width,
