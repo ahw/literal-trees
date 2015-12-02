@@ -374,12 +374,12 @@ w.onmessage = function(e) {
     }
 };
 
-// LOG.log('window.innerHeight', window.innerHeight);
-// LOG.log('window.innerWidth', window.innerWidth);
-// LOG.log('document.documentElement.clientHeight', document.documentElement.clientHeight);
-// LOG.log('document.documentElement.clientWidth', document.documentElement.clientWidth);
-// LOG.log('window.screen.height', window.screen.height);
-// LOG.log('window.screen.width', window.screen.width);
+LOG.log('window.innerWidth', window.innerWidth);
+LOG.log('window.innerHeight', window.innerHeight);
+LOG.log('document.documentElement.clientWidth', document.documentElement.clientWidth);
+LOG.log('document.documentElement.clientHeight', document.documentElement.clientHeight);
+LOG.log('window.screen.width', window.screen.width);
+LOG.log('window.screen.height', window.screen.height);
 
 timers.startTimer('SVG compute time');
 w.postMessage({
