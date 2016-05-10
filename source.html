@@ -87,10 +87,8 @@
         <div style="position:relative">
             <div class="flexbox" id="rerender-container">
                 <a id="rerender-new-seed" href="/" title="Render a new random tree using the input values below.">
-                    <!-- <img src="https://pd93f014.s3.amazonaws.com/tree-green.png"/> -->
                     New Seed</a>
                 <a id="rerender-old-seed" href="/" title="Render a tree with the input values below but re-use this same input seed to the PRNG">
-                    <!-- <img src="https://pd93f014.s3.amazonaws.com/tree-blue.png"/> -->
                     Same Seed</a>
             </div>
         </div>
@@ -99,9 +97,7 @@
         <p style="font-size:14px">Adjust the inputs below and either click &ldquo;New Seed&rdquo; on the
         left to generate a tree with a new random input seed, or click
         &ldquo;Same Seed&rdquo; on the right to generate a tree starting with the same
-        input seed as the one you're looking at. If you're on a desktop,
-        pressing "Enter" does the same thing as clicking &ldquo;Same
-        Seed.&rdquo;</p>
+        input seed as the one you're looking at.</p>
         <div class="table-responsive">
             <table class="table constant-inputs" border="0">
                 <thead>
@@ -269,24 +265,22 @@
 
         <h1>About</h1>
         <p>My name is Andrew Hallagan. I enjoy this sort of thing and I hope
-        you do too. This is my first foray into generative art; I'd love to
-        hear what you think about this or anything
-        similar via <a href="mailto:andrewhallagan@outlook.com"
-        title="andrewhallagan@outlook.com">email</a> or Twitter, where I am 
-        <a href="https://twitter.com/andrewhallagan"
-            title="@andrewhallagan">@andrewhallagan</a>.
-
-        The code is available
+        you do too. The code is available
 
         on <a href="https://github.com/ahw/literal-trees"
-            title="GitHub">GitHub</a>.
-        
+            title="GitHub">GitHub</a>. While the core tree-building algorithm is not
+        anything particularly innovative (basically just breadth-first
+        search), there are a few moderately interesting implementation
+        details, like how the page is first rendering an SVG document and
+        then rasterizing the image client-side into a PNG. Web nerds will
+        find these things documented on GitHub.
         </p>
 
         <h1>Printing</h1>
         <p>You may also be interested to know that there are print styles on
         this page, allowing you to complete the circle of life by printing a
-        tree on a dead tree! If the height or width of the tree doesn't fit
+        picture of a
+        tree on an actual dead tree. If the height or width of the tree doesn't fit
         on a single page, then the values of maxprintheight and
         maxprintwidth are used to scale the image proportionally, depending
         on which dimension it is too big for. Any valid CSS number with
