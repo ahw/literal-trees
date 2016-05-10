@@ -33,7 +33,7 @@ https://ahw.github.io/literal-trees
   the height or width of the tree doesn't fit on a single page, then the
   values of maxprintheight and maxprintwidth come into play in order to
   scale the image.
-* Works offline just 'cause. (After the initial visit of course.)
+* Works offline using ApplicationCache. Why? Just 'cause.
 
 # About Me
 My name is Andrew Hallagan. I enjoy this sort of thing and I hope you do
