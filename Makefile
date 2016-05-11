@@ -69,7 +69,7 @@ deploy-local: build copy-assets git-commit
 deploy-s3: deploy-local sync-s3
 
 sync-s3:
-	aws --profile s3access s3 sync . s3://literal-trees.co --recursive --acl public-read --cache-control no-cache --delete --exclude ".git/*" --exclude "node_modules/*"
+	aws --profile s3access s3 sync . s3://literal-trees.co --recursive --acl public-read --delete --exclude ".git/*" --exclude "node_modules/*"
 
 manifest: vars
 	sed -e 's/LITERAL_TREES_VERSION/$(VERSION)/g' -e 's/TIMESTAMP/$(TIMESTAMP)/g' offline.appcache.template > offline.appcache
