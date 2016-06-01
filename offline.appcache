@@ -7,7 +7,7 @@ js/main.bundled.js?v=1462930822
 bower_components/minicolors/jquery.minicolors.css
 bower_components/jquery/dist/jquery.min.js
 bower_components/minicolors/jquery.minicolors.min.js
-# https://fonts.googleapis.com/css?family=Roboto:400,300
+#   https://fonts.googleapis.com/css?family=Roboto:400,300
 
 # Allow all connections to non-cached resources from a cached page.
 NETWORK:
