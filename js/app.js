@@ -411,6 +411,7 @@ w.postMessage({
     bld: query.bld,
     co: query.co,
     ce: query.ce,
+    circleradius: query.circleradius,
     margin: query.margin,
     showbranches: query.showbranches,
     sizingmethod: query.sizingmethod
